@@ -19,6 +19,7 @@ export async function uploadToCloudinary(
   fileBuffer: Buffer,
   folder: string,
   mimeType = 'image/jpeg',
+  resourceType: 'image' | 'raw' = 'image',
 ): Promise<UploadResult> {
   if (!env.CLOUDINARY_CLOUD_NAME) {
     throw new Error(
@@ -31,7 +32,7 @@ export async function uploadToCloudinary(
   try {
     const result = await cloudinary.uploader.upload(base64, {
       folder: `medicare-medical-store/${folder}`,
-      resource_type: 'image',
+      resource_type: resourceType,
     });
     return { url: result.secure_url, publicId: result.public_id };
   } catch (err) {

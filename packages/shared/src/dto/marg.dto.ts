@@ -43,6 +43,37 @@ export const margSaleInvoicePushSchema = z.object({
   totalAmount: z.number().nonnegative(),
 });
 
+export const margSupplierPayloadSchema = z.object({
+  margSupplierCode: z.string().min(1),
+  name: z.string().min(1),
+  gstin: z.string().optional(),
+  contactPerson: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().optional(),
+  address: z.string().optional(),
+});
+
+export const margCustomerPayloadSchema = z.object({
+  margCustomerCode: z.string().min(1),
+  name: z.string().min(1),
+  phone: z.string().optional(),
+  email: z.string().optional(),
+});
+
+export const margReturnPushSchema = z.object({
+  orderId: z.string(),
+  originalInvoiceNumber: z.string(),
+  items: z.array(
+    z.object({
+      margItemCode: z.string(),
+      batchNumber: z.string().optional(),
+      quantity: z.number().int().positive(),
+    }),
+  ),
+  reason: z.string().optional(),
+  totalAmount: z.number().nonnegative(),
+});
+
 export const margWebhookEnvelopeSchema = z.object({
   entity: z.enum([
     'medicine',
@@ -80,4 +111,7 @@ export const triggerMargSyncSchema = z.object({
 export type MargMedicinePayload = z.infer<typeof margMedicinePayloadSchema>;
 export type MargStockPayload = z.infer<typeof margStockPayloadSchema>;
 export type MargSaleInvoicePush = z.infer<typeof margSaleInvoicePushSchema>;
+export type MargSupplierPayload = z.infer<typeof margSupplierPayloadSchema>;
+export type MargCustomerPayload = z.infer<typeof margCustomerPayloadSchema>;
+export type MargReturnPush = z.infer<typeof margReturnPushSchema>;
 export type MargWebhookEnvelope = z.infer<typeof margWebhookEnvelopeSchema>;
