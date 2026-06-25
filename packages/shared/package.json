@@ -1,0 +1,20 @@
+{
+  "name": "@healthmart/shared",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared types, enums, constants and zod DTOs for Medicare Medical Store",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3"
+  }
+}

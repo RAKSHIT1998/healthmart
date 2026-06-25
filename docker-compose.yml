@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: healthmart-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: healthmart
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    container_name: healthmart-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: healthmart-api
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - redis
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./apps/api/.env
+    environment:
+      MONGO_URI: mongodb://root:rootpassword@mongo:27017/healthmart?authSource=admin
+      REDIS_URL: redis://redis:6379
+
+volumes:
+  mongo-data:
+  redis-data:
