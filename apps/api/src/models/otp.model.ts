@@ -1,0 +1,28 @@
+import { Schema, model, Types, type Document } from 'mongoose';
+
+export interface IOtp extends Document {
+  _id: Types.ObjectId;
+  phone: string;
+  otpHash: string;
+  purpose: 'login' | 'signup' | 'checkout';
+  attempts: number;
+  verified: boolean;
+  expiresAt: Date;
+  createdAt: Date;
+}
+
+const otpSchema = new Schema<IOtp>(
+  {
+    phone: { type: String, required: true, index: true },
+    otpHash: { type: String, required: true },
+    purpose: { type: String, enum: ['login', 'signup', 'checkout'], default: 'login' },
+    attempts: { type: Number, default: 0 },
+    verified: { type: Boolean, default: false },
+    expiresAt: { type: Date, required: true },
+  },
+  { timestamps: { createdAt: true, updatedAt: false } },
+);
+
+otpSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
+export const OtpModel = model<IOtp>('Otp', otpSchema);
