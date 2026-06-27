@@ -49,3 +49,25 @@ export const createSupplier = asyncHandler(async (req: Request, res: Response) =
 export const listBranches = asyncHandler(async (_req: Request, res: Response) => {
   sendSuccess(res, await catalogService.listBranches());
 });
+
+export const listBranchesAdmin = asyncHandler(async (_req: Request, res: Response) => {
+  sendSuccess(res, await catalogService.listBranchesForAdmin());
+});
+
+export const createBranch = asyncHandler(async (req: Request, res: Response) => {
+  const branch = await catalogService.createBranch(req.body);
+  recordAudit({ req, action: AuditAction.CREATE, entityType: 'Branch', entityId: String(branch._id) });
+  sendSuccess(res, branch, 'Branch created', 201);
+});
+
+export const updateBranch = asyncHandler(async (req: Request, res: Response) => {
+  const branch = await catalogService.updateBranch(req.params.id as string, req.body);
+  recordAudit({ req, action: AuditAction.UPDATE, entityType: 'Branch', entityId: req.params.id });
+  sendSuccess(res, branch, 'Branch updated');
+});
+
+export const deactivateBranch = asyncHandler(async (req: Request, res: Response) => {
+  await catalogService.deactivateBranch(req.params.id as string);
+  recordAudit({ req, action: AuditAction.DELETE, entityType: 'Branch', entityId: req.params.id });
+  sendSuccess(res, null, 'Branch deactivated');
+});

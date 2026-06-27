@@ -51,6 +51,10 @@ const envSchema = z.object({
   // Google Maps
   GOOGLE_MAPS_API_KEY: z.string().optional(),
 
+  // Agora (Doctor video/audio consultation)
+  AGORA_APP_ID: z.string().optional(),
+  AGORA_APP_CERTIFICATE: z.string().optional(),
+
   // MARG ERP Integration
   MARG_INTEGRATION_MODE: z.enum(['csv', 'webhook', 'api', 'disabled']).default('csv'),
   MARG_SYNC_CRON: z.string().default('*/30 * * * *'),

@@ -37,6 +37,7 @@ coverage/
 apps/api/uploads/
 apps/api/marg-sync/incoming/
 apps/api/marg-sync/processed/
+apps/api/backups/
 
 # Misc
 *.pem

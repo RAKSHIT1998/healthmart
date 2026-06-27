@@ -15,6 +15,8 @@ const NAV_LINKS = [
   { label: 'Baby Care', href: '/shop?categoryGroup=baby_care' },
   { label: 'Personal Care', href: '/shop?categoryGroup=personal_care' },
   { label: 'Devices', href: '/shop?categoryGroup=devices' },
+  { label: 'Doctors', href: '/doctors' },
+  { label: 'Blog', href: '/blog' },
 ];
 
 export function Header() {

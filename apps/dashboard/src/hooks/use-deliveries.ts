@@ -29,10 +29,18 @@ export function useUpdateMyLocation() {
   });
 }
 
+export interface VerifyDeliveryOtpInput {
+  orderId: string;
+  otp: string;
+  proofOfDeliveryUrl?: string;
+  customerSignatureUrl?: string;
+}
+
 export function useVerifyDeliveryOtp() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ orderId, otp }: { orderId: string; otp: string }) => api.post(`/orders/${orderId}/delivery-otp/verify`, { otp }),
+    mutationFn: ({ orderId, otp, proofOfDeliveryUrl, customerSignatureUrl }: VerifyDeliveryOtpInput) =>
+      api.post(`/orders/${orderId}/delivery-otp/verify`, { otp, proofOfDeliveryUrl, customerSignatureUrl }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-deliveries'] });
       toast.success('Delivery confirmed!');

@@ -5,7 +5,7 @@
 A production-grade pharmacy e-commerce platform: customer storefront, internal operations
 dashboard, REST API, and a MARG ERP integration layer. Built as a TypeScript monorepo.
 
-## Project status: Phase 1 + Phase 2a
+## Project status: Phase 1 + Phase 2a + Phase 2b
 
 This is a genuinely large platform (storefront + 5 internal role panels + ERP sync + telehealth +
 live GPS tracking + multi-pharmacy support, etc.) — too large to build to full production maturity
@@ -21,19 +21,23 @@ the inventory engine, order state machine, cart/coupon pricing, and auth/token r
 cache-aside layer on catalog/search/dashboard reads; WhatsApp order notifications via MSG91; and a
 promotions module (referral program, gift cards, flash sales) wired into both frontends.
 
-**Explicitly out of scope still** (see [the plan](#roadmap--phase-2b) below): doctor video/audio
-consultation, the health blog CMS, live driver GPS tracking, multi-branch admin UI, and a
-load-testing/index-tuning pass for true 100k-customer scale. The data model already has room for
-some of these (e.g. `Blog`/`BlogComment` collections exist), but the UI and business logic for
-them have not been built.
+**Phase 2b** adds the remaining major modules: live driver GPS tracking over Socket.IO with ETA and
+photo/signature proof-of-delivery; multi-branch admin (branch CRUD, an employee permission matrix
+derived directly from the route guards, and CLI backup/restore tooling); a full health blog CMS
+(authoring UI + public pages + comments, SEO'd); and doctor telehealth (appointment booking with
+Cashfree payment, Agora video/audio consultation rooms, and post-consult prescription PDFs).
+
+**Explicitly out of scope still** (see [the plan](#roadmap--phase-3) below): a load-testing and
+index-tuning pass validated against real traffic, and the deeper analytics (heatmaps, retention
+cohorts, sales forecasting) that need real usage data to be meaningful.
 
 **Integration honesty note:** all third-party integrations (Cashfree, MSG91, Resend, Cloudinary,
-Firebase, Google Maps) are real SDK/API client code, fully wired end-to-end and driven entirely by
-environment variables — not mocked. They start working the moment real credentials are added to
-`.env`. MARG ERP has no public documented API, so this repo ships two fully working adapters (CSV
-import, authenticated webhook receiver) plus a typed API-client skeleton ready for field-mapping
-once a real Marg Compusoft API contract is available — switching modes is a one-line env var
-change, not a rewrite (see [MARG Integration](#marg-erp-integration)).
+Firebase, Google Maps, Agora) are real SDK/API client code, fully wired end-to-end and driven
+entirely by environment variables — not mocked. They start working the moment real credentials are
+added to `.env`. MARG ERP has no public documented API, so this repo ships two fully working
+adapters (CSV import, authenticated webhook receiver) plus a typed API-client skeleton ready for
+field-mapping once a real Marg Compusoft API contract is available — switching modes is a one-line
+env var change, not a rewrite (see [MARG Integration](#marg-erp-integration)).
 
 ## Tech Stack
 
@@ -50,6 +54,8 @@ change, not a rewrite (see [MARG Integration](#marg-erp-integration)).
 | Email | Resend |
 | Push notifications | Firebase Cloud Messaging |
 | Maps | Google Maps (Geocoding + Distance Matrix) |
+| Video/audio consultation | Agora RTC (Web SDK + server-side token generation) |
+| Real-time | Socket.IO (live driver location, order status, driver-assigned push events) |
 | ERP integration | MARG (CSV / webhook / API adapter pattern) |
 | Deployment | Vercel (web, dashboard) · Railway (api) · MongoDB Atlas (database) |
 
@@ -139,8 +145,9 @@ TEST_MONGO_URI="mongodb://localhost:27017" npm test
 
 Coverage includes: concurrent-reservation never-oversell guarantees, FIFO batch allocation/commit/
 restore, the order status state machine (including GST invoice generation on delivery), cart
-pricing and coupon discount math, OTP auth + refresh token rotation/reuse-detection, and the
-referral/gift-card/flash-sale promotions logic.
+pricing and coupon discount math, OTP auth + refresh token rotation/reuse-detection, the
+referral/gift-card/flash-sale promotions logic, and telehealth (doctor slot availability, the
+double-booking guard, video-token access control, and appointment cancellation).
 
 ## API Documentation
 
@@ -193,7 +200,57 @@ All collections from the spec are modeled with full Mongoose schemas in `apps/ap
 `Medicine`, `Batch`, `Inventory`, `InventoryMovement`, `Cart`, `Coupon`, `CouponRedemption`,
 `Order`, `Invoice`, `Wallet`, `WalletTransaction`, `Review`, `Wishlist`, `Prescription`,
 `Notification`, `Blog`, `BlogComment`, `Driver`, `AuditLog`, `MargSyncLog`, `AnalyticsSnapshot`,
-`ReferralReward`, `GiftCard`, `FlashSale`.
+`ReferralReward`, `GiftCard`, `FlashSale`, `Doctor`, `Appointment`.
+
+### Live driver tracking & proof of delivery
+
+Socket.IO is mounted on the same HTTP server as the REST API (`apps/api/src/realtime/socket.ts`).
+Customers authenticate the socket handshake with their existing JWT and join an `order:<id>` room
+(ownership-checked server-side before the join is allowed); the server pushes `driver:location`,
+`order:status`, and `order:driver-assigned` events into that room. Drivers don't need a socket
+client at all — they keep reporting location via the existing `PATCH /drivers/me/location` REST
+endpoint (now with `watchPosition`-driven continuous updates in the dashboard), and the backend
+fans each update out over the socket. ETA is computed via Google's Distance Matrix API when a
+driver is assigned. On delivery, the driver can attach a photo (camera capture) and a canvas-drawn
+customer signature, uploaded to Cloudinary and stored on the order.
+
+### Multi-branch admin, permissions, and backup/restore
+
+Branches are full CRUD (`/catalog/branches`, Admin-only for writes), with exactly one branch
+flagged `isMainBranch` at a time (enforced in `catalog.service.ts`, not just the UI). The Employee
+Permission Matrix (`/permissions` in the dashboard) is rendered directly from the same `NAV_ITEMS`
+array that drives the sidebar — there's no separately-maintained permissions document to drift out
+of sync. Backup/restore (`npm run backup` / `npm run restore -- <dir> --confirm`) are deliberately
+CLI-only, not HTTP endpoints: an API route that can export or overwrite arbitrary collections is a
+significant attack surface for very little benefit over an operator running the script directly.
+Restore upserts by `_id` (merge, not wipe-then-insert) so a stale or partial backup can never
+silently delete data created after the backup was taken.
+
+### Health Blog CMS
+
+Full CRUD (`/blog`) with drafts (`isPublished`), categories, tags, view counts, and moderated
+comments. Public list/detail pages are server components for SEO (metadata, Open Graph, JSON-LD
+`Article` schema) with a client-side comment thread layered on top.
+
+### Doctor telehealth
+
+- **Booking**: a doctor's `weeklySchedule` (recurring day-of-week windows) is expanded into concrete
+  slot times for a given date, minus whatever's already booked. A partial unique index on
+  `{doctorId, scheduledAt}` (live statuses only) makes double-booking impossible at the database
+  level, while a cron job (`appointmentPaymentRelease.job.ts`) cancels abandoned pending-payment
+  bookings after 15 minutes — same pattern as the inventory reservation release job.
+- **Payment**: appointments reuse the same `createCashfreeOrder`/webhook flow as pharmacy orders.
+  Cashfree order IDs are prefixed (`APT-` vs `MMS-`) so `payment.service.ts` can route one webhook
+  to the right domain without an extra lookup table.
+- **Video/audio**: `apps/api/src/integrations/agora.ts` generates a per-user Agora RTC token scoped
+  to the appointment's channel; both frontends share an (independently-built, since there's no
+  shared UI package) `VideoCallRoom` component using `agora-rtc-sdk-ng`. A patient can only fetch a
+  token if they're a participant on that appointment and within a 10-minutes-before to 60-minutes-
+  after join window.
+- **Prescription**: completing a consultation generates a PDF (`integrations/pdf/consultationPdf.ts`,
+  pdf-lib) with the diagnosis and prescribed medicines, uploaded to Cloudinary for the patient to
+  download — independent of the pharmacy's OCR-based `Prescription` model, since a doctor-issued
+  prescription has a different lifecycle and owner.
 
 ### Caching (Redis)
 

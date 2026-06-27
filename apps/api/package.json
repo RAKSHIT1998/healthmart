@@ -11,11 +11,14 @@
     "lint": "eslint \"src/**/*.ts\"",
     "seed": "tsx src/scripts/seed.ts",
     "marg:sync": "tsx src/scripts/run-marg-sync.ts",
+    "backup": "tsx src/scripts/backup.ts",
+    "restore": "tsx src/scripts/restore.ts",
     "test": "jest --runInBand",
     "test:watch": "jest --runInBand --watch"
   },
   "dependencies": {
     "@healthmart/shared": "*",
+    "agora-token": "^2.0.5",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
     "compression": "^1.7.5",

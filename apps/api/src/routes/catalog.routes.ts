@@ -1,9 +1,11 @@
 import { Router } from 'express';
 import {
   Role,
+  createBranchSchema,
   createCategorySchema,
   createManufacturerSchema,
   createSupplierSchema,
+  updateBranchSchema,
   updateCategorySchema,
 } from '@healthmart/shared';
 import * as catalogController from '../controllers/catalog.controller';
@@ -49,5 +51,22 @@ router.post(
   validate({ body: createSupplierSchema }),
   catalogController.createSupplier,
 );
+
+router.get('/branches/admin', authenticate, requireRole(Role.ADMIN, Role.MANAGER), catalogController.listBranchesAdmin);
+router.post(
+  '/branches',
+  authenticate,
+  requireRole(Role.ADMIN),
+  validate({ body: createBranchSchema }),
+  catalogController.createBranch,
+);
+router.patch(
+  '/branches/:id',
+  authenticate,
+  requireRole(Role.ADMIN),
+  validate({ body: updateBranchSchema }),
+  catalogController.updateBranch,
+);
+router.delete('/branches/:id', authenticate, requireRole(Role.ADMIN), catalogController.deactivateBranch);
 
 export default router;

@@ -45,6 +45,10 @@ export class BaseRepository<T> {
     return this.model.findOneAndUpdate(filter, update, { new: true });
   }
 
+  async updateMany(filter: FilterQuery<T>, update: UpdateQuery<T>) {
+    return this.model.updateMany(filter, update);
+  }
+
   async deleteById(id: string | Types.ObjectId) {
     return this.model.findByIdAndDelete(id);
   }

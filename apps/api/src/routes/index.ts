@@ -21,6 +21,8 @@ import auditRoutes from './audit.routes';
 import reportRoutes from './report.routes';
 import uploadRoutes from './upload.routes';
 import promotionsRoutes from './promotions.routes';
+import blogRoutes from './blog.routes';
+import telehealthRoutes from './telehealth.routes';
 
 const router = Router();
 
@@ -46,5 +48,7 @@ router.use('/audit-logs', auditRoutes);
 router.use('/reports', reportRoutes);
 router.use('/uploads', uploadRoutes);
 router.use('/promotions', promotionsRoutes);
+router.use('/blog', blogRoutes);
+router.use('/telehealth', telehealthRoutes);
 
 export default router;

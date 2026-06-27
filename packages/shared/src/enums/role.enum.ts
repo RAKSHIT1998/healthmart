@@ -4,6 +4,7 @@ export enum Role {
   PHARMACIST = 'pharmacist',
   INVENTORY_MANAGER = 'inventory_manager',
   DELIVERY_BOY = 'delivery_boy',
+  DOCTOR = 'doctor',
   CUSTOMER = 'customer',
 }
 
@@ -13,6 +14,7 @@ export const STAFF_ROLES: Role[] = [
   Role.PHARMACIST,
   Role.INVENTORY_MANAGER,
   Role.DELIVERY_BOY,
+  Role.DOCTOR,
 ];
 
 export const ALL_ROLES: Role[] = [...STAFF_ROLES, Role.CUSTOMER];

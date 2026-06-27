@@ -17,6 +17,7 @@ const COLUMNS = [
     links: [
       { label: 'About Us', href: '/about' },
       { label: 'Contact Us', href: '/contact' },
+      { label: 'Health Blog', href: '/blog' },
       { label: 'Upload Prescription', href: '/prescription-upload' },
     ],
   },

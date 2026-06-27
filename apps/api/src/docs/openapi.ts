@@ -85,6 +85,10 @@ function buildPaths() {
   path(paths, '/catalog/suppliers', 'get', 'Catalog', { summary: 'List suppliers', auth: true });
   path(paths, '/catalog/suppliers', 'post', 'Catalog', { summary: 'Create supplier', auth: true, body: true });
   path(paths, '/catalog/branches', 'get', 'Catalog', { summary: 'List active branches' });
+  path(paths, '/catalog/branches/admin', 'get', 'Catalog (Admin)', { summary: 'List all branches including inactive ones', auth: true });
+  path(paths, '/catalog/branches', 'post', 'Catalog (Admin)', { summary: 'Create a branch', auth: true, body: true });
+  path(paths, '/catalog/branches/{id}', 'patch', 'Catalog (Admin)', { summary: 'Update a branch', auth: true, params: ['id'], body: true });
+  path(paths, '/catalog/branches/{id}', 'delete', 'Catalog (Admin)', { summary: 'Deactivate a branch (cannot deactivate the main branch)', auth: true, params: ['id'] });
 
   // Medicines
   path(paths, '/medicines', 'get', 'Medicines', {
@@ -129,6 +133,30 @@ function buildPaths() {
   path(paths, '/coupons', 'post', 'Coupons', { summary: 'Create coupon', auth: true, body: true });
   path(paths, '/coupons/{id}', 'patch', 'Coupons', { summary: 'Update coupon', auth: true, params: ['id'], body: true });
   path(paths, '/coupons/{id}', 'delete', 'Coupons', { summary: 'Deactivate coupon', auth: true, params: ['id'] });
+
+  // Telehealth
+  path(paths, '/telehealth/doctors', 'get', 'Telehealth', { summary: 'List active doctors', query: ['specialization'] });
+  path(paths, '/telehealth/doctors/{id}', 'get', 'Telehealth', { summary: 'Get doctor profile', params: ['id'] });
+  path(paths, '/telehealth/doctors/{id}/availability', 'get', 'Telehealth', { summary: 'Get available slots for a date', params: ['id'], query: ['date'] });
+  path(paths, '/telehealth/doctors', 'post', 'Telehealth (Admin)', { summary: 'Onboard a doctor', auth: true, body: true });
+  path(paths, '/telehealth/doctors/{id}', 'patch', 'Telehealth (Admin)', { summary: 'Update a doctor', auth: true, params: ['id'], body: true });
+  path(paths, '/telehealth/doctor/me', 'get', 'Telehealth (Doctor)', { summary: "Get my own doctor profile", auth: true });
+  path(paths, '/telehealth/doctor/appointments', 'get', 'Telehealth (Doctor)', { summary: 'List my appointments as a doctor', auth: true, query: ['page', 'limit'] });
+  path(paths, '/telehealth/appointments/{id}/complete', 'post', 'Telehealth (Doctor)', { summary: 'Complete a consultation (diagnosis + prescription)', auth: true, params: ['id'], body: true });
+  path(paths, '/telehealth/appointments', 'post', 'Telehealth', { summary: 'Book an appointment (returns a Cashfree payment session)', auth: true, body: true });
+  path(paths, '/telehealth/appointments/mine', 'get', 'Telehealth', { summary: 'List my appointments as a patient', auth: true, query: ['page', 'limit'] });
+  path(paths, '/telehealth/appointments/{id}/cancel', 'post', 'Telehealth', { summary: 'Cancel an appointment', auth: true, params: ['id'], body: true });
+  path(paths, '/telehealth/appointments/{id}/video-token', 'get', 'Telehealth', { summary: 'Get an Agora token to join the consultation room', auth: true, params: ['id'] });
+
+  // Blog
+  path(paths, '/blog', 'get', 'Blog', { summary: 'List published blog posts', query: ['page', 'limit', 'category'] });
+  path(paths, '/blog/slug/{slug}', 'get', 'Blog', { summary: 'Get a blog post with its comments', params: ['slug'] });
+  path(paths, '/blog/admin/all', 'get', 'Blog (Admin)', { summary: 'List all blog posts including drafts', auth: true, query: ['page', 'limit'] });
+  path(paths, '/blog', 'post', 'Blog (Admin)', { summary: 'Create a blog post', auth: true, body: true });
+  path(paths, '/blog/{id}', 'patch', 'Blog (Admin)', { summary: 'Update a blog post', auth: true, params: ['id'], body: true });
+  path(paths, '/blog/{id}', 'delete', 'Blog (Admin)', { summary: 'Delete a blog post', auth: true, params: ['id'] });
+  path(paths, '/blog/{id}/comments', 'post', 'Blog', { summary: 'Comment on a blog post', auth: true, params: ['id'], body: true });
+  path(paths, '/blog/comments/{commentId}/moderate', 'patch', 'Blog (Admin)', { summary: 'Approve/reject a comment', auth: true, params: ['commentId'], body: true });
 
   // Promotions
   path(paths, '/promotions/flash-sales/active', 'get', 'Promotions', { summary: 'List currently-active flash sales' });

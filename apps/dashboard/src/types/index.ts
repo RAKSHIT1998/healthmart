@@ -55,6 +55,17 @@ export interface Branch {
   id: string;
   name: string;
   code: string;
+  phone?: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  lat: number;
+  lng: number;
+  gstin?: string;
+  isMainBranch: boolean;
+  isActive: boolean;
+  createdAt: string;
 }
 
 export interface InventoryItem {

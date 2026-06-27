@@ -19,3 +19,4 @@ export * from './margSyncLog.repository';
 export * from './blog.repository';
 export * from './analytics.repository';
 export * from './promotions.repository';
+export * from './telehealth.repository';

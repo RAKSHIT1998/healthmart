@@ -4,13 +4,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   BadgePercent,
+  Building2,
   ClipboardList,
   FileText,
   Gauge,
   LayoutDashboard,
+  Newspaper,
   Package,
   RefreshCw,
   ScrollText,
+  Stethoscope,
   Truck,
   Users,
   Zap,
@@ -19,25 +22,35 @@ import { Role } from '@healthmart/shared';
 import { useAuthStore } from '@/store/auth-store';
 import { cn } from '@/lib/utils';
 
-interface NavItem {
+export interface NavItem {
   href: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   roles: Role[];
 }
 
-const NAV_ITEMS: NavItem[] = [
+/**
+ * Single source of truth for "what can each role see" in this app. The
+ * Employee Permission Matrix page (`/permissions`) renders this same array
+ * so it can never drift out of sync with the sidebar / actual route guards.
+ */
+export const NAV_ITEMS: NavItem[] = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard, roles: [Role.ADMIN, Role.MANAGER] },
+  { href: '/branches', label: 'Branches', icon: Building2, roles: [Role.ADMIN] },
   { href: '/medicines', label: 'Medicines', icon: Package, roles: [Role.ADMIN, Role.MANAGER, Role.INVENTORY_MANAGER] },
   { href: '/inventory', label: 'Inventory', icon: Gauge, roles: [Role.ADMIN, Role.MANAGER, Role.INVENTORY_MANAGER] },
   { href: '/orders', label: 'Orders', icon: ClipboardList, roles: [Role.ADMIN, Role.MANAGER, Role.PHARMACIST] },
   { href: '/prescriptions', label: 'Prescriptions', icon: FileText, roles: [Role.ADMIN, Role.MANAGER, Role.PHARMACIST] },
   { href: '/coupons', label: 'Coupons', icon: BadgePercent, roles: [Role.ADMIN, Role.MANAGER] },
   { href: '/promotions', label: 'Promotions', icon: Zap, roles: [Role.ADMIN, Role.MANAGER] },
+  { href: '/blog', label: 'Health Blog', icon: Newspaper, roles: [Role.ADMIN, Role.MANAGER] },
   { href: '/drivers', label: 'Drivers', icon: Truck, roles: [Role.ADMIN, Role.MANAGER] },
+  { href: '/doctors', label: 'Doctors', icon: Stethoscope, roles: [Role.ADMIN] },
   { href: '/deliveries', label: 'My Deliveries', icon: Truck, roles: [Role.DELIVERY_BOY] },
+  { href: '/my-appointments', label: 'My Appointments', icon: Stethoscope, roles: [Role.DOCTOR] },
   { href: '/marg', label: 'MARG Sync', icon: RefreshCw, roles: [Role.ADMIN, Role.MANAGER, Role.INVENTORY_MANAGER] },
   { href: '/users', label: 'Users', icon: Users, roles: [Role.ADMIN, Role.MANAGER] },
+  { href: '/permissions', label: 'Permissions', icon: ScrollText, roles: [Role.ADMIN] },
   { href: '/audit-logs', label: 'Audit Logs', icon: ScrollText, roles: [Role.ADMIN] },
 ];
 

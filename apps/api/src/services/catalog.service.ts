@@ -1,7 +1,9 @@
 import type {
+  CreateBranchInput,
   CreateCategoryInput,
   CreateManufacturerInput,
   CreateSupplierInput,
+  UpdateBranchInput,
   UpdateCategoryInput,
 } from '@healthmart/shared';
 import { branchRepository, categoryRepository, manufacturerRepository, supplierRepository } from '../repositories';
@@ -66,4 +68,44 @@ export async function createSupplier(input: CreateSupplierInput) {
 
 export async function listBranches() {
   return getOrSetCache('branches:all', CATALOG_CACHE_TTL_SECONDS, () => branchRepository.find({ isActive: true }));
+}
+
+export async function listBranchesForAdmin() {
+  return branchRepository.find({});
+}
+
+export async function createBranch(input: CreateBranchInput) {
+  const exists = await branchRepository.exists({ code: input.code.toUpperCase() });
+  if (exists) throw ApiError.conflict('A branch with this code already exists');
+
+  if (input.isMainBranch) {
+    await branchRepository.updateMany({ isMainBranch: true }, { $set: { isMainBranch: false } });
+  }
+
+  const branch = await branchRepository.create({ ...input, code: input.code.toUpperCase() } as never);
+  await invalidateCache('branches:*');
+  return branch;
+}
+
+export async function updateBranch(branchId: string, input: UpdateBranchInput) {
+  const branch = await branchRepository.findById(branchId);
+  if (!branch) throw ApiError.notFound('Branch not found');
+
+  if (input.isMainBranch) {
+    await branchRepository.updateMany({ _id: { $ne: branchId }, isMainBranch: true }, { $set: { isMainBranch: false } });
+  }
+
+  Object.assign(branch, input);
+  await branch.save();
+  await invalidateCache('branches:*');
+  return branch;
+}
+
+export async function deactivateBranch(branchId: string) {
+  const branch = await branchRepository.findById(branchId);
+  if (!branch) throw ApiError.notFound('Branch not found');
+  if (branch.isMainBranch) throw ApiError.badRequest('Cannot deactivate the main branch — set another branch as main first');
+  branch.isActive = false;
+  await branch.save();
+  await invalidateCache('branches:*');
 }

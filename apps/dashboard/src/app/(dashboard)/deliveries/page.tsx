@@ -1,13 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import { Navigation, RefreshCw } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Camera, Navigation, RefreshCw } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { SignaturePad } from '@/components/delivery/signature-pad';
 import { formatCurrency } from '@/lib/utils';
+import { uploadFile, dataUrlToBlob } from '@/lib/upload';
 import {
   useMyDeliveries,
   useResendDeliveryOtp,
@@ -15,17 +19,42 @@ import {
   useUpdateMyLocation,
   useVerifyDeliveryOtp,
 } from '@/hooks/use-deliveries';
+import type { AdminOrder } from '@/types';
+
+const LOCATION_THROTTLE_MS = 15_000;
 
 export default function DeliveriesPage() {
   const { data, isLoading } = useMyDeliveries();
   const toggleAvailability = useToggleAvailability();
   const updateLocation = useUpdateMyLocation();
-  const verifyOtp = useVerifyDeliveryOtp();
   const resendOtp = useResendDeliveryOtp();
-  const [otpInputs, setOtpInputs] = useState<Record<string, string>>({});
   const [isAvailable, setIsAvailable] = useState(true);
+  const [activeOrder, setActiveOrder] = useState<AdminOrder | null>(null);
+  const lastSentRef = useRef(0);
 
-  function shareLocation() {
+  const hasOutForDelivery = data?.items.some((o) => o.status === 'out_for_delivery') ?? false;
+
+  // Continuously reports position while a delivery is in progress — this is what feeds the
+  // customer's live map via the backend's Socket.IO broadcast.
+  useEffect(() => {
+    if (!hasOutForDelivery || !navigator.geolocation) return;
+
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const now = Date.now();
+        if (now - lastSentRef.current < LOCATION_THROTTLE_MS) return;
+        lastSentRef.current = now;
+        updateLocation.mutate({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      },
+      undefined,
+      { enableHighAccuracy: true, maximumAge: 10_000 },
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasOutForDelivery]);
+
+  function shareLocationNow() {
     navigator.geolocation?.getCurrentPosition((pos) => {
       updateLocation.mutate({ lat: pos.coords.latitude, lng: pos.coords.longitude });
     });
@@ -36,8 +65,13 @@ export default function DeliveriesPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">My Deliveries</h1>
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" onClick={shareLocation}>
-            <Navigation className="h-4 w-4" /> Share Location
+          {hasOutForDelivery && (
+            <span className="flex items-center gap-1 text-xs text-emerald-600">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" /> Sharing live location
+            </span>
+          )}
+          <Button variant="outline" size="sm" onClick={shareLocationNow}>
+            <Navigation className="h-4 w-4" /> Share Now
           </Button>
           <div className="flex items-center gap-2">
             <span className="text-sm">Available</span>
@@ -69,18 +103,8 @@ export default function DeliveriesPage() {
                 <p className="mt-1 text-xs text-muted-foreground">{order.paymentMethod === 'cod' ? 'Collect cash on delivery' : 'Paid online'}</p>
 
                 <div className="mt-3 flex gap-2">
-                  <Input
-                    placeholder="Delivery OTP"
-                    value={otpInputs[order.id] ?? ''}
-                    onChange={(e) => setOtpInputs({ ...otpInputs, [order.id]: e.target.value })}
-                    maxLength={6}
-                  />
-                  <Button
-                    size="sm"
-                    onClick={() => verifyOtp.mutate({ orderId: order.id, otp: otpInputs[order.id] ?? '' })}
-                    disabled={verifyOtp.isPending}
-                  >
-                    Confirm
+                  <Button size="sm" onClick={() => setActiveOrder(order)}>
+                    Mark Delivered
                   </Button>
                   <Button size="icon" variant="ghost" onClick={() => resendOtp.mutate(order.id)} title="Resend OTP">
                     <RefreshCw className="h-4 w-4" />
@@ -91,6 +115,98 @@ export default function DeliveriesPage() {
           ))}
         </div>
       )}
+
+      <DeliveryConfirmDialog order={activeOrder} onClose={() => setActiveOrder(null)} />
     </div>
+  );
+}
+
+function DeliveryConfirmDialog({ order, onClose }: { order: AdminOrder | null; onClose: () => void }) {
+  const verifyOtp = useVerifyDeliveryOtp();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [otp, setOtp] = useState('');
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  function reset() {
+    setOtp('');
+    setPhotoFile(null);
+    setPhotoPreview(null);
+    setSignatureDataUrl(null);
+  }
+
+  async function handleConfirm() {
+    if (!order || otp.length !== 6) return;
+    setUploading(true);
+    try {
+      const [proofOfDeliveryUrl, customerSignatureUrl] = await Promise.all([
+        photoFile ? uploadFile(photoFile, 'delivery-proof') : Promise.resolve(undefined),
+        signatureDataUrl ? uploadFile(dataUrlToBlob(signatureDataUrl), 'signatures') : Promise.resolve(undefined),
+      ]);
+
+      await verifyOtp.mutateAsync({ orderId: order.id, otp, proofOfDeliveryUrl, customerSignatureUrl });
+      reset();
+      onClose();
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <Dialog open={!!order} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Confirm Delivery {order && `— #${order.orderNumber}`}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <Label>Delivery OTP (from customer)</Label>
+            <Input value={otp} onChange={(e) => setOtp(e.target.value)} maxLength={6} placeholder="123456" />
+          </div>
+
+          <div>
+            <Label>Proof of Delivery Photo (optional)</Label>
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="mt-1 flex h-24 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed text-muted-foreground"
+            >
+              {photoPreview ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={photoPreview} alt="Proof" className="h-full object-contain" />
+              ) : (
+                <span className="flex items-center gap-2 text-sm">
+                  <Camera className="h-4 w-4" /> Capture photo
+                </span>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              hidden
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                setPhotoFile(file);
+                setPhotoPreview(URL.createObjectURL(file));
+              }}
+            />
+          </div>
+
+          <div>
+            <Label>Customer Signature (optional)</Label>
+            <SignaturePad onSave={setSignatureDataUrl} />
+            {signatureDataUrl && <p className="mt-1 text-xs text-emerald-600">Signature captured ✓</p>}
+          </div>
+
+          <Button className="w-full" onClick={handleConfirm} disabled={otp.length !== 6 || uploading || verifyOtp.isPending}>
+            {uploading ? 'Uploading...' : 'Confirm Delivery'}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
