@@ -3,7 +3,7 @@ import { OrderStatus, PaymentMethod, PaymentStatus } from '@healthmart/shared';
 import { toJSONPlugin } from './plugins/toJSON.plugin';
 
 export interface IBatchAllocation {
-  batchId: Types.ObjectId;
+  batchId?: Types.ObjectId;
   batchNumber: string;
   expiryDate: Date;
   quantity: number;
@@ -88,7 +88,10 @@ export interface IOrder extends Document {
 
 const batchAllocationSchema = new Schema<IBatchAllocation>(
   {
-    batchId: { type: Schema.Types.ObjectId, ref: 'Batch', required: true },
+    // Optional: planFifoAllocation() falls back to an untracked allocation (no batchId) when
+    // stock isn't covered by local Batch records yet (e.g. MARG-synced totals, or demo seed data
+    // that sets Inventory totals directly) — Inventory.totalQuantity remains the source of truth.
+    batchId: { type: Schema.Types.ObjectId, ref: 'Batch' },
     batchNumber: { type: String, required: true },
     expiryDate: { type: Date, required: true },
     quantity: { type: Number, required: true, min: 1 },

@@ -99,6 +99,30 @@ export interface InventoryMovement {
   createdAt: string;
 }
 
+export interface ReturnRequestItem {
+  medicineId: string;
+  name: string;
+  quantity: number;
+  sellingPrice: number;
+  gstPercentage: number;
+}
+
+export interface ReturnRequest {
+  id: string;
+  orderId: { id: string; orderNumber: string; paymentMethod: string } | string;
+  userId: { id: string; name: string; phone?: string } | string;
+  branchId: string;
+  items: ReturnRequestItem[];
+  reasonCategory: string;
+  reason?: string;
+  status: 'requested' | 'approved' | 'rejected' | 'refunded';
+  refundAmount: number;
+  refundMethod?: string;
+  rejectionReason?: string;
+  processedAt?: string;
+  createdAt: string;
+}
+
 export interface AdminOrder {
   id: string;
   orderNumber: string;

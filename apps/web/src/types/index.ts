@@ -167,6 +167,26 @@ export interface CheckoutResult {
   requiresPayment: boolean;
 }
 
+export interface ReturnRequestItem {
+  medicineId: string;
+  name: string;
+  quantity: number;
+  sellingPrice: number;
+}
+
+export interface ReturnRequest {
+  id: string;
+  orderId: { id: string; orderNumber: string } | string;
+  items: ReturnRequestItem[];
+  reasonCategory: string;
+  reason?: string;
+  status: 'requested' | 'approved' | 'rejected' | 'refunded';
+  refundAmount: number;
+  refundMethod?: string;
+  rejectionReason?: string;
+  createdAt: string;
+}
+
 export interface Wallet {
   id: string;
   balance: number;

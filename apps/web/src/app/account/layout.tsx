@@ -3,13 +3,14 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Bell, FileText, Gift, Heart, MapPin, Package, Stethoscope, User, Wallet } from 'lucide-react';
+import { Bell, FileText, Gift, Heart, MapPin, Package, RotateCcw, Stethoscope, User, Wallet } from 'lucide-react';
 import { useAuthStore } from '@/store/auth-store';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
   { href: '/account', label: 'Profile', icon: User },
   { href: '/account/orders', label: 'Orders', icon: Package },
+  { href: '/account/returns', label: 'Returns', icon: RotateCcw },
   { href: '/account/appointments', label: 'Doctor Appointments', icon: Stethoscope },
   { href: '/account/addresses', label: 'Addresses', icon: MapPin },
   { href: '/account/wallet', label: 'Wallet', icon: Wallet },

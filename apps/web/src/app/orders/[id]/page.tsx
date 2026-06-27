@@ -8,9 +8,24 @@ import { Check, Clock, Package, Phone, Truck, XCircle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatCurrency, formatDate, cn } from '@/lib/utils';
 import { useCancelOrder, useOrder } from '@/hooks/use-orders';
 import { useOrderTracking } from '@/hooks/use-order-tracking';
+import { useCreateReturn } from '@/hooks/use-returns';
+
+const RETURN_WINDOW_DAYS = 7;
+
+const REASON_OPTIONS = [
+  { value: 'damaged', label: 'Item was damaged' },
+  { value: 'wrong_item', label: 'Received wrong item' },
+  { value: 'expired', label: 'Item was expired' },
+  { value: 'quality_issue', label: 'Quality issue' },
+  { value: 'no_longer_needed', label: 'No longer needed' },
+  { value: 'other', label: 'Other' },
+];
 
 const LiveMap = dynamic(() => import('@/components/order/live-map').then((m) => m.LiveMap), {
   ssr: false,
@@ -29,11 +44,43 @@ export default function OrderTrackingPage() {
   const params = useParams<{ id: string }>();
   const { data: order, isLoading } = useOrder(params.id);
   const cancelOrder = useCancelOrder();
+  const createReturn = useCreateReturn();
   const [reason] = useState('Changed my mind');
+  const [returnOpen, setReturnOpen] = useState(false);
+  const [returnReasonCategory, setReturnReasonCategory] = useState('no_longer_needed');
+  const [returnNote, setReturnNote] = useState('');
+  const [returnQuantities, setReturnQuantities] = useState<Record<string, number>>({});
   const { driverLocation, liveStatus, driverInfo, connected } = useOrderTracking(order?.id);
 
   if (isLoading) return <div className="container py-20 text-center text-muted-foreground">Loading order...</div>;
   if (!order) return <div className="container py-20 text-center text-muted-foreground">Order not found</div>;
+
+  const orderId = order.id;
+  const returnableItems = order.items.filter((item) => !item.prescriptionRequired);
+  const withinReturnWindow =
+    order.status === 'delivered' &&
+    !!order.deliveredAt &&
+    Date.now() - new Date(order.deliveredAt).getTime() <= RETURN_WINDOW_DAYS * 24 * 60 * 60 * 1000;
+  const canRequestReturn = withinReturnWindow && returnableItems.length > 0;
+
+  function openReturnDialog() {
+    setReturnQuantities(Object.fromEntries(returnableItems.map((item) => [item.medicineId, 0])));
+    setReturnNote('');
+    setReturnReasonCategory('no_longer_needed');
+    setReturnOpen(true);
+  }
+
+  function handleSubmitReturn() {
+    const items = Object.entries(returnQuantities)
+      .filter(([, qty]) => qty > 0)
+      .map(([medicineId, quantity]) => ({ medicineId, quantity }));
+    if (items.length === 0) return;
+
+    createReturn.mutate(
+      { orderId, items, reasonCategory: returnReasonCategory, reason: returnNote || undefined },
+      { onSuccess: () => setReturnOpen(false) },
+    );
+  }
 
   const effectiveStatus = liveStatus ?? order.status;
   const isCancelled = effectiveStatus === 'cancelled' || effectiveStatus === 'rejected';
@@ -177,7 +224,70 @@ export default function OrderTrackingPage() {
             Cancel Order
           </Button>
         )}
+        {canRequestReturn && (
+          <Button variant="outline" onClick={openReturnDialog}>
+            Request Return
+          </Button>
+        )}
       </div>
+
+      <Dialog open={returnOpen} onOpenChange={setReturnOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Request a Return</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-3">
+            <p className="text-xs text-muted-foreground">
+              Select the quantity to return for each item. Prescription medicines can&apos;t be returned once
+              delivered.
+            </p>
+            {returnableItems.map((item) => (
+              <div key={item.medicineId} className="flex items-center justify-between gap-3 rounded-lg border p-3">
+                <div>
+                  <p className="text-sm font-medium">{item.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatCurrency(item.sellingPrice)} each · ordered {item.quantity}
+                  </p>
+                </div>
+                <Select
+                  value={String(returnQuantities[item.medicineId] ?? 0)}
+                  onValueChange={(v) => setReturnQuantities((q) => ({ ...q, [item.medicineId]: Number(v) }))}
+                >
+                  <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: item.quantity + 1 }, (_, i) => (
+                      <SelectItem key={i} value={String(i)}>{i}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            ))}
+            <div>
+              <Label>Reason</Label>
+              <Select value={returnReasonCategory} onValueChange={setReturnReasonCategory}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {REASON_OPTIONS.map((r) => (
+                    <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Additional details (optional)</Label>
+              <textarea
+                className="w-full rounded-lg border border-input bg-background p-2 text-sm"
+                rows={2}
+                value={returnNote}
+                onChange={(e) => setReturnNote(e.target.value)}
+              />
+            </div>
+            <Button onClick={handleSubmitReturn} disabled={createReturn.isPending}>
+              Submit Return Request
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
