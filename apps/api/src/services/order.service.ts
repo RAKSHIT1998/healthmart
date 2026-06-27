@@ -310,6 +310,8 @@ export async function updateOrderStatus(
   order.statusHistory.push({ status: newStatus, changedAt: new Date(), changedBy: changedBy as never, reason });
   await order.save();
 
+  emitOrderStatus(String(order._id), newStatus);
+
   if (newStatus === OrderStatus.DELIVERED) {
     void rewardReferralOnFirstDelivery(String(order.userId), String(order._id));
   }
