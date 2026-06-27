@@ -3,13 +3,23 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { api, apiFetchWithMeta, ApiClientError } from '@/lib/api';
-import type { Batch, InventoryItem } from '@/types';
+import type { Batch, InventoryItem, InventoryMovement } from '@/types';
 
 export function useAllInventory(page: number, branchId?: string) {
   return useQuery({
     queryKey: ['all-inventory', page, branchId],
     queryFn: () =>
       apiFetchWithMeta<InventoryItem>(`/inventory?page=${page}&limit=20${branchId ? `&branchId=${branchId}` : ''}`),
+  });
+}
+
+export function useInventoryMovements(page: number, branchId?: string) {
+  return useQuery({
+    queryKey: ['inventory-movements', page, branchId],
+    queryFn: () =>
+      apiFetchWithMeta<InventoryMovement>(
+        `/inventory/movements?page=${page}&limit=20${branchId ? `&branchId=${branchId}` : ''}`,
+      ),
   });
 }
 

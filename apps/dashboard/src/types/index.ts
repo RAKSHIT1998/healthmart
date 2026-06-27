@@ -85,6 +85,20 @@ export interface Batch {
   quantityRemaining: number;
 }
 
+export interface InventoryMovement {
+  id: string;
+  medicineId: { id: string; name: string; slug: string } | string;
+  branchId: { id: string; name: string; code: string } | string;
+  batchId?: string;
+  type: string;
+  quantity: number;
+  referenceType?: string;
+  referenceId?: string;
+  createdBy?: { id: string; name: string; email?: string; role: string } | string;
+  notes?: string;
+  createdAt: string;
+}
+
 export interface AdminOrder {
   id: string;
   orderNumber: string;

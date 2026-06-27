@@ -113,6 +113,30 @@ export async function apiUpload<T>(path: string, formData: FormData): Promise<T>
   return json.data as T;
 }
 
+/** Fetches a CSV (or other file) response and triggers a browser download — used by the Reports page's "Download CSV" buttons. */
+export async function apiDownload(path: string, filename: string): Promise<void> {
+  const { accessToken } = useAuthStore.getState();
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+  });
+
+  if (!response.ok) {
+    const json = await response.json().catch(() => null);
+    throw new ApiClientError(json?.message ?? 'Download failed. Please try again.', response.status, json?.code);
+  }
+
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 export const api = {
   get: <T>(path: string, options?: RequestOptions) => apiFetch<T>(path, { ...options, method: 'GET' }),
   post: <T>(path: string, body?: unknown, options?: RequestOptions) => apiFetch<T>(path, { ...options, method: 'POST', body }),

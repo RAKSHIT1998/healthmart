@@ -179,6 +179,33 @@ export async function listAll(branchId: string | undefined, page: number, limit:
   return inventoryRepository.findAll(branchId, page, limit);
 }
 
+export interface MovementFilters {
+  medicineId?: string;
+  branchId?: string;
+  type?: string;
+}
+
+export async function listMovements(filters: MovementFilters, page: number, limit: number) {
+  const filter: Record<string, unknown> = {};
+  if (filters.medicineId) filter.medicineId = filters.medicineId;
+  if (filters.branchId) filter.branchId = filters.branchId;
+  if (filters.type) filter.type = filters.type;
+
+  const skip = (page - 1) * limit;
+  const [items, total] = await Promise.all([
+    InventoryMovementModel.find(filter)
+      .populate('medicineId', 'name slug')
+      .populate('branchId', 'name code')
+      .populate('createdBy', 'name email role')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+    InventoryMovementModel.countDocuments(filter),
+  ]);
+
+  return { items, total };
+}
+
 export async function getLowStock(branchId?: string) {
   return inventoryRepository.findLowStock(branchId);
 }

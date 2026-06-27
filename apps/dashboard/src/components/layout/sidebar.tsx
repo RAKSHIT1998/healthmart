@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   BadgePercent,
+  BarChart3,
   Building2,
   ClipboardList,
   FileText,
@@ -49,6 +50,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/deliveries', label: 'My Deliveries', icon: Truck, roles: [Role.DELIVERY_BOY] },
   { href: '/my-appointments', label: 'My Appointments', icon: Stethoscope, roles: [Role.DOCTOR] },
   { href: '/marg', label: 'MARG Sync', icon: RefreshCw, roles: [Role.ADMIN, Role.MANAGER, Role.INVENTORY_MANAGER] },
+  { href: '/reports', label: 'Reports', icon: BarChart3, roles: [Role.ADMIN, Role.MANAGER] },
   { href: '/users', label: 'Users', icon: Users, roles: [Role.ADMIN, Role.MANAGER] },
   { href: '/permissions', label: 'Permissions', icon: ScrollText, roles: [Role.ADMIN] },
   { href: '/audit-logs', label: 'Audit Logs', icon: ScrollText, roles: [Role.ADMIN] },

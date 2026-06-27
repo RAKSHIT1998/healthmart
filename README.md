@@ -5,7 +5,7 @@
 A production-grade pharmacy e-commerce platform: customer storefront, internal operations
 dashboard, REST API, and a MARG ERP integration layer. Built as a TypeScript monorepo.
 
-## Project status: Phase 1 + Phase 2a + Phase 2b
+## Project status: Phase 1 + Phase 2a + Phase 2b + Phase 2c
 
 This is a genuinely large platform (storefront + 5 internal role panels + ERP sync + telehealth +
 live GPS tracking + multi-pharmacy support, etc.) — too large to build to full production maturity
@@ -26,6 +26,15 @@ photo/signature proof-of-delivery; multi-branch admin (branch CRUD, an employee 
 derived directly from the route guards, and CLI backup/restore tooling); a full health blog CMS
 (authoring UI + public pages + comments, SEO'd); and doctor telehealth (appointment booking with
 Cashfree payment, Agora video/audio consultation rooms, and post-consult prescription PDFs).
+
+**Phase 2c** rounds out day-to-day operability: an interactive Leaflet/OpenStreetMap location
+picker (click-to-pin + search, no Google Maps key required) on both the customer address form and
+the admin branch form, replacing blind "use my current GPS position" capture; a unified "Add
+Product" flow that creates a medicine and its opening stock in one step, plus a paginated "All
+Stock" view and a stock movement audit trail across all branches; and a working MARG ERP "plugin"
+— admins can upload a Marg CSV/XLSX export directly from the dashboard and have it parsed and
+applied immediately, independent of the configured sync mode — alongside a new Reports page
+(sales, GST, stock, expiry — viewable or CSV-exportable).
 
 **Explicitly out of scope still** (see [the plan](#roadmap--phase-3) below): a load-testing and
 index-tuning pass validated against real traffic, and the deeper analytics (heatmaps, retention
@@ -324,11 +333,17 @@ Tracked as explicitly deferred, not forgotten:
 - CDN tuning
 - Multi-stop delivery route optimization (today's ETA is single-destination distance/duration, not
   a multi-order routing solver)
+- Order returns/refunds workflow (cancellation pre-fulfillment is supported; a post-delivery
+  return → refund-to-wallet/gateway flow is not yet built, backend or frontend)
+- Customer-facing notification preferences (per-channel opt-in/out for SMS/email/push) — no model
+  field or UI yet, beyond the transactional sends already wired into the order/appointment flows
 
 Shipped in Phase 2a (automated test suite, Redis caching layer, WhatsApp notifications, referral
-program, gift cards, flash-sale scheduler) and Phase 2b (live driver GPS tracking + proof of
+program, gift cards, flash-sale scheduler), Phase 2b (live driver GPS tracking + proof of
 delivery, multi-branch admin + permission matrix + backup/restore, full blog CMS, doctor
-telehealth with video/audio + payments + prescriptions) — no longer on this list.
+telehealth with video/audio + payments + prescriptions), and Phase 2c (location picker UI,
+unified product+stock creation, inventory movement audit trail, MARG CSV upload UI, GST/sales/
+stock/expiry reports) — no longer on this list.
 
 ## License
 

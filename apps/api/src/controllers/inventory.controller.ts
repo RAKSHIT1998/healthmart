@@ -11,6 +11,20 @@ export const listAll = asyncHandler(async (req: Request, res: Response) => {
   sendPaginated(res, items, buildPaginationMeta(total, page, limit));
 });
 
+export const listMovements = asyncHandler(async (req: Request, res: Response) => {
+  const { page, limit } = req.query as unknown as PaginationQuery;
+  const { items, total } = await inventoryService.listMovements(
+    {
+      medicineId: req.query.medicineId as string | undefined,
+      branchId: req.query.branchId as string | undefined,
+      type: req.query.type as string | undefined,
+    },
+    page,
+    limit,
+  );
+  sendPaginated(res, items, buildPaginationMeta(total, page, limit));
+});
+
 export const receivePurchase = asyncHandler(async (req: Request, res: Response) => {
   const batch = await inventoryService.receivePurchase({
     ...req.body,
