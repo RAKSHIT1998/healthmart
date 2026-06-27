@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Plus, Star } from 'lucide-react';
+import { Plus, Star, Zap } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/utils';
 import { useAddToCart } from '@/hooks/use-cart';
+import { useActiveFlashSales } from '@/hooks/use-promotions';
 import { useAuthStore } from '@/store/auth-store';
 import { useRouter } from 'next/navigation';
 import type { Medicine } from '@/types';
@@ -16,7 +17,14 @@ export function ProductCard({ medicine }: { medicine: Medicine }) {
   const addToCart = useAddToCart();
   const accessToken = useAuthStore((s) => s.accessToken);
   const router = useRouter();
-  const discount = medicine.discountPercentage ?? Math.round(((medicine.mrp - medicine.sellingPrice) / medicine.mrp) * 100);
+  const { data: flashSales } = useActiveFlashSales();
+
+  const flashPrice = flashSales
+    ?.flatMap((sale) => sale.items)
+    .find((item) => item.medicineId === medicine.id)?.flashPrice;
+
+  const effectivePrice = flashPrice ?? medicine.sellingPrice;
+  const discount = Math.round(((medicine.mrp - effectivePrice) / medicine.mrp) * 100);
 
   function handleAdd(e: React.MouseEvent) {
     e.preventDefault();
@@ -41,10 +49,16 @@ export function ProductCard({ medicine }: { medicine: Medicine }) {
         ) : (
           <div className="flex h-full items-center justify-center text-xs text-muted-foreground">No image</div>
         )}
-        {discount > 0 && (
-          <Badge variant="success" className="absolute left-2 top-2">
-            {discount}% OFF
+        {flashPrice !== undefined ? (
+          <Badge variant="destructive" className="absolute left-2 top-2 gap-1">
+            <Zap className="h-3 w-3" /> FLASH SALE
           </Badge>
+        ) : (
+          discount > 0 && (
+            <Badge variant="success" className="absolute left-2 top-2">
+              {discount}% OFF
+            </Badge>
+          )
         )}
         {medicine.prescriptionRequired && (
           <Badge variant="warning" className="absolute right-2 top-2">
@@ -64,8 +78,8 @@ export function ProductCard({ medicine }: { medicine: Medicine }) {
           </div>
         )}
         <div className="mt-1 flex items-center gap-2">
-          <span className="text-base font-semibold">{formatCurrency(medicine.sellingPrice)}</span>
-          {medicine.mrp > medicine.sellingPrice && (
+          <span className="text-base font-semibold">{formatCurrency(effectivePrice)}</span>
+          {medicine.mrp > effectivePrice && (
             <span className="text-xs text-muted-foreground line-through">{formatCurrency(medicine.mrp)}</span>
           )}
         </div>

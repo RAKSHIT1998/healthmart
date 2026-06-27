@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Bell, FileText, Heart, MapPin, Package, User, Wallet } from 'lucide-react';
+import { Bell, FileText, Gift, Heart, MapPin, Package, User, Wallet } from 'lucide-react';
 import { useAuthStore } from '@/store/auth-store';
 import { cn } from '@/lib/utils';
 
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: '/account/orders', label: 'Orders', icon: Package },
   { href: '/account/addresses', label: 'Addresses', icon: MapPin },
   { href: '/account/wallet', label: 'Wallet', icon: Wallet },
+  { href: '/account/referrals', label: 'Refer & Earn', icon: Gift },
   { href: '/account/wishlist', label: 'Wishlist', icon: Heart },
   { href: '/account/prescriptions', label: 'Prescriptions', icon: FileText },
   { href: '/account/notifications', label: 'Notifications', icon: Bell },

@@ -30,6 +30,7 @@ import { recordCouponRedemption } from './coupon.service';
 import { creditWallet, debitWallet, getWallet } from './wallet.service';
 import { notifyUser } from './notification.service';
 import { generateInvoiceForOrder } from './invoice.service';
+import { rewardReferralOnFirstDelivery } from './promotions.service';
 import { createCashfreeOrder, initiateCashfreeRefund } from '../integrations/cashfree';
 import { getMargAdapter } from '../integrations/marg/margAdapterFactory';
 import { env } from '../config/env';
@@ -308,6 +309,10 @@ export async function updateOrderStatus(
   order.status = newStatus;
   order.statusHistory.push({ status: newStatus, changedAt: new Date(), changedBy: changedBy as never, reason });
   await order.save();
+
+  if (newStatus === OrderStatus.DELIVERED) {
+    void rewardReferralOnFirstDelivery(String(order.userId), String(order._id));
+  }
 
   await notifyUser({
     userId: String(order.userId),

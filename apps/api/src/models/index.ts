@@ -27,3 +27,6 @@ export * from './driver.model';
 export * from './auditLog.model';
 export * from './margSyncLog.model';
 export * from './analyticsSnapshot.model';
+export * from './referralReward.model';
+export * from './giftCard.model';
+export * from './flashSale.model';

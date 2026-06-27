@@ -20,6 +20,7 @@ import margRoutes from './marg.routes';
 import auditRoutes from './audit.routes';
 import reportRoutes from './report.routes';
 import uploadRoutes from './upload.routes';
+import promotionsRoutes from './promotions.routes';
 
 const router = Router();
 
@@ -44,5 +45,6 @@ router.use('/marg', margRoutes);
 router.use('/audit-logs', auditRoutes);
 router.use('/reports', reportRoutes);
 router.use('/uploads', uploadRoutes);
+router.use('/promotions', promotionsRoutes);
 
 export default router;

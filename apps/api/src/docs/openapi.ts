@@ -130,6 +130,16 @@ function buildPaths() {
   path(paths, '/coupons/{id}', 'patch', 'Coupons', { summary: 'Update coupon', auth: true, params: ['id'], body: true });
   path(paths, '/coupons/{id}', 'delete', 'Coupons', { summary: 'Deactivate coupon', auth: true, params: ['id'] });
 
+  // Promotions
+  path(paths, '/promotions/flash-sales/active', 'get', 'Promotions', { summary: 'List currently-active flash sales' });
+  path(paths, '/promotions/referrals/my-code', 'get', 'Promotions', { summary: 'Get (or generate) my referral code', auth: true });
+  path(paths, '/promotions/referrals/apply', 'post', 'Promotions', { summary: 'Apply a referral code to my account', auth: true, body: true });
+  path(paths, '/promotions/gift-cards/redeem', 'post', 'Promotions', { summary: 'Redeem a gift card to my wallet', auth: true, body: true });
+  path(paths, '/promotions/gift-cards/issue', 'post', 'Promotions (Admin)', { summary: 'Issue a gift card', auth: true, body: true });
+  path(paths, '/promotions/flash-sales', 'get', 'Promotions (Admin)', { summary: 'List all flash sales', auth: true });
+  path(paths, '/promotions/flash-sales', 'post', 'Promotions (Admin)', { summary: 'Create a flash sale', auth: true, body: true });
+  path(paths, '/promotions/flash-sales/{id}', 'patch', 'Promotions (Admin)', { summary: 'Update a flash sale', auth: true, params: ['id'], body: true });
+
   // Wallet
   path(paths, '/wallet', 'get', 'Wallet', { summary: 'Get my wallet balance', auth: true });
   path(paths, '/wallet/transactions', 'get', 'Wallet', { summary: 'List my wallet transactions', auth: true, query: ['page', 'limit'] });

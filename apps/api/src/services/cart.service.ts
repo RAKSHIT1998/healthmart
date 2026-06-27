@@ -1,5 +1,5 @@
 import { CHECKOUT_CONFIG, type AddCartItemInput, type UpdateCartItemInput } from '@healthmart/shared';
-import { cartRepository, medicineRepository } from '../repositories';
+import { cartRepository, flashSaleRepository, medicineRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { validateAndPriceCoupon } from './coupon.service';
 import type { ICart, ICartItem, IMedicine } from '../models';
@@ -42,8 +42,21 @@ function resolveItemPrice(medicine: IMedicine, variantLabel?: string) {
 /** Single source of truth for cart pricing — used both for the cart view and re-validated again at checkout. */
 export async function computeCartTotals(cart: ICart, userId: string): Promise<CartTotals> {
   const medicineIds = cart.items.map((item) => item.medicineId);
-  const medicines = await medicineRepository.find({ _id: { $in: medicineIds } });
+  const [medicines, activeFlashSales] = await Promise.all([
+    medicineRepository.find({ _id: { $in: medicineIds } }),
+    flashSaleRepository.findActiveNow(),
+  ]);
   const medicineMap = new Map(medicines.map((m) => [String(m._id), m]));
+
+  // Flash-sale price overrides the catalog price for the base variant only —
+  // this is the one place that actually decides what a customer is charged,
+  // so it must be the same lookup the storefront's promo badges read from.
+  const flashPriceMap = new Map<string, number>();
+  for (const sale of activeFlashSales) {
+    for (const saleItem of sale.items) {
+      flashPriceMap.set(String(saleItem.medicineId), saleItem.flashPrice);
+    }
+  }
 
   const pricedItems: PricedCartItem[] = [];
   let subtotal = 0;
@@ -53,7 +66,9 @@ export async function computeCartTotals(cart: ICart, userId: string): Promise<Ca
     const medicine = medicineMap.get(String(item.medicineId));
     if (!medicine || !medicine.isActive) continue;
 
-    const { mrp, sellingPrice } = resolveItemPrice(medicine, item.variantLabel);
+    const { mrp, sellingPrice: basePrice } = resolveItemPrice(medicine, item.variantLabel);
+    const flashPrice = item.variantLabel ? undefined : flashPriceMap.get(String(medicine._id));
+    const sellingPrice = flashPrice ?? basePrice;
     const lineTotal = sellingPrice * item.quantity;
     subtotal += lineTotal;
     gstAmount += (lineTotal * medicine.gstPercentage) / (100 + medicine.gstPercentage);
