@@ -2,6 +2,9 @@ import { OrderStatus, PaymentStatus } from '@healthmart/shared';
 import { analyticsRepository, inventoryRepository, medicineRepository, orderRepository } from '../repositories';
 import { OrderModel, UserModel } from '../models';
 import * as inventoryService from './inventory.service';
+import { getOrSetCache } from '../utils/cache';
+
+const DASHBOARD_CACHE_TTL_SECONDS = 60;
 
 function startOfDay(date: Date): Date {
   const d = new Date(date);
@@ -14,34 +17,36 @@ function startOfMonth(date: Date): Date {
 }
 
 export async function getDashboardMetrics(branchId?: string) {
-  const now = new Date();
-  const todayStart = startOfDay(now);
-  const monthStart = startOfMonth(now);
+  return getOrSetCache(`dashboard:${branchId ?? 'all'}`, DASHBOARD_CACHE_TTL_SECONDS, async () => {
+    const now = new Date();
+    const todayStart = startOfDay(now);
+    const monthStart = startOfMonth(now);
 
-  const [today, month, totalCustomers, lowStock, expiringSoon, inventoryValue, cancelledToday] = await Promise.all([
-    analyticsRepository.getRevenueBetween(branchId, todayStart, now),
-    analyticsRepository.getRevenueBetween(branchId, monthStart, now),
-    UserModel.countDocuments({ role: 'customer' }),
-    inventoryService.getLowStock(branchId),
-    inventoryService.getExpiringSoon(branchId),
-    inventoryService.getInventoryValue(branchId),
-    orderRepository.countByStatusInRange(OrderStatus.CANCELLED, todayStart, now),
-  ]);
+    const [today, month, totalCustomers, lowStock, expiringSoon, inventoryValue, cancelledToday] = await Promise.all([
+      analyticsRepository.getRevenueBetween(branchId, todayStart, now),
+      analyticsRepository.getRevenueBetween(branchId, monthStart, now),
+      UserModel.countDocuments({ role: 'customer' }),
+      inventoryService.getLowStock(branchId),
+      inventoryService.getExpiringSoon(branchId),
+      inventoryService.getInventoryValue(branchId),
+      orderRepository.countByStatusInRange(OrderStatus.CANCELLED, todayStart, now),
+    ]);
 
-  const averageOrderValue = today.orders > 0 ? today.revenue / today.orders : 0;
+    const averageOrderValue = today.orders > 0 ? today.revenue / today.orders : 0;
 
-  return {
-    todaySales: Math.round(today.revenue * 100) / 100,
-    todayOrders: today.orders,
-    monthlySales: Math.round(month.revenue * 100) / 100,
-    monthlyOrders: month.orders,
-    totalCustomers,
-    cancelledOrdersToday: cancelledToday,
-    averageOrderValue: Math.round(averageOrderValue * 100) / 100,
-    inventoryValue: Math.round(inventoryValue * 100) / 100,
-    lowStockCount: lowStock.length,
-    expiringSoonCount: expiringSoon.length,
-  };
+    return {
+      todaySales: Math.round(today.revenue * 100) / 100,
+      todayOrders: today.orders,
+      monthlySales: Math.round(month.revenue * 100) / 100,
+      monthlyOrders: month.orders,
+      totalCustomers,
+      cancelledOrdersToday: cancelledToday,
+      averageOrderValue: Math.round(averageOrderValue * 100) / 100,
+      inventoryValue: Math.round(inventoryValue * 100) / 100,
+      lowStockCount: lowStock.length,
+      expiringSoonCount: expiringSoon.length,
+    };
+  });
 }
 
 export async function getTopMedicines(limit = 10) {

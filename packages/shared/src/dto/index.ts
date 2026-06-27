@@ -13,3 +13,4 @@ export * from './wallet.dto';
 export * from './driver.dto';
 export * from './inventory.dto';
 export * from './marg.dto';
+export * from './promotions.dto';

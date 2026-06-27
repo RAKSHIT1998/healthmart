@@ -25,6 +25,7 @@ export enum WalletTransactionReason {
   ORDER_PAYMENT = 'order_payment',
   ADMIN_ADJUSTMENT = 'admin_adjustment',
   REFERRAL = 'referral',
+  GIFT_CARD = 'gift_card',
 }
 
 export enum AuditAction {

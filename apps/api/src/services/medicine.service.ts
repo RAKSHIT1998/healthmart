@@ -3,9 +3,16 @@ import { branchRepository, medicineRepository, reviewRepository } from '../repos
 import { ApiError } from '../utils/ApiError';
 import { slugify } from '../utils/slugify';
 import { inventoryRepository } from '../repositories/inventory.repository';
+import { getOrSetCache, invalidateCache } from '../utils/cache';
+
+const SEARCH_CACHE_TTL_SECONDS = 45;
+const DETAIL_CACHE_TTL_SECONDS = 300;
 
 export async function searchMedicines(query: MedicineSearchQuery) {
-  const result = await medicineRepository.search(query);
+  // Cache the catalog-metadata search (name/price/category match) — never the
+  // live stock filter below, so "in stock" results can't go stale.
+  const cacheKey = `medicine:search:${JSON.stringify(query)}`;
+  const result = await getOrSetCache(cacheKey, SEARCH_CACHE_TTL_SECONDS, () => medicineRepository.search(query));
 
   if (!query.inStockOnly) return result;
 
@@ -21,8 +28,11 @@ export async function searchMedicines(query: MedicineSearchQuery) {
 }
 
 export async function getMedicineBySlug(slug: string) {
-  const medicine = await medicineRepository.findBySlug(slug);
-  if (!medicine) throw ApiError.notFound('Medicine not found');
+  const medicine = await getOrSetCache(`medicine:slug:${slug}`, DETAIL_CACHE_TTL_SECONDS, async () => {
+    const found = await medicineRepository.findBySlug(slug);
+    if (!found) throw ApiError.notFound('Medicine not found');
+    return found;
+  });
 
   const [related, ratingAgg] = await Promise.all([
     medicineRepository.findRelated(String(medicine._id), String(medicine.categoryId)),
@@ -38,11 +48,17 @@ export async function getMedicineBySlug(slug: string) {
   return { medicine, related, rating: ratingAgg, availability };
 }
 
+async function invalidateMedicineCaches(): Promise<void> {
+  await Promise.all([invalidateCache('medicine:search:*'), invalidateCache('medicine:slug:*')]);
+}
+
 export async function createMedicine(input: CreateMedicineInput) {
   const slug = input.slug ?? slugify(input.name);
   const exists = await medicineRepository.exists({ slug });
   if (exists) throw ApiError.conflict('A medicine with this slug already exists');
-  return medicineRepository.create({ ...input, slug } as never);
+  const medicine = await medicineRepository.create({ ...input, slug } as never);
+  await invalidateMedicineCaches();
+  return medicine;
 }
 
 export async function updateMedicine(medicineId: string, input: UpdateMedicineInput) {
@@ -50,6 +66,7 @@ export async function updateMedicine(medicineId: string, input: UpdateMedicineIn
   if (!medicine) throw ApiError.notFound('Medicine not found');
   Object.assign(medicine, input);
   await medicine.save();
+  await invalidateMedicineCaches();
   return medicine;
 }
 
@@ -58,6 +75,7 @@ export async function deactivateMedicine(medicineId: string) {
   if (!medicine) throw ApiError.notFound('Medicine not found');
   medicine.isActive = false;
   await medicine.save();
+  await invalidateMedicineCaches();
 }
 
 export async function getMedicineById(medicineId: string) {

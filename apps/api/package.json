@@ -10,7 +10,9 @@
     "start": "node dist/server.js",
     "lint": "eslint \"src/**/*.ts\"",
     "seed": "tsx src/scripts/seed.ts",
-    "marg:sync": "tsx src/scripts/run-marg-sync.ts"
+    "marg:sync": "tsx src/scripts/run-marg-sync.ts",
+    "test": "jest --runInBand",
+    "test:watch": "jest --runInBand --watch"
   },
   "dependencies": {
     "@healthmart/shared": "*",
@@ -29,8 +31,9 @@
     "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.0",
+    "ioredis": "^5.4.1",
     "morgan": "^1.10.0",
-    "multer": "^1.4.5-lts.1",
+    "multer": "^2.0.0",
     "node-cron": "^3.0.3",
     "pdf-lib": "^1.17.1",
     "pino": "^9.5.0",
@@ -54,8 +57,14 @@
     "@types/multer": "^1.4.12",
     "@types/node": "^22.9.0",
     "@types/node-cron": "^3.0.11",
+    "@types/jest": "^29.5.14",
+    "@types/supertest": "^6.0.2",
     "@types/swagger-ui-express": "^4.1.6",
+    "jest": "^29.7.0",
+    "mongodb-memory-server": "^10.1.2",
     "pino-pretty": "^13.0.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   }

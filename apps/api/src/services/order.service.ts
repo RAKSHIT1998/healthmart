@@ -203,7 +203,7 @@ export async function confirmOrderPlacement(orderId: string): Promise<IOrder> {
     type: NotificationType.ORDER_UPDATE,
     title: 'Order placed successfully',
     message: `Your order ${order.orderNumber} has been placed and will be delivered soon.`,
-    channels: [NotificationChannel.IN_APP, NotificationChannel.SMS, NotificationChannel.PUSH],
+    channels: [NotificationChannel.IN_APP, NotificationChannel.SMS, NotificationChannel.PUSH, NotificationChannel.WHATSAPP],
   });
 
   return order;
@@ -314,7 +314,7 @@ export async function updateOrderStatus(
     type: NotificationType.ORDER_UPDATE,
     title: `Order ${newStatus.replace(/_/g, ' ')}`,
     message: `Your order ${order.orderNumber} is now "${newStatus.replace(/_/g, ' ')}".`,
-    channels: [NotificationChannel.IN_APP, NotificationChannel.PUSH],
+    channels: [NotificationChannel.IN_APP, NotificationChannel.PUSH, NotificationChannel.WHATSAPP],
   });
 
   return order;

@@ -7,16 +7,23 @@ import type {
 import { branchRepository, categoryRepository, manufacturerRepository, supplierRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { slugify } from '../utils/slugify';
+import { getOrSetCache, invalidateCache } from '../utils/cache';
+
+const CATALOG_CACHE_TTL_SECONDS = 600;
 
 export async function listCategories(group?: string) {
-  return categoryRepository.find({ isActive: true, ...(group ? { group } : {}) });
+  return getOrSetCache(`categories:${group ?? 'all'}`, CATALOG_CACHE_TTL_SECONDS, () =>
+    categoryRepository.find({ isActive: true, ...(group ? { group } : {}) }),
+  );
 }
 
 export async function createCategory(input: CreateCategoryInput) {
   const slug = input.slug ?? slugify(input.name);
   const exists = await categoryRepository.exists({ slug });
   if (exists) throw ApiError.conflict('A category with this slug already exists');
-  return categoryRepository.create({ ...input, slug } as never);
+  const category = await categoryRepository.create({ ...input, slug } as never);
+  await invalidateCache('categories:*');
+  return category;
 }
 
 export async function updateCategory(categoryId: string, input: UpdateCategoryInput) {
@@ -24,6 +31,7 @@ export async function updateCategory(categoryId: string, input: UpdateCategoryIn
   if (!category) throw ApiError.notFound('Category not found');
   Object.assign(category, input);
   await category.save();
+  await invalidateCache('categories:*');
   return category;
 }
 
@@ -32,17 +40,20 @@ export async function deleteCategory(categoryId: string) {
   if (!category) throw ApiError.notFound('Category not found');
   category.isActive = false;
   await category.save();
+  await invalidateCache('categories:*');
 }
 
 export async function listManufacturers() {
-  return manufacturerRepository.find({ isActive: true });
+  return getOrSetCache('manufacturers:all', CATALOG_CACHE_TTL_SECONDS, () => manufacturerRepository.find({ isActive: true }));
 }
 
 export async function createManufacturer(input: CreateManufacturerInput) {
   const slug = slugify(input.name);
   const exists = await manufacturerRepository.exists({ slug });
   if (exists) throw ApiError.conflict('A manufacturer with this name already exists');
-  return manufacturerRepository.create({ ...input, slug } as never);
+  const manufacturer = await manufacturerRepository.create({ ...input, slug } as never);
+  await invalidateCache('manufacturers:*');
+  return manufacturer;
 }
 
 export async function listSuppliers() {
@@ -54,5 +65,5 @@ export async function createSupplier(input: CreateSupplierInput) {
 }
 
 export async function listBranches() {
-  return branchRepository.find({ isActive: true });
+  return getOrSetCache('branches:all', CATALOG_CACHE_TTL_SECONDS, () => branchRepository.find({ isActive: true }));
 }

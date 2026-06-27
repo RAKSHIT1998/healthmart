@@ -17,6 +17,8 @@ export interface IUser extends Document {
   loyaltyPoints: number;
   fcmTokens: string[];
   tokenVersion: number;
+  referralCode?: string;
+  referredBy?: Types.ObjectId;
   lastLoginAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -37,6 +39,8 @@ const userSchema = new Schema<IUser>(
     loyaltyPoints: { type: Number, default: 0, min: 0 },
     fcmTokens: { type: [String], default: [] },
     tokenVersion: { type: Number, default: 0 },
+    referralCode: { type: String, unique: true, sparse: true, uppercase: true },
+    referredBy: { type: Schema.Types.ObjectId, ref: 'User' },
     lastLoginAt: { type: Date },
   },
   { timestamps: true },

@@ -111,26 +111,29 @@ export async function generateInvoicePdf(
   });
   y -= 20;
 
+  // pdf-lib's standard fonts only support WinAnsi encoding, which has no Rupee
+  // glyph (U+20B9) — "Rs." renders correctly everywhere without embedding a
+  // custom Unicode font.
   const summaryX = PAGE_WIDTH - MARGIN - 200;
   drawText('Taxable Amount:', summaryX, 9);
-  drawText(`₹${invoice.taxableAmount.toFixed(2)}`, summaryX + 130, 9);
+  drawText(`Rs. ${invoice.taxableAmount.toFixed(2)}`, summaryX + 130, 9);
   y -= 14;
 
   if (invoice.isInterState) {
     drawText('IGST:', summaryX, 9);
-    drawText(`₹${invoice.igstAmount.toFixed(2)}`, summaryX + 130, 9);
+    drawText(`Rs. ${invoice.igstAmount.toFixed(2)}`, summaryX + 130, 9);
     y -= 14;
   } else {
     drawText('CGST:', summaryX, 9);
-    drawText(`₹${invoice.cgstAmount.toFixed(2)}`, summaryX + 130, 9);
+    drawText(`Rs. ${invoice.cgstAmount.toFixed(2)}`, summaryX + 130, 9);
     y -= 14;
     drawText('SGST:', summaryX, 9);
-    drawText(`₹${invoice.sgstAmount.toFixed(2)}`, summaryX + 130, 9);
+    drawText(`Rs. ${invoice.sgstAmount.toFixed(2)}`, summaryX + 130, 9);
     y -= 14;
   }
 
   drawText('Total Amount:', summaryX, 11, true);
-  drawText(`₹${invoice.totalAmount.toFixed(2)}`, summaryX + 130, 11, true);
+  drawText(`Rs. ${invoice.totalAmount.toFixed(2)}`, summaryX + 130, 11, true);
 
   y -= 40;
   page.drawText('This is a computer-generated invoice and does not require a signature.', {

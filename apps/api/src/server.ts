@@ -2,6 +2,7 @@ import { createApp } from './app';
 import { env } from './config/env';
 import { logger } from './config/logger';
 import { connectDatabase, disconnectDatabase } from './config/db';
+import { disconnectRedis } from './config/redis';
 import { startAllCronJobs } from './jobs';
 
 async function bootstrap(): Promise<void> {
@@ -18,7 +19,7 @@ async function bootstrap(): Promise<void> {
   const shutdown = async (signal: string) => {
     logger.info(`${signal} received, shutting down gracefully...`);
     server.close(async () => {
-      await disconnectDatabase();
+      await Promise.all([disconnectDatabase(), disconnectRedis()]);
       process.exit(0);
     });
   };
