@@ -10,8 +10,20 @@ export async function connectDatabase(): Promise<void> {
   mongoose.connection.on('disconnected', () => logger.warn('MongoDB disconnected'));
 
   await mongoose.connect(env.MONGO_URI, {
+    // autoIndex implicitly checks/builds indexes on every connection, which adds latency in
+    // production — instead we explicitly sync them once at boot below, so correctness-critical
+    // unique indexes (e.g. the appointment double-booking guard) are always guaranteed to exist
+    // before the server starts accepting traffic, in every environment.
     autoIndex: !env.NODE_ENV.startsWith('prod'),
   });
+
+  await ensureIndexes();
+}
+
+async function ensureIndexes(): Promise<void> {
+  const modelNames = mongoose.modelNames();
+  await Promise.all(modelNames.map((name) => mongoose.model(name).syncIndexes()));
+  logger.info(`Synced indexes for ${modelNames.length} model(s)`);
 }
 
 export async function disconnectDatabase(): Promise<void> {
