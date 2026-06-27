@@ -34,7 +34,9 @@ import { rewardReferralOnFirstDelivery } from './promotions.service';
 import { emitDriverAssigned, emitOrderStatus } from '../realtime/socket';
 import { createCashfreeOrder, initiateCashfreeRefund } from '../integrations/cashfree';
 import { getMargAdapter } from '../integrations/marg/margAdapterFactory';
+import { getDrivingDistance } from '../integrations/googleMaps';
 import { env } from '../config/env';
+import { logger } from '../config/logger';
 import { MargSyncStatus } from '@healthmart/shared';
 import { DriverModel, MargSyncLogModel } from '../models';
 import { sendOtpSms } from '../integrations/msg91';
@@ -391,12 +393,39 @@ export async function assignDriver(orderId: string, driverId: string): Promise<I
       phone: driver.userId.phone,
       vehicleNumber: driver.vehicleNumber,
     });
+
+    // Best-effort ETA from the driver's last known position (or the branch, if they haven't
+    // reported a location yet) to the delivery address — no-ops cleanly without a Maps key.
+    const origin =
+      driver.currentLat !== undefined && driver.currentLng !== undefined
+        ? { lat: driver.currentLat, lng: driver.currentLng }
+        : null;
+    if (origin) {
+      try {
+        const distance = await getDrivingDistance(origin, { lat: order.addressSnapshot.lat, lng: order.addressSnapshot.lng });
+        if (distance) {
+          order.estimatedDeliveryAt = new Date(Date.now() + distance.durationSeconds * 1000);
+          await order.save();
+        }
+      } catch (err) {
+        logger.warn({ err, orderId }, 'ETA lookup failed; continuing without an estimate');
+      }
+    }
   }
 
   return order;
 }
 
-export async function verifyDeliveryOtp(orderId: string, otp: string): Promise<IOrder> {
+interface VerifyDeliveryOtpOptions {
+  proofOfDeliveryUrl?: string;
+  customerSignatureUrl?: string;
+}
+
+export async function verifyDeliveryOtp(
+  orderId: string,
+  otp: string,
+  proofOptions: VerifyDeliveryOtpOptions = {},
+): Promise<IOrder> {
   const order = await orderRepository.findOne({ _id: orderId }, '+deliveryOtpHash');
   if (!order || !order.deliveryOtpHash) {
     throw ApiError.badRequest('No delivery OTP is associated with this order');
@@ -404,6 +433,10 @@ export async function verifyDeliveryOtp(orderId: string, otp: string): Promise<I
   if (order.deliveryOtpHash !== hashToken(otp)) {
     throw ApiError.badRequest('Invalid delivery OTP');
   }
+
+  if (proofOptions.proofOfDeliveryUrl) order.proofOfDeliveryUrl = proofOptions.proofOfDeliveryUrl;
+  if (proofOptions.customerSignatureUrl) order.customerSignatureUrl = proofOptions.customerSignatureUrl;
+  if (proofOptions.proofOfDeliveryUrl || proofOptions.customerSignatureUrl) await order.save();
 
   return updateOrderStatus(orderId, OrderStatus.DELIVERED, String(order.driverId ?? ''));
 }

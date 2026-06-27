@@ -72,6 +72,7 @@ export interface IOrder extends Document {
   deliveryOtpHash?: string;
   proofOfDeliveryUrl?: string;
   customerSignatureUrl?: string;
+  estimatedDeliveryAt?: Date;
   deliveredAt?: Date;
   cancelledAt?: Date;
   cancellationReason?: string;
@@ -177,6 +178,7 @@ const orderSchema = new Schema<IOrder>(
     deliveryOtpHash: { type: String, select: false },
     proofOfDeliveryUrl: { type: String },
     customerSignatureUrl: { type: String },
+    estimatedDeliveryAt: { type: Date },
     deliveredAt: { type: Date },
     cancelledAt: { type: Date },
     cancellationReason: { type: String },
