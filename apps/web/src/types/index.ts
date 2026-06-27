@@ -126,6 +126,17 @@ export interface OrderStatusHistoryEntry {
   reason?: string;
 }
 
+export interface AddressSnapshot {
+  contactName: string;
+  contactPhone: string;
+  line1: string;
+  city: string;
+  state: string;
+  pincode: string;
+  lat: number;
+  lng: number;
+}
+
 export interface Order {
   id: string;
   orderNumber: string;
@@ -144,6 +155,10 @@ export interface Order {
   deliveredAt?: string;
   cancelledAt?: string;
   driverId?: string;
+  addressSnapshot: AddressSnapshot;
+  estimatedDeliveryAt?: string;
+  proofOfDeliveryUrl?: string;
+  customerSignatureUrl?: string;
 }
 
 export interface CheckoutResult {
