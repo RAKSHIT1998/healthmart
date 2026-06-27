@@ -1,10 +1,15 @@
+import fs from 'fs';
+import path from 'path';
 import type { Request, Response } from 'express';
 import { MargSyncEntity, type PaginationQuery } from '@healthmart/shared';
 import { asyncHandler } from '../utils/asyncHandler';
 import { sendPaginated, sendSuccess } from '../utils/apiResponse';
 import * as margSyncService from '../services/margSync.service';
 import { margWebhookMapper } from '../integrations/marg/margWebhookMapper';
+import { ensureDir } from '../integrations/marg/fileReader';
 import { margSyncLogRepository } from '../repositories';
+import { env } from '../config/env';
+import { ApiError } from '../utils/ApiError';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
 
 export const webhook = asyncHandler(async (req: Request, res: Response) => {
@@ -45,6 +50,27 @@ export const triggerSync = asyncHandler(async (req: AuthenticatedRequest, res: R
     const logs = await margSyncService.runFullSync(req.user!.id);
     sendSuccess(res, logs, 'Full sync triggered');
   }
+});
+
+const UPLOAD_ENTITIES = new Set([MargSyncEntity.MEDICINE, MargSyncEntity.STOCK, MargSyncEntity.SUPPLIER, MargSyncEntity.CUSTOMER]);
+
+export const uploadAndSync = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+  const entity = req.body.entity as MargSyncEntity;
+  if (!UPLOAD_ENTITIES.has(entity)) {
+    throw ApiError.badRequest('entity must be one of: medicine, stock, supplier, customer');
+  }
+  if (!req.file) {
+    throw ApiError.badRequest('A CSV or XLSX file is required');
+  }
+
+  const watchDir = path.resolve(env.MARG_CSV_WATCH_DIR);
+  ensureDir(watchDir);
+  const ext = path.extname(req.file.originalname).toLowerCase() || '.csv';
+  const destPath = path.join(watchDir, `${entity}-upload-${Date.now()}${ext}`);
+  fs.writeFileSync(destPath, req.file.buffer);
+
+  const log = await margSyncService.runSyncFromUpload(entity, req.user!.id);
+  sendSuccess(res, log, 'File uploaded and synced');
 });
 
 export const listLogs = asyncHandler(async (req: Request, res: Response) => {

@@ -96,6 +96,23 @@ export async function apiFetchWithMeta<T>(path: string, options: RequestOptions 
   return { items: json.data, meta: json.meta ?? {} };
 }
 
+export async function apiUpload<T>(path: string, formData: FormData): Promise<T> {
+  const { accessToken } = useAuthStore.getState();
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: 'POST',
+    headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+    body: formData,
+  });
+
+  const json = await response.json().catch(() => null);
+  if (!response.ok || !json?.success) {
+    throw new ApiClientError(json?.message ?? 'Upload failed. Please try again.', response.status, json?.code, json?.errors);
+  }
+
+  return json.data as T;
+}
+
 export const api = {
   get: <T>(path: string, options?: RequestOptions) => apiFetch<T>(path, { ...options, method: 'GET' }),
   post: <T>(path: string, body?: unknown, options?: RequestOptions) => apiFetch<T>(path, { ...options, method: 'POST', body }),

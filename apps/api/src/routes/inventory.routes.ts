@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role, objectIdSchema, receivePurchaseSchema } from '@healthmart/shared';
+import { Role, objectIdSchema, paginationQuerySchema, receivePurchaseSchema } from '@healthmart/shared';
 import { z } from 'zod';
 import * as inventoryController from '../controllers/inventory.controller';
 import { validate } from '../middlewares/validate.middleware';
@@ -10,6 +10,9 @@ const router = Router();
 
 router.use(authenticate, requireRole(Role.ADMIN, Role.MANAGER, Role.INVENTORY_MANAGER));
 
+const listQuerySchema = paginationQuerySchema.extend({ branchId: objectIdSchema.optional() });
+
+router.get('/', validate({ query: listQuerySchema }), inventoryController.listAll);
 router.post('/purchases', validate({ body: receivePurchaseSchema }), inventoryController.receivePurchase);
 router.get('/low-stock', inventoryController.lowStock);
 router.get('/expiring-soon', inventoryController.expiringSoon);

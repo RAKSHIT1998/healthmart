@@ -97,7 +97,7 @@ async function main(): Promise<void> {
       gstPercentage: 12,
       hsnCode: '30041020',
       packSize: '10 capsules',
-      images: ['https://images.unsplash.com/photo-1550572017-edd951aa8ca7?w=600'],
+      images: ['https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=600'],
       tags: ['antibiotic'],
       isActive: true,
       stock: 150,
@@ -175,7 +175,7 @@ async function main(): Promise<void> {
       gstPercentage: 18,
       hsnCode: '33049910',
       packSize: '50g',
-      images: ['https://images.unsplash.com/photo-1612838320302-7f8c3c1e4f8c?w=600'],
+      images: ['https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?w=600'],
       tags: ['baby care', 'skin'],
       isActive: true,
       stock: 120,
@@ -185,7 +185,8 @@ async function main(): Promise<void> {
   for (const med of medicines) {
     const { stock, ...medData } = med;
     const existing = await MedicineModel.findOne({ slug: medData.slug });
-    const medicine = existing ?? (await MedicineModel.create(medData as never));
+    const created = existing ?? (await MedicineModel.create(medData as never));
+    const medicine = Array.isArray(created) ? created[0]! : created;
     await InventoryModel.findOneAndUpdate(
       { medicineId: medicine._id, branchId: branch._id },
       { $set: { totalQuantity: stock }, $setOnInsert: { reservedQuantity: 0 } },

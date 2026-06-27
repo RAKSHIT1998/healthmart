@@ -16,6 +16,8 @@ import {
 } from '../repositories';
 import { CategoryModel, MargSyncLogModel, type IMargSyncLog } from '../models';
 import { getMargAdapter } from '../integrations/marg/margAdapterFactory';
+import { MargCsvAdapter } from '../integrations/marg/MargCsvAdapter';
+import type { IMargAdapter } from '../integrations/marg/IMargAdapter';
 import { env } from '../config/env';
 import { slugify } from '../utils/slugify';
 import { logger } from '../config/logger';
@@ -191,11 +193,11 @@ async function applyCustomerPayloadsLogOnly(count: number): Promise<SyncResult> 
   return { processed: count, failed: 0, errors: [] };
 }
 
-async function runEntitySync(entity: MargSyncEntity, triggeredBy?: string): Promise<IMargSyncLog> {
-  const adapter = getMargAdapter();
+async function runEntitySync(entity: MargSyncEntity, triggeredBy?: string, adapterOverride?: IMargAdapter): Promise<IMargSyncLog> {
+  const adapter = adapterOverride ?? getMargAdapter();
   const log = await MargSyncLogModel.create({
     entity,
-    mode: env.MARG_INTEGRATION_MODE,
+    mode: adapterOverride ? MargIntegrationMode.CSV : env.MARG_INTEGRATION_MODE,
     status: MargSyncStatus.RUNNING,
     triggeredBy,
   });
@@ -256,6 +258,15 @@ export async function runFullSync(triggeredBy?: string): Promise<IMargSyncLog[]>
 
 export async function runSyncForEntity(entity: MargSyncEntity, triggeredBy?: string): Promise<IMargSyncLog> {
   return runEntitySync(entity, triggeredBy);
+}
+
+/**
+ * Runs a sync straight off an admin-uploaded CSV/XLSX file, independent of
+ * MARG_INTEGRATION_MODE — a manual upload is a deliberate one-off action and
+ * should work even when the scheduled cron pull is disabled.
+ */
+export async function runSyncFromUpload(entity: MargSyncEntity, triggeredBy?: string): Promise<IMargSyncLog> {
+  return runEntitySync(entity, triggeredBy, new MargCsvAdapter());
 }
 
 export { MargIntegrationMode };

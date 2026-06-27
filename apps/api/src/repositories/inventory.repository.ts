@@ -76,6 +76,24 @@ class InventoryRepository extends BaseRepository<IInventory> {
     );
   }
 
+  async findAll(branchId: string | undefined, page: number, limit: number) {
+    const filter = branchId ? { branchId } : {};
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await Promise.all([
+      this.model
+        .find(filter)
+        .populate('medicineId', 'name slug images sellingPrice mrp')
+        .populate('branchId', 'name code')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      this.model.countDocuments(filter),
+    ]);
+
+    return { items, total };
+  }
+
   async findLowStock(branchId?: string) {
     return this.model
       .find({

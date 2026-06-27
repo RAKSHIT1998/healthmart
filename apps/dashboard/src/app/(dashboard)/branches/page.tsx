@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Building2, Plus, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +11,11 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useAdminBranches, useCreateBranch, useDeactivateBranch, useUpdateBranch, type BranchInput } from '@/hooks/use-catalog';
 import type { Branch } from '@/types';
+
+const LocationPickerMap = dynamic(
+  () => import('@/components/location/location-picker-map').then((m) => m.LocationPickerMap),
+  { ssr: false },
+);
 
 const EMPTY_FORM: BranchInput = {
   name: '',
@@ -56,12 +62,6 @@ export default function BranchesPage() {
       isMainBranch: branch.isMainBranch,
     });
     setOpen(true);
-  }
-
-  function useCurrentLocation() {
-    navigator.geolocation?.getCurrentPosition((pos) => {
-      setForm((f) => ({ ...f, lat: pos.coords.latitude, lng: pos.coords.longitude }));
-    });
   }
 
   function handleSubmit() {
@@ -160,11 +160,18 @@ export default function BranchesPage() {
               <Label>GSTIN</Label>
               <Input value={form.gstin} onChange={(e) => setForm({ ...form, gstin: e.target.value.toUpperCase() })} />
             </div>
-            <div className="sm:col-span-2 flex items-center gap-2">
-              <Input readOnly value={form.lat && form.lng ? `${form.lat.toFixed(5)}, ${form.lng.toFixed(5)}` : 'No location set'} />
-              <Button type="button" variant="outline" onClick={useCurrentLocation}>
-                Use Current Location
-              </Button>
+            <div className="sm:col-span-2">
+              <Label>
+                Branch Location{' '}
+                {form.lat && form.lng ? (
+                  <span className="font-mono text-xs text-muted-foreground">
+                    ({form.lat.toFixed(5)}, {form.lng.toFixed(5)})
+                  </span>
+                ) : (
+                  <span className="text-xs text-destructive">not set</span>
+                )}
+              </Label>
+              <LocationPickerMap lat={form.lat} lng={form.lng} onChange={(lat, lng) => setForm((f) => ({ ...f, lat, lng }))} />
             </div>
             <label className="flex items-center gap-2 text-sm sm:col-span-2">
               <input

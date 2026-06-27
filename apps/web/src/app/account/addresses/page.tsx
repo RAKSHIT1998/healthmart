@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { MapPin, Plus, Trash2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,24 +11,24 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useAddresses, useCreateAddress, useDeleteAddress } from '@/hooks/use-addresses';
 
+const LocationPickerMap = dynamic(
+  () => import('@/components/location/location-picker-map').then((m) => m.LocationPickerMap),
+  { ssr: false },
+);
+
+const DEFAULT_CENTER = { lat: 28.6139, lng: 77.209 };
+
 export default function AddressesPage() {
   const { data: addresses, isLoading } = useAddresses();
   const createAddress = useCreateAddress();
   const deleteAddress = useDeleteAddress();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ contactName: '', contactPhone: '', line1: '', city: '', state: '', pincode: '' });
+  const [coords, setCoords] = useState(DEFAULT_CENTER);
 
   function handleSave() {
-    navigator.geolocation?.getCurrentPosition(
-      (pos) => save(pos.coords.latitude, pos.coords.longitude),
-      () => save(0, 0),
-      { timeout: 4000 },
-    );
-  }
-
-  function save(lat: number, lng: number) {
     createAddress.mutate(
-      { ...form, label: 'home', isDefault: !addresses || addresses.length === 0, lat, lng },
+      { ...form, label: 'home', isDefault: !addresses || addresses.length === 0, lat: coords.lat, lng: coords.lng },
       { onSuccess: () => setOpen(false) },
     );
   }
@@ -92,6 +93,10 @@ export default function AddressesPage() {
               <Input placeholder="City" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
               <Input placeholder="State" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} />
               <Input placeholder="Pincode" value={form.pincode} onChange={(e) => setForm({ ...form, pincode: e.target.value })} maxLength={6} />
+            </div>
+            <div>
+              <Label>Delivery Location</Label>
+              <LocationPickerMap lat={coords.lat} lng={coords.lng} onChange={(lat, lng) => setCoords({ lat, lng })} />
             </div>
             <Button onClick={handleSave} disabled={createAddress.isPending}>
               Save Address

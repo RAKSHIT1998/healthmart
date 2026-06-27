@@ -70,8 +70,8 @@ export interface Branch {
 
 export interface InventoryItem {
   id: string;
-  medicineId: { id: string; name: string; sellingPrice: number } | string;
-  branchId: string;
+  medicineId: { id: string; name: string; sellingPrice: number; images?: string[]; mrp?: number } | string;
+  branchId: { id: string; name: string; code: string } | string;
   totalQuantity: number;
   reservedQuantity: number;
   lowStockThreshold: number;

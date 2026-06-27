@@ -6,8 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useCategories, useManufacturers } from '@/hooks/use-catalog';
+import { useBranches, useCategories, useManufacturers } from '@/hooks/use-catalog';
 import { useCreateMedicine, useUpdateMedicine } from '@/hooks/use-medicines';
+import { useReceivePurchase } from '@/hooks/use-inventory';
 import type { Medicine } from '@/types';
 
 interface MedicineFormDialogProps {
@@ -20,11 +21,15 @@ const MEDICINE_TYPES = ['tablet', 'capsule', 'syrup', 'injection', 'ointment', '
 const SCHEDULE_CLASSES = ['none', 'schedule_h', 'schedule_h1', 'schedule_x', 'schedule_g'];
 const CATEGORY_GROUPS = ['medicine', 'healthcare', 'baby_care', 'personal_care', 'devices'];
 
+const EMPTY_STOCK = { branchId: '', batchNumber: '', expiryDate: '', quantity: '', costPrice: '' };
+
 export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFormDialogProps) {
   const { data: categories } = useCategories();
   const { data: manufacturers } = useManufacturers();
+  const { data: branches } = useBranches();
   const createMedicine = useCreateMedicine();
   const updateMedicine = useUpdateMedicine();
+  const receivePurchase = useReceivePurchase();
 
   const [form, setForm] = useState({
     name: '',
@@ -43,6 +48,7 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
     packSize: '',
     images: '',
   });
+  const [stock, setStock] = useState(EMPTY_STOCK);
 
   useEffect(() => {
     if (medicine) {
@@ -65,10 +71,11 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
       });
     } else {
       setForm((f) => ({ ...f, name: '', description: '', composition: '', mrp: '', sellingPrice: '', images: '' }));
+      setStock(EMPTY_STOCK);
     }
   }, [medicine, open]);
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const payload = {
       name: form.name,
       description: form.description,
@@ -91,16 +98,34 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
 
     if (medicine) {
       updateMedicine.mutate({ id: medicine.id, input: payload }, { onSuccess: () => onOpenChange(false) });
-    } else {
-      createMedicine.mutate(payload, { onSuccess: () => onOpenChange(false) });
+      return;
+    }
+
+    try {
+      const created = await createMedicine.mutateAsync(payload);
+      if (stock.branchId && stock.quantity) {
+        await receivePurchase.mutateAsync({
+          medicineId: created.id,
+          branchId: stock.branchId,
+          batchNumber: stock.batchNumber || 'INITIAL',
+          expiryDate: new Date(stock.expiryDate || Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+          quantity: Number(stock.quantity),
+          costPrice: Number(stock.costPrice || 0),
+        });
+      }
+      onOpenChange(false);
+    } catch {
+      // Error toast already shown by the createMedicine/receivePurchase mutation hooks.
     }
   }
+
+  const isNewProduct = !medicine;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{medicine ? 'Edit Medicine' : 'Add Medicine'}</DialogTitle>
+          <DialogTitle>{medicine ? 'Edit Medicine' : 'Add Product'}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="sm:col-span-2">
@@ -208,8 +233,52 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
             <Input value={form.images} onChange={(e) => setForm({ ...form, images: e.target.value })} />
           </div>
         </div>
-        <Button className="mt-4 w-full" onClick={handleSubmit} disabled={createMedicine.isPending || updateMedicine.isPending}>
-          {medicine ? 'Update Medicine' : 'Create Medicine'}
+
+        {isNewProduct && (
+          <div className="mt-4 rounded-lg border border-dashed border-border/60 p-3">
+            <p className="mb-2 text-sm font-medium">Initial Stock (optional)</p>
+            <p className="mb-3 text-xs text-muted-foreground">
+              Add opening stock now so this product is sellable immediately — or leave blank and use{' '}
+              <span className="font-medium">Receive Purchase</span> on the Inventory page later.
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <Label>Branch</Label>
+                <Select value={stock.branchId} onValueChange={(v) => setStock({ ...stock, branchId: v })}>
+                  <SelectTrigger><SelectValue placeholder="Select branch" /></SelectTrigger>
+                  <SelectContent>
+                    {branches?.map((b) => (
+                      <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Quantity</Label>
+                <Input type="number" value={stock.quantity} onChange={(e) => setStock({ ...stock, quantity: e.target.value })} />
+              </div>
+              <div>
+                <Label>Batch Number</Label>
+                <Input value={stock.batchNumber} onChange={(e) => setStock({ ...stock, batchNumber: e.target.value })} placeholder="INITIAL" />
+              </div>
+              <div>
+                <Label>Expiry Date</Label>
+                <Input type="date" value={stock.expiryDate} onChange={(e) => setStock({ ...stock, expiryDate: e.target.value })} />
+              </div>
+              <div>
+                <Label>Cost Price (₹)</Label>
+                <Input type="number" value={stock.costPrice} onChange={(e) => setStock({ ...stock, costPrice: e.target.value })} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        <Button
+          className="mt-4 w-full"
+          onClick={handleSubmit}
+          disabled={createMedicine.isPending || updateMedicine.isPending || receivePurchase.isPending}
+        >
+          {medicine ? 'Update Medicine' : 'Create Product'}
         </Button>
       </DialogContent>
     </Dialog>

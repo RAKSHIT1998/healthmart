@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { MapPin, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,6 +16,13 @@ import { useCheckout } from '@/hooks/use-orders';
 import { launchCashfreeCheckout } from '@/lib/cashfree';
 import { formatCurrency, cn } from '@/lib/utils';
 import { REGEX } from '@healthmart/shared';
+
+const LocationPickerMap = dynamic(
+  () => import('@/components/location/location-picker-map').then((m) => m.LocationPickerMap),
+  { ssr: false },
+);
+
+const DEFAULT_CENTER = { lat: 28.6139, lng: 77.209 };
 
 const SLOTS = [
   { type: 'standard' as const, label: 'Standard Delivery', detail: 'Within 2-4 hours' },
@@ -42,6 +50,7 @@ export default function CheckoutPage() {
     state: '',
     pincode: '',
   });
+  const [coords, setCoords] = useState(DEFAULT_CENTER);
 
   useEffect(() => {
     if (!selectedAddressId && addresses && addresses.length > 0) {
@@ -58,16 +67,8 @@ export default function CheckoutPage() {
   function handleAddAddress() {
     if (!REGEX.PHONE.test(form.contactPhone) || !form.line1 || !form.city || !form.pincode) return;
 
-    navigator.geolocation?.getCurrentPosition(
-      (position) => submitAddress(position.coords.latitude, position.coords.longitude),
-      () => submitAddress(0, 0),
-      { timeout: 4000 },
-    );
-  }
-
-  function submitAddress(lat: number, lng: number) {
     createAddress.mutate(
-      { ...form, label: 'home', isDefault: !addresses || addresses.length === 0, lat, lng },
+      { ...form, label: 'home', isDefault: !addresses || addresses.length === 0, lat: coords.lat, lng: coords.lng },
       {
         onSuccess: (address) => {
           setSelectedAddressId(address.id);
@@ -255,6 +256,10 @@ export default function CheckoutPage() {
               <Input placeholder="City" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
               <Input placeholder="State" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} />
               <Input placeholder="Pincode" value={form.pincode} onChange={(e) => setForm({ ...form, pincode: e.target.value })} maxLength={6} />
+            </div>
+            <div>
+              <Label>Delivery Location</Label>
+              <LocationPickerMap lat={coords.lat} lng={coords.lng} onChange={(lat, lng) => setCoords({ lat, lng })} />
             </div>
             <Button onClick={handleAddAddress} disabled={createAddress.isPending}>
               Save Address

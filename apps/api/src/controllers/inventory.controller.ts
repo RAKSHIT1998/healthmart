@@ -1,9 +1,15 @@
 import type { Request, Response } from 'express';
-import { AuditAction } from '@healthmart/shared';
+import { AuditAction, type PaginationQuery } from '@healthmart/shared';
 import { asyncHandler } from '../utils/asyncHandler';
-import { sendSuccess } from '../utils/apiResponse';
+import { sendSuccess, sendPaginated, buildPaginationMeta } from '../utils/apiResponse';
 import * as inventoryService from '../services/inventory.service';
 import { recordAudit } from '../middlewares/audit.middleware';
+
+export const listAll = asyncHandler(async (req: Request, res: Response) => {
+  const { page, limit } = req.query as unknown as PaginationQuery;
+  const { items, total } = await inventoryService.listAll(req.query.branchId as string | undefined, page, limit);
+  sendPaginated(res, items, buildPaginationMeta(total, page, limit));
+});
 
 export const receivePurchase = asyncHandler(async (req: Request, res: Response) => {
   const batch = await inventoryService.receivePurchase({

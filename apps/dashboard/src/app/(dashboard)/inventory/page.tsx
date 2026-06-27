@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import Image from 'next/image';
+import { PackagePlus, Plus } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,21 +12,30 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { useExpiringSoon, useInventoryValue, useLowStock, useReceivePurchase } from '@/hooks/use-inventory';
+import { useAllInventory, useExpiringSoon, useInventoryValue, useLowStock, useReceivePurchase } from '@/hooks/use-inventory';
 import { useBranches } from '@/hooks/use-catalog';
 import { MedicineSearchSelect } from '@/components/medicines/medicine-search-select';
-import type { Medicine } from '@/types';
+import { MedicineFormDialog } from '@/components/medicines/medicine-form-dialog';
 
 export default function InventoryPage() {
+  const [stockPage, setStockPage] = useState(1);
+  const { data: allInventory, isLoading: loadingAll } = useAllInventory(stockPage);
   const { data: lowStock, isLoading: loadingLowStock } = useLowStock();
   const { data: expiring, isLoading: loadingExpiring } = useExpiringSoon();
   const { data: inventoryValue } = useInventoryValue();
   const { data: branches } = useBranches();
   const receivePurchase = useReceivePurchase();
 
-  const [open, setOpen] = useState(false);
-  const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
+  const [purchaseOpen, setPurchaseOpen] = useState(false);
+  const [productOpen, setProductOpen] = useState(false);
+  const [selectedMedicine, setSelectedMedicine] = useState<{ id: string; name: string } | null>(null);
   const [form, setForm] = useState({ branchId: '', batchNumber: '', expiryDate: '', quantity: '', costPrice: '' });
+
+  function openReceivePurchase(medicine?: { id: string; name: string }) {
+    setSelectedMedicine(medicine ?? null);
+    setForm({ branchId: '', batchNumber: '', expiryDate: '', quantity: '', costPrice: '' });
+    setPurchaseOpen(true);
+  }
 
   function handleSubmit() {
     if (!selectedMedicine || !form.branchId) return;
@@ -38,17 +48,25 @@ export default function InventoryPage() {
         quantity: Number(form.quantity),
         costPrice: Number(form.costPrice),
       },
-      { onSuccess: () => setOpen(false) },
+      { onSuccess: () => setPurchaseOpen(false) },
     );
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Inventory</h1>
-        <Button onClick={() => setOpen(true)}>
-          <Plus className="h-4 w-4" /> Receive Purchase
-        </Button>
+        <div>
+          <h1 className="text-2xl font-bold">Inventory</h1>
+          <p className="text-sm text-muted-foreground">Manage stock across all branches.</p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => openReceivePurchase()}>
+            <PackagePlus className="h-4 w-4" /> Receive Purchase
+          </Button>
+          <Button onClick={() => setProductOpen(true)}>
+            <Plus className="h-4 w-4" /> Add Product
+          </Button>
+        </div>
       </div>
 
       <Card>
@@ -58,11 +76,85 @@ export default function InventoryPage() {
         </CardContent>
       </Card>
 
-      <Tabs defaultValue="low-stock">
+      <Tabs defaultValue="all-stock">
         <TabsList>
+          <TabsTrigger value="all-stock">All Stock</TabsTrigger>
           <TabsTrigger value="low-stock">Low Stock</TabsTrigger>
           <TabsTrigger value="expiring">Expiring Soon</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="all-stock">
+          <Card>
+            <CardContent className="p-0">
+              <table className="w-full text-sm">
+                <thead className="border-b border-border/60 text-left text-xs uppercase text-muted-foreground">
+                  <tr>
+                    <th className="p-3">Medicine</th>
+                    <th className="p-3">Branch</th>
+                    <th className="p-3">Total Qty</th>
+                    <th className="p-3">Reserved</th>
+                    <th className="p-3">Available</th>
+                    <th className="p-3"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loadingAll ? (
+                    <tr><td className="p-4 text-muted-foreground" colSpan={6}>Loading...</td></tr>
+                  ) : allInventory && allInventory.items.length > 0 ? (
+                    allInventory.items.map((item) => {
+                      const medicine = typeof item.medicineId === 'object' ? item.medicineId : null;
+                      const branch = typeof item.branchId === 'object' ? item.branchId : null;
+                      const available = item.totalQuantity - item.reservedQuantity;
+                      return (
+                        <tr key={item.id} className="border-b border-border/40">
+                          <td className="flex items-center gap-3 p-3">
+                            {medicine?.images?.[0] && (
+                              <div className="relative h-9 w-9 overflow-hidden rounded-md bg-secondary">
+                                <Image src={medicine.images[0]} alt="" fill className="object-contain" />
+                              </div>
+                            )}
+                            <span className="font-medium">{medicine?.name ?? String(item.medicineId)}</span>
+                          </td>
+                          <td className="p-3">{branch?.name ?? String(item.branchId)}</td>
+                          <td className="p-3">{item.totalQuantity}</td>
+                          <td className="p-3">{item.reservedQuantity}</td>
+                          <td className="p-3">
+                            <Badge variant={available <= item.lowStockThreshold ? 'warning' : 'success'}>{available}</Badge>
+                          </td>
+                          <td className="p-3 text-right">
+                            {medicine && (
+                              <Button size="sm" variant="outline" onClick={() => openReceivePurchase({ id: medicine.id, name: medicine.name })}>
+                                + Stock
+                              </Button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr><td className="p-4 text-muted-foreground" colSpan={6}>No inventory yet — add a product to get started.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </CardContent>
+          </Card>
+          {allInventory?.meta.pagination && (
+            <div className="mt-3 flex items-center justify-between text-sm text-muted-foreground">
+              <span>
+                Page {allInventory.meta.pagination.page} of {allInventory.meta.pagination.totalPages} ({allInventory.meta.pagination.total} items)
+              </span>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" disabled={!allInventory.meta.pagination.hasPrevPage} onClick={() => setStockPage((p) => p - 1)}>
+                  Previous
+                </Button>
+                <Button variant="outline" size="sm" disabled={!allInventory.meta.pagination.hasNextPage} onClick={() => setStockPage((p) => p + 1)}>
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
+        </TabsContent>
+
         <TabsContent value="low-stock">
           <Card>
             <CardContent className="p-0">
@@ -135,7 +227,7 @@ export default function InventoryPage() {
         </TabsContent>
       </Tabs>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={purchaseOpen} onOpenChange={setPurchaseOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Receive Purchase Stock</DialogTitle>
@@ -143,7 +235,10 @@ export default function InventoryPage() {
           <div className="grid gap-3">
             <div>
               <Label>Medicine</Label>
-              <MedicineSearchSelect value={selectedMedicine?.name ?? ''} onSelect={setSelectedMedicine} />
+              <MedicineSearchSelect
+                value={selectedMedicine?.name ?? ''}
+                onSelect={(medicine) => setSelectedMedicine({ id: medicine.id, name: medicine.name })}
+              />
             </div>
             <div>
               <Label>Branch</Label>
@@ -180,6 +275,8 @@ export default function InventoryPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <MedicineFormDialog open={productOpen} onOpenChange={setProductOpen} />
     </div>
   );
 }

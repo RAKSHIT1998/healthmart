@@ -35,7 +35,7 @@ export default function MedicinesPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Medicines</h1>
         <Button onClick={openCreate}>
-          <Plus className="h-4 w-4" /> Add Medicine
+          <Plus className="h-4 w-4" /> Add Product
         </Button>
       </div>
 

@@ -175,6 +175,10 @@ export async function receivePurchase(input: ReceivePurchaseInput) {
   return batch;
 }
 
+export async function listAll(branchId: string | undefined, page: number, limit: number) {
+  return inventoryRepository.findAll(branchId, page, limit);
+}
+
 export async function getLowStock(branchId?: string) {
   return inventoryRepository.findLowStock(branchId);
 }
