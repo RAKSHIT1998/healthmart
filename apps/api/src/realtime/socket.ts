@@ -81,3 +81,7 @@ export function emitDriverLocation(orderId: string, location: { lat: number; lng
 export function emitOrderStatus(orderId: string, status: string): void {
   io?.to(`order:${orderId}`).emit('order:status', { orderId, status, timestamp: new Date().toISOString() });
 }
+
+export function emitDriverAssigned(orderId: string, driver: { name: string; phone?: string; vehicleNumber?: string }): void {
+  io?.to(`order:${orderId}`).emit('order:driver-assigned', { orderId, driver, timestamp: new Date().toISOString() });
+}

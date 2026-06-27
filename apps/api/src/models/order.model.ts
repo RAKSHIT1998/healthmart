@@ -70,6 +70,8 @@ export interface IOrder extends Document {
   prescriptionIds: Types.ObjectId[];
   driverId?: Types.ObjectId;
   deliveryOtpHash?: string;
+  proofOfDeliveryUrl?: string;
+  customerSignatureUrl?: string;
   deliveredAt?: Date;
   cancelledAt?: Date;
   cancellationReason?: string;
@@ -173,6 +175,8 @@ const orderSchema = new Schema<IOrder>(
     prescriptionIds: [{ type: Schema.Types.ObjectId, ref: 'Prescription' }],
     driverId: { type: Schema.Types.ObjectId, ref: 'Driver', index: true },
     deliveryOtpHash: { type: String, select: false },
+    proofOfDeliveryUrl: { type: String },
+    customerSignatureUrl: { type: String },
     deliveredAt: { type: Date },
     cancelledAt: { type: Date },
     cancellationReason: { type: String },

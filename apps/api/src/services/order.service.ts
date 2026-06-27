@@ -31,11 +31,12 @@ import { creditWallet, debitWallet, getWallet } from './wallet.service';
 import { notifyUser } from './notification.service';
 import { generateInvoiceForOrder } from './invoice.service';
 import { rewardReferralOnFirstDelivery } from './promotions.service';
+import { emitDriverAssigned, emitOrderStatus } from '../realtime/socket';
 import { createCashfreeOrder, initiateCashfreeRefund } from '../integrations/cashfree';
 import { getMargAdapter } from '../integrations/marg/margAdapterFactory';
 import { env } from '../config/env';
 import { MargSyncStatus } from '@healthmart/shared';
-import { MargSyncLogModel } from '../models';
+import { DriverModel, MargSyncLogModel } from '../models';
 import { sendOtpSms } from '../integrations/msg91';
 
 async function assertNoPrescriptionGate(prescriptionIds: string[], requiresPrescription: boolean): Promise<void> {
@@ -379,6 +380,19 @@ export async function cancelOrder(orderId: string, userId: string, reason: strin
 export async function assignDriver(orderId: string, driverId: string): Promise<IOrder> {
   const order = await orderRepository.updateById(orderId, { driverId });
   if (!order) throw ApiError.notFound('Order not found');
+
+  const driver = await DriverModel.findById(driverId).populate<{ userId: { name: string; phone?: string } }>(
+    'userId',
+    'name phone',
+  );
+  if (driver) {
+    emitDriverAssigned(String(order._id), {
+      name: driver.userId.name,
+      phone: driver.userId.phone,
+      vehicleNumber: driver.vehicleNumber,
+    });
+  }
+
   return order;
 }
 
