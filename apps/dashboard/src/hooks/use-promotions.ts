@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { api, ApiClientError } from '@/lib/api';
+import { api, apiFetchWithMeta, ApiClientError } from '@/lib/api';
 
 export interface FlashSaleItem {
   medicineId: string;
@@ -58,6 +58,13 @@ export function useToggleFlashSale() {
   return useMutation({
     mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) => api.patch<FlashSale>(`/promotions/flash-sales/${id}`, { isActive }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-flash-sales'] }),
+  });
+}
+
+export function useIssuedGiftCards(page: number) {
+  return useQuery({
+    queryKey: ['issued-gift-cards', page],
+    queryFn: () => apiFetchWithMeta<GiftCard>(`/promotions/gift-cards?page=${page}&limit=20`),
   });
 }
 

@@ -5,6 +5,7 @@ import {
   createFlashSaleSchema,
   issueGiftCardSchema,
   objectIdSchema,
+  paginationQuerySchema,
   redeemGiftCardSchema,
   updateFlashSaleSchema,
 } from '@healthmart/shared';
@@ -31,6 +32,13 @@ router.post(
   requireRole(Role.ADMIN, Role.MANAGER),
   validate({ body: issueGiftCardSchema }),
   promotionsController.issueGiftCard,
+);
+router.get(
+  '/gift-cards',
+  authenticate,
+  requireRole(Role.ADMIN, Role.MANAGER),
+  validate({ query: paginationQuerySchema }),
+  promotionsController.listGiftCards,
 );
 router.get('/flash-sales', authenticate, requireRole(Role.ADMIN, Role.MANAGER), promotionsController.listFlashSales);
 router.post(

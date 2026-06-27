@@ -13,6 +13,7 @@ import {
   ScrollText,
   Truck,
   Users,
+  Zap,
 } from 'lucide-react';
 import { Role } from '@healthmart/shared';
 import { useAuthStore } from '@/store/auth-store';
@@ -32,6 +33,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/orders', label: 'Orders', icon: ClipboardList, roles: [Role.ADMIN, Role.MANAGER, Role.PHARMACIST] },
   { href: '/prescriptions', label: 'Prescriptions', icon: FileText, roles: [Role.ADMIN, Role.MANAGER, Role.PHARMACIST] },
   { href: '/coupons', label: 'Coupons', icon: BadgePercent, roles: [Role.ADMIN, Role.MANAGER] },
+  { href: '/promotions', label: 'Promotions', icon: Zap, roles: [Role.ADMIN, Role.MANAGER] },
   { href: '/drivers', label: 'Drivers', icon: Truck, roles: [Role.ADMIN, Role.MANAGER] },
   { href: '/deliveries', label: 'My Deliveries', icon: Truck, roles: [Role.DELIVERY_BOY] },
   { href: '/marg', label: 'MARG Sync', icon: RefreshCw, roles: [Role.ADMIN, Role.MANAGER, Role.INVENTORY_MANAGER] },

@@ -136,6 +136,7 @@ function buildPaths() {
   path(paths, '/promotions/referrals/apply', 'post', 'Promotions', { summary: 'Apply a referral code to my account', auth: true, body: true });
   path(paths, '/promotions/gift-cards/redeem', 'post', 'Promotions', { summary: 'Redeem a gift card to my wallet', auth: true, body: true });
   path(paths, '/promotions/gift-cards/issue', 'post', 'Promotions (Admin)', { summary: 'Issue a gift card', auth: true, body: true });
+  path(paths, '/promotions/gift-cards', 'get', 'Promotions (Admin)', { summary: 'List issued gift cards', auth: true, query: ['page', 'limit'] });
   path(paths, '/promotions/flash-sales', 'get', 'Promotions (Admin)', { summary: 'List all flash sales', auth: true });
   path(paths, '/promotions/flash-sales', 'post', 'Promotions (Admin)', { summary: 'Create a flash sale', auth: true, body: true });
   path(paths, '/promotions/flash-sales/{id}', 'patch', 'Promotions (Admin)', { summary: 'Update a flash sale', auth: true, params: ['id'], body: true });

@@ -5,20 +5,27 @@
 A production-grade pharmacy e-commerce platform: customer storefront, internal operations
 dashboard, REST API, and a MARG ERP integration layer. Built as a TypeScript monorepo.
 
-## Project status: Phase 1
+## Project status: Phase 1 + Phase 2a
 
 This is a genuinely large platform (storefront + 5 internal role panels + ERP sync + telehealth +
 live GPS tracking + multi-pharmacy support, etc.) — too large to build to full production maturity
-in a single pass. **Phase 1**, shipped here, covers the complete revenue-critical path end to end:
-auth, catalog/search, cart, checkout, payments, order fulfillment, inventory (with FIFO batching
-and a never-oversell guarantee), GST invoicing, prescriptions with OCR, the full MongoDB schema,
-and the MARG ERP adapter architecture (CSV import + webhook receiver, both real and working).
+in a single pass.
 
-**Explicitly out of scope for Phase 1** (see [the plan](#roadmap--phase-2) below): doctor
-video/audio consultation, the health blog CMS, live driver GPS tracking, multi-branch admin UI,
-referral/gift-card/flash-sale promotions, WhatsApp notifications, and a Redis caching layer. The
-data model already has room for these (e.g. `Blog`/`BlogComment` collections exist), but the UI
-and business logic for them have not been built.
+**Phase 1** covers the complete revenue-critical path end to end: auth, catalog/search, cart,
+checkout, payments, order fulfillment, inventory (with FIFO batching and a never-oversell
+guarantee), GST invoicing, prescriptions with OCR, the full MongoDB schema, and the MARG ERP
+adapter architecture (CSV import + webhook receiver, both real and working).
+
+**Phase 2a** hardens and extends that foundation: an automated Jest/Supertest test suite covering
+the inventory engine, order state machine, cart/coupon pricing, and auth/token rotation; a Redis
+cache-aside layer on catalog/search/dashboard reads; WhatsApp order notifications via MSG91; and a
+promotions module (referral program, gift cards, flash sales) wired into both frontends.
+
+**Explicitly out of scope still** (see [the plan](#roadmap--phase-2b) below): doctor video/audio
+consultation, the health blog CMS, live driver GPS tracking, multi-branch admin UI, and a
+load-testing/index-tuning pass for true 100k-customer scale. The data model already has room for
+some of these (e.g. `Blog`/`BlogComment` collections exist), but the UI and business logic for
+them have not been built.
 
 **Integration honesty note:** all third-party integrations (Cashfree, MSG91, Resend, Cloudinary,
 Firebase, Google Maps) are real SDK/API client code, fully wired end-to-end and driven entirely by
@@ -114,6 +121,27 @@ npm run dev:web          # http://localhost:3000  (customer storefront)
 npm run dev:dashboard    # http://localhost:3001  (internal panel — log in with the seeded admin)
 ```
 
+## Testing
+
+```bash
+cd apps/api
+npm test
+```
+
+By default this spins up an ephemeral in-memory MongoDB (`mongodb-memory-server`) — no external
+database needed. In sandboxes/CI runners where outbound binary downloads are blocked, point
+`TEST_MONGO_URI` at any reachable MongoDB server instead (the suite creates a uniquely-named,
+disposable database per run and drops it on teardown — it never touches your dev database):
+
+```bash
+TEST_MONGO_URI="mongodb://localhost:27017" npm test
+```
+
+Coverage includes: concurrent-reservation never-oversell guarantees, FIFO batch allocation/commit/
+restore, the order status state machine (including GST invoice generation on delivery), cart
+pricing and coupon discount math, OTP auth + refresh token rotation/reuse-detection, and the
+referral/gift-card/flash-sale promotions logic.
+
 ## API Documentation
 
 - Swagger UI: `http://localhost:5000/api/docs`
@@ -164,7 +192,31 @@ All collections from the spec are modeled with full Mongoose schemas in `apps/ap
 `User`, `RefreshToken`, `Otp`, `Address`, `Branch`, `Category`, `Manufacturer`, `Supplier`,
 `Medicine`, `Batch`, `Inventory`, `InventoryMovement`, `Cart`, `Coupon`, `CouponRedemption`,
 `Order`, `Invoice`, `Wallet`, `WalletTransaction`, `Review`, `Wishlist`, `Prescription`,
-`Notification`, `Blog`, `BlogComment`, `Driver`, `AuditLog`, `MargSyncLog`, `AnalyticsSnapshot`.
+`Notification`, `Blog`, `BlogComment`, `Driver`, `AuditLog`, `MargSyncLog`, `AnalyticsSnapshot`,
+`ReferralReward`, `GiftCard`, `FlashSale`.
+
+### Caching (Redis)
+
+`apps/api/src/utils/cache.ts` exposes a `getOrSetCache(key, ttlSeconds, fetcher)` cache-aside
+helper used on category/manufacturer/branch listings, medicine search and detail, and dashboard
+metrics. It degrades transparently when `REDIS_URL` is unset — every call falls straight through
+to `fetcher()`, so caching is strictly a performance optimization, never a correctness dependency.
+Live stock availability is always read fresh (never cached) so "in stock" filtering can't go stale.
+
+### Promotions module
+
+- **Referrals**: every user can generate a unique `referralCode` (`GET /promotions/referrals/my-code`).
+  A new user applies a friend's code once (`POST /promotions/referrals/apply`); both sides are
+  credited to their wallets — but only on the referee's *first delivered* order, not on placement,
+  so a cancelled or fraudulent order can't be farmed for credit (see `rewardReferralOnFirstDelivery`
+  in `order.service.ts`).
+- **Gift cards**: admins issue codes (`POST /promotions/gift-cards/issue`); customers redeem them
+  straight into their wallet balance (`POST /promotions/gift-cards/redeem`), reusing the existing
+  wallet-as-payment-method flow at checkout rather than adding a separate payment path.
+- **Flash sales**: admin-managed time-boxed price overrides per medicine. `cart.service.ts`'s
+  `computeCartTotals` — the single function that decides what a customer is actually charged —
+  looks up active flash-sale pricing on every call, so the price shown on a product card and the
+  price charged at checkout can never disagree.
 
 ## Deployment
 
@@ -186,20 +238,20 @@ Point `MONGO_URI` at an Atlas connection string. Atlas clusters run as replica s
 which is compatible with everything in this codebase (no multi-document transactions are used —
 reservations rely on atomically-guarded single-document updates instead).
 
-## Roadmap / Phase 2
+## Roadmap / Phase 2b
 
-Tracked as explicitly deferred in the original plan, not forgotten:
+Tracked as explicitly deferred, not forgotten:
 
 - Doctor video/audio consultation (appointment booking + a WebRTC provider integration)
 - Full Health Blog CMS authoring UI + public blog pages + comments
 - Live driver GPS tracking (sockets) + route optimization + signature proof-of-delivery
 - Advanced analytics: heatmaps, repeat-customer/retention cohorts, sales forecasting
 - Multi-pharmacy/branch admin UI, employee permission matrix, backup/restore tooling
-- Referral program, gift cards, flash-sale scheduler
-- WhatsApp notifications
-- Redis caching layer + CDN tuning
-- Full Jest/Supertest automated test suite
+- CDN tuning
 - Load testing and index-tuning pass for true 100k-customer scale
+
+Shipped in Phase 2a (no longer on this list): automated test suite, Redis caching layer, WhatsApp
+notifications, referral program, gift cards, flash-sale scheduler.
 
 ## License
 
