@@ -1,0 +1,151 @@
+{
+  "info": {
+    "name": "Medicare Medical Store API",
+    "description": "Phase 1 REST API collection. Set the `baseUrl`, `accessToken`, and `refreshToken` collection variables after running the OTP login flow.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api/v1" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" },
+    { "key": "medicineId", "value": "" },
+    { "key": "orderId", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Request OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/otp/request",
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"9876543210\",\n  \"purpose\": \"login\"\n}" }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/otp/verify",
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"9876543210\",\n  \"otp\": \"123456\",\n  \"name\": \"Test Customer\"\n}" }
+          }
+        },
+        {
+          "name": "Staff Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/staff/login",
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@medicaremedicalstore.com\",\n  \"password\": \"ChangeMe@12345\"\n}" }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/refresh",
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Medicines",
+      "item": [
+        { "name": "Search Medicines", "request": { "method": "GET", "url": "{{baseUrl}}/medicines?q=paracetamol&page=1&limit=20" } },
+        { "name": "Get Medicine by Slug", "request": { "method": "GET", "url": "{{baseUrl}}/medicines/slug/paracetamol-500mg" } },
+        {
+          "name": "Create Medicine (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/medicines",
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Paracetamol 500mg\",\n  \"description\": \"Pain reliever and fever reducer\",\n  \"composition\": [\"Paracetamol 500mg\"],\n  \"manufacturerId\": \"<manufacturerId>\",\n  \"categoryId\": \"<categoryId>\",\n  \"categoryGroup\": \"medicine\",\n  \"medicineType\": \"tablet\",\n  \"prescriptionRequired\": false,\n  \"mrp\": 30,\n  \"sellingPrice\": 25,\n  \"gstPercentage\": 12,\n  \"hsnCode\": \"3004\",\n  \"packSize\": \"15 tablets\",\n  \"images\": [\"https://example.com/image.jpg\"]\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cart & Checkout",
+      "item": [
+        { "name": "Get Cart", "request": { "method": "GET", "url": "{{baseUrl}}/cart" } },
+        {
+          "name": "Add Item to Cart",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/cart/items",
+            "body": { "mode": "raw", "raw": "{\n  \"medicineId\": \"{{medicineId}}\",\n  \"quantity\": 2\n}" }
+          }
+        },
+        {
+          "name": "Checkout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/orders/checkout",
+            "body": { "mode": "raw", "raw": "{\n  \"addressId\": \"<addressId>\",\n  \"deliverySlot\": { \"type\": \"standard\" },\n  \"paymentMethod\": \"cod\",\n  \"prescriptionIds\": []\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        { "name": "My Orders", "request": { "method": "GET", "url": "{{baseUrl}}/orders" } },
+        { "name": "Track Order", "request": { "method": "GET", "url": "{{baseUrl}}/orders/{{orderId}}/track" } },
+        {
+          "name": "Admin: Update Order Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/orders/admin/{{orderId}}/status",
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"accepted\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "MARG Integration",
+      "item": [
+        {
+          "name": "Trigger Full Sync",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/marg/sync",
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        { "name": "View Sync Logs", "request": { "method": "GET", "url": "{{baseUrl}}/marg/logs" } },
+        {
+          "name": "Webhook (signed)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Marg-Signature", "value": "<hex-hmac-sha256-of-body>" }
+            ],
+            "url": "{{baseUrl}}/marg/webhook",
+            "body": { "mode": "raw", "raw": "{\n  \"entity\": \"medicine\",\n  \"records\": [{ \"ItemCode\": \"ITM001\", \"ItemName\": \"Paracetamol 500mg\", \"MRP\": 30, \"SalesRate\": 25, \"GST\": 12 }]\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics & Reports (Admin)",
+      "item": [
+        { "name": "Dashboard Metrics", "request": { "method": "GET", "url": "{{baseUrl}}/analytics/dashboard" } },
+        { "name": "Sales Report (CSV)", "request": { "method": "GET", "url": "{{baseUrl}}/reports/sales?format=csv" } }
+      ]
+    }
+  ]
+}

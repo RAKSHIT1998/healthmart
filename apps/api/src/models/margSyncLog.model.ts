@@ -9,7 +9,7 @@ export interface IMargSyncLog extends Document {
   status: MargSyncStatus;
   recordsProcessed: number;
   recordsFailed: number;
-  errors: string[];
+  errorMessages: string[];
   sourceFile?: string;
   triggeredBy?: Types.ObjectId;
   startedAt: Date;
@@ -29,7 +29,7 @@ const margSyncLogSchema = new Schema<IMargSyncLog>(
     },
     recordsProcessed: { type: Number, default: 0 },
     recordsFailed: { type: Number, default: 0 },
-    errors: { type: [String], default: [] },
+    errorMessages: { type: [String], default: [] },
     sourceFile: { type: String },
     triggeredBy: { type: Schema.Types.ObjectId, ref: 'User' },
     startedAt: { type: Date, default: Date.now },

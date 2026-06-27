@@ -306,7 +306,7 @@ export async function updateOrderStatus(
   }
 
   order.status = newStatus;
-  order.statusHistory.push({ status: newStatus, changedAt: new Date(), changedBy, reason });
+  order.statusHistory.push({ status: newStatus, changedAt: new Date(), changedBy: changedBy as never, reason });
   await order.save();
 
   await notifyUser({
@@ -352,12 +352,12 @@ async function pushSaleInvoiceToMarg(order: IOrder): Promise<void> {
     log.status = result.success ? MargSyncStatus.SUCCESS : MargSyncStatus.FAILED;
     log.recordsProcessed = result.success ? 1 : 0;
     log.recordsFailed = result.success ? 0 : 1;
-    if (result.message) log.errors = [result.message];
+    if (result.message) log.errorMessages = [result.message];
     log.finishedAt = new Date();
     await log.save();
   } catch (err) {
     log.status = MargSyncStatus.FAILED;
-    log.errors = [(err as Error).message];
+    log.errorMessages = [(err as Error).message];
     log.finishedAt = new Date();
     await log.save();
   }

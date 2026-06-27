@@ -19,6 +19,7 @@ export function readTabularFile(filePath: string): FileRow[] {
     const firstSheetName = workbook.SheetNames[0];
     if (!firstSheetName) return [];
     const sheet = workbook.Sheets[firstSheetName];
+    if (!sheet) return [];
     return XLSX.utils.sheet_to_json<FileRow>(sheet, { raw: false, defval: '' });
   }
 

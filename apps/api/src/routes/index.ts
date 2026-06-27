@@ -1,0 +1,48 @@
+import { Router } from 'express';
+import authRoutes from './auth.routes';
+import addressRoutes from './address.routes';
+import catalogRoutes from './catalog.routes';
+import medicineRoutes from './medicine.routes';
+import cartRoutes from './cart.routes';
+import orderRoutes from './order.routes';
+import paymentRoutes from './payment.routes';
+import couponRoutes from './coupon.routes';
+import walletRoutes from './wallet.routes';
+import reviewRoutes from './review.routes';
+import prescriptionRoutes from './prescription.routes';
+import wishlistRoutes from './wishlist.routes';
+import notificationRoutes from './notification.routes';
+import driverRoutes from './driver.routes';
+import userRoutes from './user.routes';
+import analyticsRoutes from './analytics.routes';
+import inventoryRoutes from './inventory.routes';
+import margRoutes from './marg.routes';
+import auditRoutes from './audit.routes';
+import reportRoutes from './report.routes';
+import uploadRoutes from './upload.routes';
+
+const router = Router();
+
+router.use('/auth', authRoutes);
+router.use('/addresses', addressRoutes);
+router.use('/catalog', catalogRoutes);
+router.use('/medicines', medicineRoutes);
+router.use('/cart', cartRoutes);
+router.use('/orders', orderRoutes);
+router.use('/payments', paymentRoutes);
+router.use('/coupons', couponRoutes);
+router.use('/wallet', walletRoutes);
+router.use('/reviews', reviewRoutes);
+router.use('/prescriptions', prescriptionRoutes);
+router.use('/wishlist', wishlistRoutes);
+router.use('/notifications', notificationRoutes);
+router.use('/drivers', driverRoutes);
+router.use('/users', userRoutes);
+router.use('/analytics', analyticsRoutes);
+router.use('/inventory', inventoryRoutes);
+router.use('/marg', margRoutes);
+router.use('/audit-logs', auditRoutes);
+router.use('/reports', reportRoutes);
+router.use('/uploads', uploadRoutes);
+
+export default router;

@@ -11,4 +11,5 @@ export * from './review.dto';
 export * from './prescription.dto';
 export * from './wallet.dto';
 export * from './driver.dto';
+export * from './inventory.dto';
 export * from './marg.dto';

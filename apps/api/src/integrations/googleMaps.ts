@@ -30,7 +30,9 @@ export async function geocodeAddress(address: string): Promise<GeocodeResult | n
     return null;
   }
 
-  const [result] = body.results;
+  const result = body.results[0];
+  if (!result) return null;
+
   return {
     lat: result.geometry.location.lat,
     lng: result.geometry.location.lng,

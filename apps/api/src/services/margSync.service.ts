@@ -232,12 +232,12 @@ async function runEntitySync(entity: MargSyncEntity, triggeredBy?: string): Prom
 
     log.recordsProcessed = result.processed;
     log.recordsFailed = result.failed;
-    log.errors = result.errors;
+    log.errorMessages = result.errors;
     log.status = result.failed === 0 ? MargSyncStatus.SUCCESS : result.processed > 0 ? MargSyncStatus.PARTIAL : MargSyncStatus.FAILED;
   } catch (err) {
     logger.error({ err, entity }, 'MARG sync run failed');
     log.status = MargSyncStatus.FAILED;
-    log.errors = [(err as Error).message];
+    log.errorMessages = [(err as Error).message];
   }
 
   log.finishedAt = new Date();
