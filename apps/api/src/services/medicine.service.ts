@@ -34,8 +34,13 @@ export async function getMedicineBySlug(slug: string) {
     return found;
   });
 
+  // findBySlug populates categoryId for the response, which replaces it with the populated
+  // document — `.populated()` recovers the original raw ObjectId regardless of population state,
+  // so this doesn't break when the field is populated (avoids casting the populated object itself).
+  const categoryId = medicine.populated('categoryId') ?? medicine.categoryId;
+
   const [related, ratingAgg] = await Promise.all([
-    medicineRepository.findRelated(String(medicine._id), String(medicine.categoryId)),
+    medicineRepository.findRelated(String(medicine._id), String(categoryId)),
     reviewRepository.getAggregateRating(String(medicine._id)),
   ]);
 
