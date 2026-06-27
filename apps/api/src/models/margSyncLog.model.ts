@@ -38,6 +38,9 @@ const margSyncLogSchema = new Schema<IMargSyncLog>(
   { timestamps: { createdAt: true, updatedAt: false } },
 );
 
+// listRecent always sorts newest-first.
+margSyncLogSchema.index({ createdAt: -1 });
+
 toJSONPlugin(margSyncLogSchema);
 
 export const MargSyncLogModel = model<IMargSyncLog>('MargSyncLog', margSyncLogSchema);

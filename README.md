@@ -143,6 +143,24 @@ disposable database per run and drops it on teardown — it never touches your d
 TEST_MONGO_URI="mongodb://localhost:27017" npm test
 ```
 
+## Load Testing
+
+`apps/api/loadtest/browse.k6.js` is a [k6](https://k6.io/docs/get-started/installation/) script
+covering read-heavy public storefront traffic (search, product detail, category browsing) —
+ramping to 200 concurrent virtual users with p95 latency and error-rate thresholds. It's
+deliberately scoped to unauthenticated endpoints, since load-testing the checkout flow needs a way
+to mint test sessions without real SMS OTP delivery; the inventory engine's correctness under
+concurrency (the never-oversell guarantee) is proven separately — and more precisely — by the Jest
+test in `tests/inventory.test.ts` (25 parallel reservation attempts against 10 units of stock,
+asserting exactly 10 succeed). This script measures throughput/latency, not correctness, and its
+thresholds have not yet been validated against a real staging deployment — see
+[Roadmap](#roadmap--phase-3).
+
+```bash
+k6 run apps/api/loadtest/browse.k6.js
+k6 run -e BASE_URL=https://api.medicaremedicalstore.com/api/v1 apps/api/loadtest/browse.k6.js
+```
+
 Coverage includes: concurrent-reservation never-oversell guarantees, FIFO batch allocation/commit/
 restore, the order status state machine (including GST invoice generation on delivery), cart
 pricing and coupon discount math, OTP auth + refresh token rotation/reuse-detection, the

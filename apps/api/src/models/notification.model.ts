@@ -16,16 +16,20 @@ export interface INotification extends Document {
 
 const notificationSchema = new Schema<INotification>(
   {
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     channel: { type: String, enum: Object.values(NotificationChannel), required: true },
     type: { type: String, enum: Object.values(NotificationType), required: true },
     title: { type: String, required: true },
     message: { type: String, required: true },
     data: { type: Schema.Types.Mixed },
-    isRead: { type: Boolean, default: false, index: true },
+    isRead: { type: Boolean, default: false },
   },
   { timestamps: { createdAt: true, updatedAt: false } },
 );
+
+// Matches listForUser's exact filter+sort (userId, newest first) and the unread-count query.
+notificationSchema.index({ userId: 1, createdAt: -1 });
+notificationSchema.index({ userId: 1, isRead: 1 });
 
 toJSONPlugin(notificationSchema);
 

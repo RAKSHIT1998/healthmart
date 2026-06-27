@@ -17,8 +17,8 @@ export interface IWalletTransaction extends Document {
 
 const walletTransactionSchema = new Schema<IWalletTransaction>(
   {
-    walletId: { type: Schema.Types.ObjectId, ref: 'Wallet', required: true, index: true },
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    walletId: { type: Schema.Types.ObjectId, ref: 'Wallet', required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     type: { type: String, enum: Object.values(WalletTransactionType), required: true },
     amount: { type: Number, required: true, min: 0 },
     reason: { type: String, enum: Object.values(WalletTransactionReason), required: true },
@@ -28,6 +28,9 @@ const walletTransactionSchema = new Schema<IWalletTransaction>(
   },
   { timestamps: { createdAt: true, updatedAt: false } },
 );
+
+// Matches listForUser's exact filter+sort (userId, newest first).
+walletTransactionSchema.index({ userId: 1, createdAt: -1 });
 
 toJSONPlugin(walletTransactionSchema);
 

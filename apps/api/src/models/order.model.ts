@@ -142,8 +142,8 @@ const statusHistorySchema = new Schema<IStatusHistoryEntry>(
 const orderSchema = new Schema<IOrder>(
   {
     orderNumber: { type: String, required: true, unique: true },
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-    branchId: { type: Schema.Types.ObjectId, ref: 'Branch', required: true, index: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    branchId: { type: Schema.Types.ObjectId, ref: 'Branch', required: true },
     items: { type: [orderItemSchema], required: true, validate: (v: unknown[]) => v.length > 0 },
     addressSnapshot: { type: addressSnapshotSchema, required: true },
     deliverySlot: {
@@ -157,13 +157,11 @@ const orderSchema = new Schema<IOrder>(
       type: String,
       enum: Object.values(PaymentStatus),
       default: PaymentStatus.PENDING,
-      index: true,
     },
     status: {
       type: String,
       enum: Object.values(OrderStatus),
       default: OrderStatus.PENDING_PAYMENT,
-      index: true,
     },
     statusHistory: { type: [statusHistorySchema], default: [] },
     subtotal: { type: Number, required: true, min: 0 },
@@ -192,8 +190,15 @@ const orderSchema = new Schema<IOrder>(
   { timestamps: true },
 );
 
-orderSchema.index({ createdAt: -1 });
-orderSchema.index({ status: 1, reservationExpiresAt: 1 });
+// Each compound index below matches an exact filter+sort used somewhere in order.repository.ts
+// or report.service.ts — chosen deliberately rather than indexing every field separately, since
+// over-indexing slows down every order write (and this collection is the highest-write-volume one
+// in the whole schema).
+orderSchema.index({ userId: 1, createdAt: -1 }); // customer order history
+orderSchema.index({ status: 1, createdAt: -1 }); // admin status-filtered list
+orderSchema.index({ branchId: 1, createdAt: -1 }); // admin branch-filtered list / per-branch reports
+orderSchema.index({ paymentStatus: 1, createdAt: -1 }); // sales report date-range query
+orderSchema.index({ status: 1, reservationExpiresAt: 1 }); // expired-reservation cron sweep
 
 toJSONPlugin(orderSchema, ['deliveryOtpHash']);
 
