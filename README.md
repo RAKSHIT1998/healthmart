@@ -295,20 +295,22 @@ Point `MONGO_URI` at an Atlas connection string. Atlas clusters run as replica s
 which is compatible with everything in this codebase (no multi-document transactions are used —
 reservations rely on atomically-guarded single-document updates instead).
 
-## Roadmap / Phase 2b
+## Roadmap / Phase 3
 
 Tracked as explicitly deferred, not forgotten:
 
-- Doctor video/audio consultation (appointment booking + a WebRTC provider integration)
-- Full Health Blog CMS authoring UI + public blog pages + comments
-- Live driver GPS tracking (sockets) + route optimization + signature proof-of-delivery
-- Advanced analytics: heatmaps, repeat-customer/retention cohorts, sales forecasting
-- Multi-pharmacy/branch admin UI, employee permission matrix, backup/restore tooling
+- Load testing and index-tuning pass validated against real, sustained traffic (a synthetic k6
+  script is included — see below — but real capacity numbers need a real run against staging)
+- Advanced analytics that need real usage data to be meaningful: heatmaps, repeat-customer/
+  retention cohorts, sales forecasting
 - CDN tuning
-- Load testing and index-tuning pass for true 100k-customer scale
+- Multi-stop delivery route optimization (today's ETA is single-destination distance/duration, not
+  a multi-order routing solver)
 
-Shipped in Phase 2a (no longer on this list): automated test suite, Redis caching layer, WhatsApp
-notifications, referral program, gift cards, flash-sale scheduler.
+Shipped in Phase 2a (automated test suite, Redis caching layer, WhatsApp notifications, referral
+program, gift cards, flash-sale scheduler) and Phase 2b (live driver GPS tracking + proof of
+delivery, multi-branch admin + permission matrix + backup/restore, full blog CMS, doctor
+telehealth with video/audio + payments + prescriptions) — no longer on this list.
 
 ## License
 

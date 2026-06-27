@@ -25,6 +25,7 @@ export function VideoCallRoom({ appointmentId, callType, onLeave }: VideoCallRoo
 
   useEffect(() => {
     if (!tokenData) return;
+    const token = tokenData;
     let cancelled = false;
 
     async function join() {
@@ -46,7 +47,7 @@ export function VideoCallRoom({ appointmentId, callType, onLeave }: VideoCallRoo
       });
       client.on('user-unpublished', () => setRemoteJoined(false));
 
-      await client.join(tokenData.appId, tokenData.channelName, tokenData.token, tokenData.uid);
+      await client.join(token.appId, token.channelName, token.token, token.uid);
 
       const audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
       tracksRef.current.audio = audioTrack;

@@ -1,4 +1,5 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import type { Types } from 'mongoose';
 import type { IAppointment } from '../../models/appointment.model';
 import type { IDoctor } from '../../models/doctor.model';
 import type { IUser } from '../../models/user.model';
@@ -7,9 +8,16 @@ const PAGE_WIDTH = 595.28;
 const PAGE_HEIGHT = 841.89;
 const MARGIN = 50;
 
+/** `doctor.userId` is typed as a bare ObjectId on IDoctor, but callers always pass a `.populate('userId', 'name')`'d doctor here. */
+type DoctorWithPopulatedUser = Omit<IDoctor, 'userId'> & { userId: Types.ObjectId | { name: string } };
+
+function getDoctorName(doctor: DoctorWithPopulatedUser): string {
+  return typeof doctor.userId === 'object' && 'name' in doctor.userId ? doctor.userId.name : '';
+}
+
 export async function generateConsultationPrescriptionPdf(
   appointment: IAppointment,
-  doctor: IDoctor,
+  doctor: DoctorWithPopulatedUser,
   patient: IUser,
 ): Promise<Buffer> {
   const pdfDoc = await PDFDocument.create();
@@ -28,7 +36,7 @@ export async function generateConsultationPrescriptionPdf(
   drawText('Medicare Medical Store — Teleconsultation Prescription', MARGIN, 16, true, rgb(0.05, 0.4, 0.3));
   lineBreak(26);
 
-  drawText(`Doctor: Dr. ${(doctor as unknown as { userId: { name: string } }).userId?.name ?? ''}`, MARGIN, 10, true);
+  drawText(`Doctor: Dr. ${getDoctorName(doctor)}`, MARGIN, 10, true);
   lineBreak(14);
   drawText(`${doctor.qualification} · ${doctor.specialization}`, MARGIN, 9);
   lineBreak(20);
