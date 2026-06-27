@@ -47,6 +47,12 @@ class OrderRepository extends BaseRepository<IOrder> {
     );
   }
 
+  /** Order IDs a driver is actively out delivering — used to fan out live location pushes. */
+  async findActiveDeliveryOrderIds(driverId: string): Promise<string[]> {
+    const orders = await this.model.find({ driverId, status: OrderStatus.OUT_FOR_DELIVERY }, '_id');
+    return orders.map((o) => String(o._id));
+  }
+
   async appendStatusHistory(orderId: string, entry: IStatusHistoryEntry) {
     return this.model.findByIdAndUpdate(
       orderId,

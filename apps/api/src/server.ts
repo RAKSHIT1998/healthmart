@@ -4,6 +4,7 @@ import { logger } from './config/logger';
 import { connectDatabase, disconnectDatabase } from './config/db';
 import { disconnectRedis } from './config/redis';
 import { startAllCronJobs } from './jobs';
+import { initSocketServer } from './realtime/socket';
 
 async function bootstrap(): Promise<void> {
   await connectDatabase();
@@ -15,6 +16,8 @@ async function bootstrap(): Promise<void> {
     logger.info(`Medicare Medical Store API listening on port ${env.PORT} [${env.NODE_ENV}]`);
     logger.info(`Swagger docs available at ${env.API_BASE_URL}/api/docs`);
   });
+
+  initSocketServer(server);
 
   const shutdown = async (signal: string) => {
     logger.info(`${signal} received, shutting down gracefully...`);

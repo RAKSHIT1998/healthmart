@@ -2,6 +2,7 @@ import { Role, type CreateDriverInput } from '@healthmart/shared';
 import { driverRepository, orderRepository, userRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { hashPassword } from '../utils/hash';
+import { emitDriverLocation } from '../realtime/socket';
 
 export async function createDriver(input: CreateDriverInput) {
   const existingUser = await userRepository.findByPhone(input.phone);
@@ -49,7 +50,14 @@ export async function updateAvailability(userId: string, isAvailable: boolean) {
 export async function updateLocation(userId: string, lat: number, lng: number) {
   const driver = await driverRepository.findByUserId(userId);
   if (!driver) throw ApiError.notFound('Driver profile not found');
-  return driverRepository.updateLocation(String(driver._id), lat, lng);
+  const updated = await driverRepository.updateLocation(String(driver._id), lat, lng);
+
+  const activeOrderIds = await orderRepository.findActiveDeliveryOrderIds(String(driver._id));
+  for (const orderId of activeOrderIds) {
+    emitDriverLocation(orderId, { lat, lng });
+  }
+
+  return updated;
 }
 
 export async function getAssignedOrders(userId: string, page: number, limit: number) {
