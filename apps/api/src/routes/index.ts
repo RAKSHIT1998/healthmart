@@ -23,6 +23,7 @@ import uploadRoutes from './upload.routes';
 import promotionsRoutes from './promotions.routes';
 import blogRoutes from './blog.routes';
 import telehealthRoutes from './telehealth.routes';
+import returnRoutes from './return.routes';
 
 const router = Router();
 
@@ -50,5 +51,6 @@ router.use('/uploads', uploadRoutes);
 router.use('/promotions', promotionsRoutes);
 router.use('/blog', blogRoutes);
 router.use('/telehealth', telehealthRoutes);
+router.use('/returns', returnRoutes);
 
 export default router;

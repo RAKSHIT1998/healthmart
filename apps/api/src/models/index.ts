@@ -32,3 +32,4 @@ export * from './giftCard.model';
 export * from './flashSale.model';
 export * from './doctor.model';
 export * from './appointment.model';
+export * from './returnRequest.model';

@@ -17,3 +17,4 @@ export * from './inventory.dto';
 export * from './marg.dto';
 export * from './promotions.dto';
 export * from './telehealth.dto';
+export * from './return.dto';

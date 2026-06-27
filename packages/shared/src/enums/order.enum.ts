@@ -43,3 +43,24 @@ export enum DeliverySlotType {
   EXPRESS = 'express',
   SCHEDULED = 'scheduled',
 }
+
+export enum ReturnStatus {
+  REQUESTED = 'requested',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+  REFUNDED = 'refunded',
+}
+
+export enum ReturnReasonCategory {
+  DAMAGED = 'damaged',
+  WRONG_ITEM = 'wrong_item',
+  EXPIRED = 'expired',
+  QUALITY_ISSUE = 'quality_issue',
+  NO_LONGER_NEEDED = 'no_longer_needed',
+  OTHER = 'other',
+}
+
+export enum RefundMethod {
+  WALLET = 'wallet',
+  ORIGINAL_PAYMENT = 'original_payment',
+}

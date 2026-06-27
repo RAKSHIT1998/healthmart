@@ -20,3 +20,4 @@ export * from './blog.repository';
 export * from './analytics.repository';
 export * from './promotions.repository';
 export * from './telehealth.repository';
+export * from './returnRequest.repository';

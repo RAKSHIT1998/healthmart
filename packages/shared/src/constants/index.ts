@@ -39,6 +39,8 @@ export const CHECKOUT_CONFIG = {
 
 export const LOW_STOCK_THRESHOLD_UNITS = 10;
 export const EXPIRY_ALERT_WINDOW_DAYS = 90;
+/** Days after delivery a customer can request a return. */
+export const RETURN_WINDOW_DAYS = 7;
 
 export const REFERRAL_CONFIG = {
   /** Wallet credit (₹) for the existing customer whose code was used. */
