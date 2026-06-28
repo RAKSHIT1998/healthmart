@@ -2,6 +2,13 @@ import { Schema, model, Types, type Document } from 'mongoose';
 import { Role } from '@healthmart/shared';
 import { toJSONPlugin } from './plugins/toJSON.plugin';
 
+export interface INotificationPreferences {
+  sms: boolean;
+  email: boolean;
+  push: boolean;
+  whatsapp: boolean;
+}
+
 export interface IUser extends Document {
   _id: Types.ObjectId;
   name: string;
@@ -19,6 +26,7 @@ export interface IUser extends Document {
   tokenVersion: number;
   referralCode?: string;
   referredBy?: Types.ObjectId;
+  notificationPreferences: INotificationPreferences;
   lastLoginAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -41,6 +49,12 @@ const userSchema = new Schema<IUser>(
     tokenVersion: { type: Number, default: 0 },
     referralCode: { type: String, unique: true, sparse: true, uppercase: true },
     referredBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    notificationPreferences: {
+      sms: { type: Boolean, default: true },
+      email: { type: Boolean, default: true },
+      push: { type: Boolean, default: true },
+      whatsapp: { type: Boolean, default: true },
+    },
     lastLoginAt: { type: Date },
   },
   { timestamps: true },

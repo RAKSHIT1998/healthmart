@@ -5,7 +5,7 @@
 A production-grade pharmacy e-commerce platform: customer storefront, internal operations
 dashboard, REST API, and a MARG ERP integration layer. Built as a TypeScript monorepo.
 
-## Project status: Phase 1 + Phase 2a + Phase 2b + Phase 2c
+## Project status: Phase 1 + Phase 2a + Phase 2b + Phase 2c + Phase 2d
 
 This is a genuinely large platform (storefront + 5 internal role panels + ERP sync + telehealth +
 live GPS tracking + multi-pharmacy support, etc.) — too large to build to full production maturity
@@ -35,6 +35,12 @@ Stock" view and a stock movement audit trail across all branches; and a working 
 — admins can upload a Marg CSV/XLSX export directly from the dashboard and have it parsed and
 applied immediately, independent of the configured sync mode — alongside a new Reports page
 (sales, GST, stock, expiry — viewable or CSV-exportable).
+
+**Phase 2d** closes out the two gaps Phase 2c's audit explicitly flagged as missing: a full
+post-delivery returns/refunds workflow (7-day window, prescription items excluded, partial-item
+returns, stock restoration, refund to wallet or back to the original Cashfree payment, customer +
+admin UI) and per-channel notification preferences (SMS/email/push/WhatsApp opt-out on the profile
+page, actually enforced in the notification dispatch path, not just cosmetic).
 
 **Explicitly out of scope still** (see [the plan](#roadmap--phase-3) below): a load-testing and
 index-tuning pass validated against real traffic, and the deeper analytics (heatmaps, retention
@@ -333,17 +339,14 @@ Tracked as explicitly deferred, not forgotten:
 - CDN tuning
 - Multi-stop delivery route optimization (today's ETA is single-destination distance/duration, not
   a multi-order routing solver)
-- Order returns/refunds workflow (cancellation pre-fulfillment is supported; a post-delivery
-  return → refund-to-wallet/gateway flow is not yet built, backend or frontend)
-- Customer-facing notification preferences (per-channel opt-in/out for SMS/email/push) — no model
-  field or UI yet, beyond the transactional sends already wired into the order/appointment flows
 
 Shipped in Phase 2a (automated test suite, Redis caching layer, WhatsApp notifications, referral
 program, gift cards, flash-sale scheduler), Phase 2b (live driver GPS tracking + proof of
 delivery, multi-branch admin + permission matrix + backup/restore, full blog CMS, doctor
-telehealth with video/audio + payments + prescriptions), and Phase 2c (location picker UI,
+telehealth with video/audio + payments + prescriptions), Phase 2c (location picker UI,
 unified product+stock creation, inventory movement audit trail, MARG CSV upload UI, GST/sales/
-stock/expiry reports) — no longer on this list.
+stock/expiry reports), and Phase 2d (returns/refunds workflow, notification preferences) — no
+longer on this list.
 
 ## License
 

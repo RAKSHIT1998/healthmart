@@ -10,8 +10,17 @@ const router = Router();
 
 router.use(authenticate);
 
+const updateMeSchema = z
+  .object({
+    name: z.string().min(2).max(80),
+    email: z.string().email(),
+    avatarUrl: z.string().url(),
+    notificationPreferences: z.object({ sms: z.boolean(), email: z.boolean(), push: z.boolean(), whatsapp: z.boolean() }).partial(),
+  })
+  .partial();
+
 router.get('/me', userController.me);
-router.patch('/me', validate({ body: z.object({ name: z.string().min(2).max(80), email: z.string().email(), avatarUrl: z.string().url() }).partial() }), userController.updateMe);
+router.patch('/me', validate({ body: updateMeSchema }), userController.updateMe);
 
 router.get('/staff', requireRole(Role.ADMIN, Role.MANAGER), validate({ query: paginationQuerySchema }), userController.listStaff);
 router.get('/customers', requireRole(Role.ADMIN, Role.MANAGER), validate({ query: paginationQuerySchema }), userController.listCustomers);

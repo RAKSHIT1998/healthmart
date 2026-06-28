@@ -50,5 +50,5 @@ export const process = asyncHandler(async (req: AuthenticatedRequest, res: Respo
     entityId: req.params.id as string,
     after: { status: returnRequest.status },
   });
-  sendSuccess(res, returnRequest, `Return request ${input.action}d`);
+  sendSuccess(res, returnRequest, input.action === 'approve' ? 'Return request approved' : 'Return request rejected');
 });

@@ -10,6 +10,7 @@ export interface AuthUser {
   email?: string;
   role: string;
   loyaltyPoints: number;
+  notificationPreferences?: { sms: boolean; email: boolean; push: boolean; whatsapp: boolean };
 }
 
 interface AuthState {

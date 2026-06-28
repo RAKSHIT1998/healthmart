@@ -34,6 +34,24 @@ export default function ProfilePage() {
     onError: (err: ApiClientError) => toast.error(err.message),
   });
 
+  const updatePreferences = useMutation({
+    mutationFn: (notificationPreferences: Record<string, boolean>) =>
+      api.patch('/users/me', { notificationPreferences }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['me'] });
+      toast.success('Notification preferences updated');
+    },
+    onError: (err: ApiClientError) => toast.error(err.message),
+  });
+
+  const prefs = user?.notificationPreferences ?? { sms: true, email: true, push: true, whatsapp: true };
+  const PREFERENCE_OPTIONS: Array<{ key: keyof typeof prefs; label: string }> = [
+    { key: 'sms', label: 'SMS' },
+    { key: 'email', label: 'Email' },
+    { key: 'push', label: 'Push notifications' },
+    { key: 'whatsapp', label: 'WhatsApp' },
+  ];
+
   return (
     <div className="space-y-6">
       <h1 className="text-xl font-bold">My Profile</h1>
@@ -59,6 +77,26 @@ export default function ProfilePage() {
               Logout
             </Button>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="space-y-3 p-5">
+          <div>
+            <h2 className="font-semibold">Notification Preferences</h2>
+            <p className="text-xs text-muted-foreground">Choose which channels we can use to reach you about your orders.</p>
+          </div>
+          {PREFERENCE_OPTIONS.map((option) => (
+            <label key={option.key} className="flex items-center justify-between rounded-lg border p-3 text-sm">
+              {option.label}
+              <input
+                type="checkbox"
+                checked={prefs[option.key]}
+                onChange={(e) => updatePreferences.mutate({ [option.key]: e.target.checked })}
+                disabled={updatePreferences.isPending}
+              />
+            </label>
+          ))}
         </CardContent>
       </Card>
     </div>

@@ -55,8 +55,21 @@ export async function getUserProfile(userId: string) {
   return user;
 }
 
-export async function updateProfile(userId: string, updates: { name?: string; email?: string; avatarUrl?: string }) {
-  const user = await userRepository.updateById(userId, updates);
+export interface UpdateProfileInput {
+  name?: string;
+  email?: string;
+  avatarUrl?: string;
+  notificationPreferences?: Partial<{ sms: boolean; email: boolean; push: boolean; whatsapp: boolean }>;
+}
+
+export async function updateProfile(userId: string, updates: UpdateProfileInput) {
+  const { notificationPreferences, ...rest } = updates;
+  const setOps: Record<string, unknown> = { ...rest };
+  for (const [key, value] of Object.entries(notificationPreferences ?? {})) {
+    setOps[`notificationPreferences.${key}`] = value;
+  }
+
+  const user = await userRepository.updateById(userId, setOps);
   if (!user) throw ApiError.notFound('User not found');
   return user;
 }

@@ -41,7 +41,16 @@ export async function notifyUser({
   const user = await UserModel.findById(userId);
   if (!user) return;
 
+  const prefs = user.notificationPreferences;
+
   for (const channel of channels) {
+    // IN_APP is always recorded above regardless of preference — these opt-outs only govern
+    // outbound SMS/email/push/WhatsApp sends, not the in-app notification list itself.
+    if (channel === NotificationChannel.SMS && prefs?.sms === false) continue;
+    if (channel === NotificationChannel.EMAIL && prefs?.email === false) continue;
+    if (channel === NotificationChannel.PUSH && prefs?.push === false) continue;
+    if (channel === NotificationChannel.WHATSAPP && prefs?.whatsapp === false) continue;
+
     try {
       if (channel === NotificationChannel.SMS && user.phone) {
         await sendTransactionalSms(user.phone, 'order_update', { title, message });
