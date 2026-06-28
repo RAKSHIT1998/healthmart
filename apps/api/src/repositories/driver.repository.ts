@@ -14,6 +14,11 @@ class DriverRepository extends BaseRepository<IDriver> {
     return this.model.find({ branchId, isAvailable: true }).populate('userId', 'name phone');
   }
 
+  /** All drivers for a branch regardless of online/offline status, ranked by delivery volume — used for the admin performance overview. */
+  async listByBranch(branchId: string) {
+    return this.model.find({ branchId }).populate('userId', 'name phone').sort({ totalDeliveries: -1 });
+  }
+
   async updateLocation(driverId: string, lat: number, lng: number) {
     return this.model.findByIdAndUpdate(
       driverId,

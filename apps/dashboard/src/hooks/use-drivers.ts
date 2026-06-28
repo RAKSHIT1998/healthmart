@@ -13,6 +13,15 @@ export function useAvailableDrivers(branchId: string) {
   });
 }
 
+/** All drivers for a branch regardless of online/offline status, ranked by delivery volume. */
+export function useAllDrivers(branchId: string) {
+  return useQuery({
+    queryKey: ['drivers-all', branchId],
+    queryFn: () => api.get<Driver[]>(`/drivers/branch/${branchId}`),
+    enabled: !!branchId,
+  });
+}
+
 export interface CreateDriverInput {
   name: string;
   phone: string;

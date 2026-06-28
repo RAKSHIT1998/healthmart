@@ -39,6 +39,10 @@ export async function listAvailableDrivers(branchId: string) {
   return driverRepository.listAvailable(branchId);
 }
 
+export async function listDriversByBranch(branchId: string) {
+  return driverRepository.listByBranch(branchId);
+}
+
 export async function updateAvailability(userId: string, isAvailable: boolean) {
   const driver = await driverRepository.findByUserId(userId);
   if (!driver) throw ApiError.notFound('Driver profile not found');

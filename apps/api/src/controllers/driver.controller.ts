@@ -14,6 +14,10 @@ export const listAvailable = asyncHandler(async (req: Request, res: Response) =>
   sendSuccess(res, await driverService.listAvailableDrivers(req.params.branchId as string));
 });
 
+export const listByBranch = asyncHandler(async (req: Request, res: Response) => {
+  sendSuccess(res, await driverService.listDriversByBranch(req.params.branchId as string));
+});
+
 export const updateAvailability = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
   sendSuccess(res, await driverService.updateAvailability(req.user!.id, req.body.isAvailable), 'Availability updated');
 });

@@ -11,6 +11,7 @@ router.use(authenticate);
 
 router.post('/', requireRole(Role.ADMIN, Role.MANAGER), validate({ body: createDriverSchema }), driverController.create);
 router.get('/available/:branchId', requireRole(Role.ADMIN, Role.MANAGER), driverController.listAvailable);
+router.get('/branch/:branchId', requireRole(Role.ADMIN, Role.MANAGER), driverController.listByBranch);
 
 router.patch('/me/availability', requireRole(Role.DELIVERY_BOY), validate({ body: updateDriverAvailabilitySchema }), driverController.updateAvailability);
 router.patch('/me/location', requireRole(Role.DELIVERY_BOY), validate({ body: updateDriverLocationSchema }), driverController.updateLocation);
