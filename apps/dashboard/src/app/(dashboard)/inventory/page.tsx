@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Image from 'next/image';
-import { PackagePlus, Plus } from 'lucide-react';
+import { Check, PackagePlus, Plus, X } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -50,6 +50,35 @@ export default function InventoryPage() {
   const [selectedMedicine, setSelectedMedicine] = useState<{ id: string; name: string } | null>(null);
   const [lastBranchId, setLastBranchId] = useState('');
   const [form, setForm] = useState({ branchId: '', batchNumber: '', expiryDate: '', quantity: '', costPrice: '' });
+
+  // Inline "+ Stock" quick-add — click the row, type a quantity, hit Enter. Uses the same
+  // smart defaults (auto batch number, +1yr expiry, ₹0 cost) as the full dialog so it's a true
+  // one-step action; "Receive Purchase" up top remains for when real batch/expiry/cost matter.
+  const [quickAddItemId, setQuickAddItemId] = useState<string | null>(null);
+  const [quickAddQty, setQuickAddQty] = useState('');
+  const quickAddInputRef = useRef<HTMLInputElement>(null);
+
+  function startQuickAdd(itemId: string) {
+    setQuickAddItemId(itemId);
+    setQuickAddQty('');
+    requestAnimationFrame(() => quickAddInputRef.current?.focus());
+  }
+
+  function submitQuickAdd(medicineId: string, branchId: string) {
+    const quantity = Number(quickAddQty);
+    if (!quantity || quantity <= 0) return;
+    receivePurchase.mutate(
+      {
+        medicineId,
+        branchId,
+        batchNumber: defaultBatchNumber(),
+        expiryDate: new Date(defaultExpiryDate()).toISOString(),
+        quantity,
+        costPrice: 0,
+      },
+      { onSuccess: () => setQuickAddItemId(null) },
+    );
+  }
 
   function openReceivePurchase(medicine?: { id: string; name: string }) {
     setSelectedMedicine(medicine ?? null);
@@ -147,11 +176,37 @@ export default function InventoryPage() {
                             <Badge variant={available <= item.lowStockThreshold ? 'warning' : 'success'}>{available}</Badge>
                           </td>
                           <td className="p-3 text-right">
-                            {medicine && (
-                              <Button size="sm" variant="outline" onClick={() => openReceivePurchase({ id: medicine.id, name: medicine.name })}>
-                                + Stock
-                              </Button>
-                            )}
+                            {medicine &&
+                              (quickAddItemId === item.id ? (
+                                <form
+                                  className="flex items-center justify-end gap-1"
+                                  onSubmit={(e) => {
+                                    e.preventDefault();
+                                    submitQuickAdd(medicine.id, branch?.id ?? String(item.branchId));
+                                  }}
+                                >
+                                  <Input
+                                    ref={quickAddInputRef}
+                                    type="number"
+                                    min={1}
+                                    value={quickAddQty}
+                                    onChange={(e) => setQuickAddQty(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Escape' && setQuickAddItemId(null)}
+                                    placeholder="Qty"
+                                    className="h-8 w-20 text-right"
+                                  />
+                                  <Button type="submit" size="icon" variant="outline" className="h-8 w-8" disabled={receivePurchase.isPending}>
+                                    <Check className="h-3.5 w-3.5" />
+                                  </Button>
+                                  <Button type="button" size="icon" variant="ghost" className="h-8 w-8" onClick={() => setQuickAddItemId(null)}>
+                                    <X className="h-3.5 w-3.5" />
+                                  </Button>
+                                </form>
+                              ) : (
+                                <Button size="sm" variant="outline" onClick={() => startQuickAdd(item.id)}>
+                                  + Stock
+                                </Button>
+                              ))}
                           </td>
                         </tr>
                       );
