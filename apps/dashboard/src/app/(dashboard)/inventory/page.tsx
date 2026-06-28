@@ -24,6 +24,16 @@ import { useBranches } from '@/hooks/use-catalog';
 import { MedicineSearchSelect } from '@/components/medicines/medicine-search-select';
 import { MedicineFormDialog } from '@/components/medicines/medicine-form-dialog';
 
+function defaultExpiryDate(): string {
+  const d = new Date();
+  d.setFullYear(d.getFullYear() + 1);
+  return d.toISOString().slice(0, 10);
+}
+
+function defaultBatchNumber(): string {
+  return `B${new Date().toISOString().slice(0, 10).replace(/-/g, '')}`;
+}
+
 export default function InventoryPage() {
   const [stockPage, setStockPage] = useState(1);
   const [movementsPage, setMovementsPage] = useState(1);
@@ -38,16 +48,21 @@ export default function InventoryPage() {
   const [purchaseOpen, setPurchaseOpen] = useState(false);
   const [productOpen, setProductOpen] = useState(false);
   const [selectedMedicine, setSelectedMedicine] = useState<{ id: string; name: string } | null>(null);
+  const [lastBranchId, setLastBranchId] = useState('');
   const [form, setForm] = useState({ branchId: '', batchNumber: '', expiryDate: '', quantity: '', costPrice: '' });
 
   function openReceivePurchase(medicine?: { id: string; name: string }) {
     setSelectedMedicine(medicine ?? null);
-    setForm({ branchId: '', batchNumber: '', expiryDate: '', quantity: '', costPrice: '' });
+    // Remembers the branch you used last time, or auto-picks the only branch you have — restocking
+    // the same branch over and over shouldn't need a fresh dropdown pick every time.
+    const branchId = lastBranchId || (branches?.length === 1 ? branches[0]!.id : '');
+    setForm({ branchId, batchNumber: defaultBatchNumber(), expiryDate: defaultExpiryDate(), quantity: '', costPrice: '' });
     setPurchaseOpen(true);
   }
 
   function handleSubmit() {
     if (!selectedMedicine || !form.branchId) return;
+    setLastBranchId(form.branchId);
     receivePurchase.mutate(
       {
         medicineId: selectedMedicine.id,
@@ -302,7 +317,13 @@ export default function InventoryPage() {
           <DialogHeader>
             <DialogTitle>Receive Purchase Stock</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-3">
+          <form
+            className="grid gap-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
             <div>
               <Label>Medicine</Label>
               <MedicineSearchSelect
@@ -323,6 +344,19 @@ export default function InventoryPage() {
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
+                <Label>Quantity</Label>
+                <Input
+                  type="number"
+                  value={form.quantity}
+                  onChange={(e) => setForm({ ...form, quantity: e.target.value })}
+                  autoFocus={!!selectedMedicine}
+                />
+              </div>
+              <div>
+                <Label>Cost Price (₹)</Label>
+                <Input type="number" placeholder="0" value={form.costPrice} onChange={(e) => setForm({ ...form, costPrice: e.target.value })} />
+              </div>
+              <div>
                 <Label>Batch Number</Label>
                 <Input value={form.batchNumber} onChange={(e) => setForm({ ...form, batchNumber: e.target.value })} />
               </div>
@@ -330,19 +364,11 @@ export default function InventoryPage() {
                 <Label>Expiry Date</Label>
                 <Input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} />
               </div>
-              <div>
-                <Label>Quantity</Label>
-                <Input type="number" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} />
-              </div>
-              <div>
-                <Label>Cost Price (₹)</Label>
-                <Input type="number" value={form.costPrice} onChange={(e) => setForm({ ...form, costPrice: e.target.value })} />
-              </div>
             </div>
-            <Button onClick={handleSubmit} disabled={receivePurchase.isPending}>
+            <Button type="submit" disabled={receivePurchase.isPending}>
               Save
             </Button>
-          </div>
+          </form>
         </DialogContent>
       </Dialog>
 
