@@ -17,9 +17,11 @@ interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
   user: AuthUser | null;
+  hasHydrated: boolean;
   setSession: (data: { accessToken: string; refreshToken: string; user: AuthUser }) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
   clearSession: () => void;
+  setHasHydrated: (hasHydrated: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -28,10 +30,17 @@ export const useAuthStore = create<AuthState>()(
       accessToken: null,
       refreshToken: null,
       user: null,
+      hasHydrated: false,
       setSession: ({ accessToken, refreshToken, user }) => set({ accessToken, refreshToken, user }),
       setTokens: (accessToken, refreshToken) => set({ accessToken, refreshToken }),
       clearSession: () => set({ accessToken: null, refreshToken: null, user: null }),
+      setHasHydrated: (hasHydrated) => set({ hasHydrated }),
     }),
-    { name: 'healthmart-auth' },
+    {
+      name: 'healthmart-auth',
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
+    },
   ),
 );

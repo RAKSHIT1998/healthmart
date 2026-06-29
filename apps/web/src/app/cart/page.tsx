@@ -15,6 +15,7 @@ import { useAuthStore } from '@/store/auth-store';
 
 export default function CartPage() {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const hasHydrated = useAuthStore((s) => s.hasHydrated);
   const router = useRouter();
   const { data: cart, isLoading } = useCart();
   const updateItem = useUpdateCartItem();
@@ -22,6 +23,10 @@ export default function CartPage() {
   const applyCoupon = useApplyCoupon();
   const removeCoupon = useRemoveCoupon();
   const [couponCode, setCouponCode] = useState('');
+
+  if (!hasHydrated) {
+    return null;
+  }
 
   if (!accessToken) {
     return (

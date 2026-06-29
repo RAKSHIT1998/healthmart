@@ -22,14 +22,15 @@ const NAV_ITEMS = [
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const hasHydrated = useAuthStore((s) => s.hasHydrated);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!accessToken) router.push('/login');
-  }, [accessToken, router]);
+    if (hasHydrated && !accessToken) router.push('/login');
+  }, [hasHydrated, accessToken, router]);
 
-  if (!accessToken) return null;
+  if (!hasHydrated || !accessToken) return null;
 
   return (
     <div className="container grid gap-8 py-8 md:grid-cols-[220px_1fr]">

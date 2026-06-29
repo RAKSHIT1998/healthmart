@@ -19,6 +19,7 @@ interface UploadResult {
 
 export default function PrescriptionUploadPage() {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const hasHydrated = useAuthStore((s) => s.hasHydrated);
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
@@ -57,6 +58,10 @@ export default function PrescriptionUploadPage() {
   function removeFile(index: number) {
     setFiles((prev) => prev.filter((_, i) => i !== index));
     setPreviews((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  if (!hasHydrated) {
+    return null;
   }
 
   if (!accessToken) {

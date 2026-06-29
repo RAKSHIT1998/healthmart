@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useStaffLogin } from '@/hooks/use-auth';
+import { NAV_ITEMS } from '@/components/layout/sidebar';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,7 +17,15 @@ export default function LoginPage() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    login.mutate({ email, password }, { onSuccess: () => router.push('/') });
+    login.mutate(
+      { email, password },
+      {
+        onSuccess: (data) => {
+          const landing = NAV_ITEMS.find((item) => item.roles.includes(data.user.role))?.href ?? '/';
+          router.push(landing);
+        },
+      },
+    );
   }
 
   return (

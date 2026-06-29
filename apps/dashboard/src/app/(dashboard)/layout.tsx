@@ -8,13 +8,14 @@ import { useAuthStore } from '@/store/auth-store';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const hasHydrated = useAuthStore((s) => s.hasHydrated);
   const router = useRouter();
 
   useEffect(() => {
-    if (!accessToken) router.push('/login');
-  }, [accessToken, router]);
+    if (hasHydrated && !accessToken) router.push('/login');
+  }, [hasHydrated, accessToken, router]);
 
-  if (!accessToken) return null;
+  if (!hasHydrated || !accessToken) return null;
 
   return (
     <div className="flex min-h-screen">

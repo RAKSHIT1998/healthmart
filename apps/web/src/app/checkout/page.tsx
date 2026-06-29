@@ -39,6 +39,7 @@ const SLOTS = [
 export default function CheckoutPage() {
   const router = useRouter();
   const accessToken = useAuthStore((s) => s.accessToken);
+  const hasHydrated = useAuthStore((s) => s.hasHydrated);
   const { data: cart } = useCart();
   const { data: addresses } = useAddresses();
   const createAddress = useCreateAddress();
@@ -73,10 +74,10 @@ export default function CheckoutPage() {
   const isBlockedByServiceability = !!selectedAddress && serviceability?.serviceable === false;
 
   useEffect(() => {
-    if (!accessToken) router.push('/login');
-  }, [accessToken, router]);
+    if (hasHydrated && !accessToken) router.push('/login');
+  }, [hasHydrated, accessToken, router]);
 
-  if (!accessToken) return null;
+  if (!hasHydrated || !accessToken) return null;
 
   function handleAddAddress() {
     if (!REGEX.PHONE.test(form.contactPhone) || !form.line1 || !form.city || !form.pincode) return;

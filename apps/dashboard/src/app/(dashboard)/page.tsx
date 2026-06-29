@@ -1,12 +1,17 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { AlertTriangle, Banknote, CalendarRange, Package, ShoppingBag, TimerOff, Users, Wallet } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Role } from '@healthmart/shared';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { api } from '@/lib/api';
 import { cn, formatCurrency } from '@/lib/utils';
+import { useAuthStore } from '@/store/auth-store';
+import { NAV_ITEMS } from '@/components/layout/sidebar';
 import type { DashboardMetrics, SalesTrendPoint } from '@/types';
 
 const WIDGETS: Array<{
@@ -37,14 +42,29 @@ function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: 
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const role = useAuthStore((s) => s.user?.role);
+  const canViewAnalytics = role === Role.ADMIN || role === Role.MANAGER;
+
+  useEffect(() => {
+    if (role && !canViewAnalytics) {
+      const landing = NAV_ITEMS.find((item) => item.roles.includes(role))?.href;
+      if (landing) router.replace(landing);
+    }
+  }, [role, canViewAnalytics, router]);
+
   const { data: metrics, isLoading } = useQuery({
     queryKey: ['dashboard-metrics'],
     queryFn: () => api.get<DashboardMetrics>('/analytics/dashboard'),
+    enabled: canViewAnalytics,
   });
   const { data: trend } = useQuery({
     queryKey: ['sales-trend'],
     queryFn: () => api.get<SalesTrendPoint[]>('/analytics/sales-trend?days=30'),
+    enabled: canViewAnalytics,
   });
+
+  if (role && !canViewAnalytics) return null;
 
   return (
     <div className="ambient-glow -m-6 space-y-6 p-6">
