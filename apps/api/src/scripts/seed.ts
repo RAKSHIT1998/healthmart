@@ -58,7 +58,22 @@ async function seed(): Promise<void> {
   }
   logger.info(`Seeded ${categories.length} categories`);
 
-  const manufacturers = ['Cipla', 'Sun Pharma', 'Dr Reddys', "Johnson & Johnson"];
+  const manufacturers = [
+    'Cipla',
+    'Sun Pharma',
+    'Dr Reddys',
+    'Johnson & Johnson',
+    'Mankind Pharma',
+    'Lupin',
+    'Abbott India',
+    'GSK Pharma',
+    'Glenmark',
+    'Torrent Pharma',
+    'Himalaya Wellness',
+    'Reckitt Benckiser',
+    'Zydus Cadila',
+    'Alkem Labs',
+  ];
   for (const name of manufacturers) {
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     await ManufacturerModel.findOneAndUpdate({ slug }, { $setOnInsert: { name, slug } }, { upsert: true });
