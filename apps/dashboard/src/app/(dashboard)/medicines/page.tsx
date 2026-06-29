@@ -53,6 +53,7 @@ export default function MedicinesPage() {
                 <th className="p-3">Price</th>
                 <th className="p-3">GST</th>
                 <th className="p-3">Rx</th>
+                <th className="p-3">Type</th>
                 <th className="p-3">Sales</th>
                 <th className="p-3">Status</th>
                 <th className="p-3"></th>
@@ -60,7 +61,7 @@ export default function MedicinesPage() {
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td className="p-4 text-muted-foreground" colSpan={7}>Loading...</td></tr>
+                <tr><td className="p-4 text-muted-foreground" colSpan={8}>Loading...</td></tr>
               ) : (
                 data?.items.map((medicine) => (
                   <tr key={medicine.id} className="border-b border-border/40">
@@ -75,6 +76,11 @@ export default function MedicinesPage() {
                     <td className="p-3">{formatCurrency(medicine.sellingPrice)}</td>
                     <td className="p-3">{medicine.gstPercentage}%</td>
                     <td className="p-3">{medicine.prescriptionRequired ? <Badge variant="warning">Rx</Badge> : '-'}</td>
+                    <td className="p-3">
+                      <Badge variant={medicine.isGeneric ? 'secondary' : 'outline'}>
+                        {medicine.isGeneric ? 'Generic' : 'Branded'}
+                      </Badge>
+                    </td>
                     <td className="p-3">{medicine.salesCount}</td>
                     <td className="p-3">
                       <Badge variant={medicine.isActive ? 'success' : 'destructive'}>{medicine.isActive ? 'Active' : 'Inactive'}</Badge>

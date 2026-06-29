@@ -29,6 +29,7 @@ export interface Medicine {
   medicineType: string;
   scheduleClass: string;
   prescriptionRequired: boolean;
+  isGeneric: boolean;
   mrp: number;
   sellingPrice: number;
   gstPercentage: number;

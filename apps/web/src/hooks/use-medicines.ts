@@ -12,6 +12,7 @@ export interface MedicineFilters {
   minPrice?: string;
   maxPrice?: string;
   prescriptionRequired?: string;
+  isGeneric?: string;
   inStockOnly?: string;
   sortBy?: string;
   sortOrder?: string;

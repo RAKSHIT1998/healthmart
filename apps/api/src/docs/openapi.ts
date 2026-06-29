@@ -93,7 +93,7 @@ function buildPaths() {
   // Medicines
   path(paths, '/medicines', 'get', 'Medicines', {
     summary: 'Search/filter/sort medicines (Amazon-style)',
-    query: ['q', 'categoryId', 'manufacturerId', 'categoryGroup', 'minPrice', 'maxPrice', 'prescriptionRequired', 'inStockOnly', 'sortBy', 'sortOrder', 'page', 'limit'],
+    query: ['q', 'categoryId', 'manufacturerId', 'categoryGroup', 'minPrice', 'maxPrice', 'prescriptionRequired', 'isGeneric', 'inStockOnly', 'sortBy', 'sortOrder', 'page', 'limit'],
   });
   path(paths, '/medicines', 'post', 'Medicines', { summary: 'Create medicine', auth: true, body: true });
   path(paths, '/medicines/slug/{slug}', 'get', 'Medicines', { summary: 'Get medicine detail by slug', params: ['slug'] });

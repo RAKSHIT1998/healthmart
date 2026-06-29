@@ -55,6 +55,7 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
     medicineType: 'tablet',
     scheduleClass: 'none',
     prescriptionRequired: false,
+    isGeneric: false,
     mrp: '',
     sellingPrice: '',
     gstPercentage: '12',
@@ -76,6 +77,7 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
         medicineType: medicine.medicineType,
         scheduleClass: medicine.scheduleClass,
         prescriptionRequired: medicine.prescriptionRequired,
+        isGeneric: medicine.isGeneric,
         mrp: String(medicine.mrp),
         sellingPrice: String(medicine.sellingPrice),
         gstPercentage: String(medicine.gstPercentage),
@@ -113,6 +115,7 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
       medicineType: form.medicineType,
       scheduleClass: form.scheduleClass,
       prescriptionRequired: form.prescriptionRequired,
+      isGeneric: form.isGeneric,
       mrp: Number(form.mrp),
       sellingPrice: Number(form.sellingPrice),
       gstPercentage: Number(form.gstPercentage),
@@ -204,14 +207,24 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
             <Label>Pack Size *</Label>
             <Input value={form.packSize} onChange={(e) => setForm({ ...form, packSize: e.target.value })} placeholder="e.g. 10 tablets" />
           </div>
-          <label className="flex items-center gap-2 self-end pb-2 text-sm">
-            <input
-              type="checkbox"
-              checked={form.prescriptionRequired}
-              onChange={(e) => setForm({ ...form, prescriptionRequired: e.target.checked })}
-            />
-            Prescription required
-          </label>
+          <div className="flex items-center gap-4 self-end pb-2 text-sm">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={form.prescriptionRequired}
+                onChange={(e) => setForm({ ...form, prescriptionRequired: e.target.checked })}
+              />
+              Prescription required
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={form.isGeneric}
+                onChange={(e) => setForm({ ...form, isGeneric: e.target.checked })}
+              />
+              Generic medicine
+            </label>
+          </div>
 
           <details className="sm:col-span-2 rounded-lg border border-border/60 p-3 open:pb-1" open={!isNewProduct}>
             <summary className="cursor-pointer text-sm font-medium text-muted-foreground">More details (optional)</summary>

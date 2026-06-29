@@ -58,6 +58,7 @@ async function main(): Promise<void> {
     {
       name: 'Paracetamol 650mg Tablet',
       slug: 'paracetamol-650mg-tablet',
+      isGeneric: true,
       shortDescription: 'Fast relief from fever and mild to moderate pain',
       description:
         'Paracetamol 650mg is used for the treatment of fever and mild to moderate pain including headache, body ache, and toothache.',
@@ -85,6 +86,7 @@ async function main(): Promise<void> {
     {
       name: 'Vitamin C 500mg Tablet',
       slug: 'vitamin-c-500mg-tablet',
+      isGeneric: true,
       shortDescription: 'Immunity booster with antioxidant properties',
       description: 'Vitamin C supplement that supports immune function, skin health, and acts as an antioxidant.',
       composition: ['Ascorbic Acid 500mg'],
@@ -217,6 +219,7 @@ async function main(): Promise<void> {
     {
       name: 'Paracetamol 500mg Tablet',
       slug: 'paracetamol-500mg-tablet',
+      isGeneric: true,
       shortDescription: 'Everyday relief from fever and mild pain',
       description: 'Paracetamol 500mg is a widely used antipyretic and analgesic for fever, headache, and minor aches.',
       composition: ['Paracetamol 500mg'],
@@ -243,6 +246,7 @@ async function main(): Promise<void> {
     {
       name: 'Ibuprofen 400mg Tablet',
       slug: 'ibuprofen-400mg-tablet',
+      isGeneric: true,
       shortDescription: 'Anti-inflammatory relief for pain and swelling',
       description: 'Ibuprofen 400mg is an NSAID used for pain, inflammation, and fever relief.',
       composition: ['Ibuprofen 400mg'],
@@ -429,6 +433,7 @@ async function main(): Promise<void> {
     {
       name: 'Metformin 500mg Tablet',
       slug: 'metformin-500mg-tablet',
+      isGeneric: true,
       shortDescription: 'First-line oral medication for type 2 diabetes',
       description: 'Metformin 500mg helps control blood sugar levels in people with type 2 diabetes.',
       composition: ['Metformin Hydrochloride 500mg'],
@@ -509,6 +514,7 @@ async function main(): Promise<void> {
     {
       name: 'Amlodipine 5mg Tablet',
       slug: 'amlodipine-5mg-tablet',
+      isGeneric: true,
       shortDescription: 'Calcium channel blocker for high blood pressure',
       description: 'Amlodipine 5mg is used to treat high blood pressure and chest pain (angina).',
       composition: ['Amlodipine 5mg'],
@@ -535,6 +541,7 @@ async function main(): Promise<void> {
     {
       name: 'Atorvastatin 10mg Tablet',
       slug: 'atorvastatin-10mg-tablet',
+      isGeneric: true,
       shortDescription: 'Statin for cholesterol management',
       description: 'Atorvastatin 10mg helps lower LDL cholesterol and reduce cardiovascular risk.',
       composition: ['Atorvastatin 10mg'],
@@ -615,6 +622,7 @@ async function main(): Promise<void> {
     {
       name: 'Omeprazole 20mg Capsule',
       slug: 'omeprazole-20mg-capsule',
+      isGeneric: true,
       shortDescription: 'Proton pump inhibitor for acid reflux',
       description: 'Omeprazole 20mg reduces stomach acid production for relief from acidity, heartburn, and ulcers.',
       composition: ['Omeprazole 20mg'],
@@ -641,6 +649,7 @@ async function main(): Promise<void> {
     {
       name: 'Pantoprazole 40mg Tablet',
       slug: 'pantoprazole-40mg-tablet',
+      isGeneric: true,
       shortDescription: 'Effective relief from acidity and gastritis',
       description: 'Pantoprazole 40mg is a proton pump inhibitor used for acid-related stomach conditions.',
       composition: ['Pantoprazole 40mg'],
@@ -721,6 +730,7 @@ async function main(): Promise<void> {
     {
       name: 'Cetirizine 10mg Tablet',
       slug: 'cetirizine-10mg-tablet',
+      isGeneric: true,
       shortDescription: 'Non-drowsy relief from allergies',
       description: 'Cetirizine 10mg provides relief from sneezing, runny nose, itching, and watery eyes caused by allergies.',
       composition: ['Cetirizine Hydrochloride 10mg'],
@@ -747,6 +757,7 @@ async function main(): Promise<void> {
     {
       name: 'Levocetirizine 5mg Tablet',
       slug: 'levocetirizine-5mg-tablet',
+      isGeneric: true,
       shortDescription: 'Fast relief from allergy symptoms',
       description: 'Levocetirizine 5mg is an antihistamine used for allergic rhinitis and chronic hives.',
       composition: ['Levocetirizine 5mg'],
@@ -853,6 +864,7 @@ async function main(): Promise<void> {
     {
       name: 'Vitamin D3 60K Sachet',
       slug: 'vitamin-d3-60k-sachet',
+      isGeneric: true,
       shortDescription: 'Weekly Vitamin D3 supplement',
       description: 'Vitamin D3 60,000 IU sachet supports bone health and corrects Vitamin D deficiency.',
       composition: ['Cholecalciferol (Vitamin D3) 60,000 IU'],
@@ -879,6 +891,7 @@ async function main(): Promise<void> {
     {
       name: 'Vitamin B Complex Tablet',
       slug: 'vitamin-b-complex-tablet',
+      isGeneric: true,
       shortDescription: 'Daily B-vitamin supplement for energy',
       description: 'Vitamin B Complex supports energy metabolism, nerve function, and overall wellbeing.',
       composition: ['Vitamin B1', 'Vitamin B6', 'Vitamin B12', 'Folic Acid'],
@@ -905,6 +918,7 @@ async function main(): Promise<void> {
     {
       name: 'Calcium + Vitamin D3 Tablet',
       slug: 'calcium-vitamin-d3-tablet',
+      isGeneric: true,
       shortDescription: 'Supports strong bones and teeth',
       description: 'Calcium with Vitamin D3 supports bone density, teeth health, and muscle function.',
       composition: ['Calcium Carbonate 500mg', 'Vitamin D3 250IU'],
@@ -931,6 +945,7 @@ async function main(): Promise<void> {
     {
       name: 'Multivitamin Tablet',
       slug: 'multivitamin-tablet',
+      isGeneric: true,
       shortDescription: 'Complete daily multivitamin and mineral support',
       description: 'A comprehensive multivitamin and multimineral formula for daily nutritional support.',
       composition: ['Multivitamins', 'Multiminerals', 'Antioxidants'],
@@ -957,6 +972,7 @@ async function main(): Promise<void> {
     {
       name: 'Iron + Folic Acid Tablet',
       slug: 'iron-folic-acid-tablet',
+      isGeneric: true,
       shortDescription: 'Supports healthy blood and prevents anemia',
       description: 'Iron with Folic Acid supports red blood cell production and helps prevent iron-deficiency anemia.',
       composition: ['Ferrous Ascorbate 100mg', 'Folic Acid 1.5mg'],
@@ -1009,6 +1025,7 @@ async function main(): Promise<void> {
     {
       name: 'Zinc Tablet',
       slug: 'zinc-tablet',
+      isGeneric: true,
       shortDescription: 'Supports immunity and skin health',
       description: 'Zinc supplement tablets support immune function, wound healing, and skin health.',
       composition: ['Zinc Sulphate 50mg'],

@@ -37,6 +37,7 @@ export const createMedicineSchema = z.object({
     .enum(['none', 'schedule_h', 'schedule_h1', 'schedule_x', 'schedule_g'])
     .default('none'),
   prescriptionRequired: z.boolean().default(false),
+  isGeneric: z.boolean().default(false),
   mrp: z.number().positive(),
   sellingPrice: z.number().positive(),
   gstPercentage: z.number().min(0).max(28),
@@ -78,6 +79,7 @@ export const updateMedicineSchema = z
     ]),
     scheduleClass: z.enum(['none', 'schedule_h', 'schedule_h1', 'schedule_x', 'schedule_g']),
     prescriptionRequired: z.boolean(),
+    isGeneric: z.boolean(),
     mrp: z.number().positive(),
     sellingPrice: z.number().positive(),
     gstPercentage: z.number().min(0).max(28),
@@ -101,6 +103,7 @@ export const medicineSearchQuerySchema = z.object({
   minPrice: z.coerce.number().min(0).optional(),
   maxPrice: z.coerce.number().min(0).optional(),
   prescriptionRequired: z.coerce.boolean().optional(),
+  isGeneric: z.coerce.boolean().optional(),
   inStockOnly: z.coerce.boolean().optional(),
   sortBy: z.enum(['price', 'popularity', 'newest', 'discount', 'relevance']).default('relevance'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),

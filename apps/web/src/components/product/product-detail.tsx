@@ -87,6 +87,7 @@ export function ProductDetail({ data }: { data: MedicineDetailResponse }) {
               </div>
             )}
             {medicine.prescriptionRequired && <Badge variant="warning">Prescription Required</Badge>}
+            {medicine.isGeneric && <Badge variant="secondary">Generic</Badge>}
             <Badge variant={inStock ? 'success' : 'destructive'}>{inStock ? 'In Stock' : 'Out of Stock'}</Badge>
           </div>
 

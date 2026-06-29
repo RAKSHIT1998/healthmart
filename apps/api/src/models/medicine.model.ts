@@ -30,6 +30,7 @@ export interface IMedicine extends Document {
   medicineType: MedicineType;
   scheduleClass: ScheduleDrugClass;
   prescriptionRequired: boolean;
+  isGeneric: boolean;
   mrp: number;
   sellingPrice: number;
   gstPercentage: number;
@@ -79,6 +80,7 @@ const medicineSchema = new Schema<IMedicine>(
       default: ScheduleDrugClass.NONE,
     },
     prescriptionRequired: { type: Boolean, default: false, index: true },
+    isGeneric: { type: Boolean, default: false, index: true },
     mrp: { type: Number, required: true, min: 0 },
     sellingPrice: { type: Number, required: true, min: 0, index: true },
     gstPercentage: { type: Number, required: true, min: 0, max: 28 },

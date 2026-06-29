@@ -21,6 +21,7 @@ export function ShopClient() {
     minPrice: searchParams.get('minPrice') ?? undefined,
     maxPrice: searchParams.get('maxPrice') ?? undefined,
     prescriptionRequired: searchParams.get('prescriptionRequired') ?? undefined,
+    isGeneric: searchParams.get('isGeneric') ?? undefined,
     inStockOnly: searchParams.get('inStockOnly') ?? undefined,
     sortBy: searchParams.get('sortBy') ?? 'relevance',
     sortOrder: searchParams.get('sortOrder') ?? 'desc',

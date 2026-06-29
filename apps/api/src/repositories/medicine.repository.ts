@@ -41,6 +41,9 @@ class MedicineRepository extends BaseRepository<IMedicine> {
     if (query.prescriptionRequired !== undefined) {
       filter.prescriptionRequired = query.prescriptionRequired;
     }
+    if (query.isGeneric !== undefined) {
+      filter.isGeneric = query.isGeneric;
+    }
     if (query.minPrice !== undefined || query.maxPrice !== undefined) {
       filter.sellingPrice = {
         ...(query.minPrice !== undefined ? { $gte: query.minPrice } : {}),

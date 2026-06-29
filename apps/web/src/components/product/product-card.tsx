@@ -71,6 +71,11 @@ export function ProductCard({ medicine }: { medicine: Medicine }) {
         <Link href={`/product/${medicine.slug}`}>
           <h3 className="line-clamp-2 text-sm font-medium leading-snug hover:text-primary">{medicine.name}</h3>
         </Link>
+        {medicine.isGeneric && (
+          <Badge variant="secondary" className="w-fit text-[10px]">
+            Generic
+          </Badge>
+        )}
         {medicine.ratingsCount > 0 && (
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <Star className="h-3 w-3 fill-amber-400 text-amber-400" />

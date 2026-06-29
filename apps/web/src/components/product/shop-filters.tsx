@@ -37,6 +37,7 @@ export function ShopFilters({ filters, onChange, onReset }: ShopFiltersProps) {
     filters.minPrice,
     filters.maxPrice,
     filters.prescriptionRequired,
+    filters.isGeneric,
     filters.inStockOnly,
   ].filter(Boolean).length;
 
@@ -123,6 +124,14 @@ export function ShopFilters({ filters, onChange, onReset }: ShopFiltersProps) {
               onChange={(e) => onChange({ prescriptionRequired: e.target.checked ? 'false' : undefined })}
             />
             No prescription needed
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={filters.isGeneric === 'true'}
+              onChange={(e) => onChange({ isGeneric: e.target.checked ? 'true' : undefined })}
+            />
+            Generic medicines only
           </label>
           <label className="flex items-center gap-2 text-sm">
             <input
