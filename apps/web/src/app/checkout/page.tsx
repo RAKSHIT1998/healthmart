@@ -1,23 +1,40 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { useQuery } from '@tanstack/react-query';
-import { CheckCircle2, MapPin, Plus, XCircle } from 'lucide-react';
+import Image from 'next/image';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { CheckCircle2, MapPin, Plus, UploadCloud, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useAuthStore } from '@/store/auth-store';
 import { useCart } from '@/hooks/use-cart';
 import { useAddresses, useCreateAddress } from '@/hooks/use-addresses';
 import { useCheckout } from '@/hooks/use-orders';
 import { launchCashfreeCheckout } from '@/lib/cashfree';
-import { publicApiFetch } from '@/lib/api';
+import { api, ApiClientError, publicApiFetch } from '@/lib/api';
 import { formatCurrency, cn } from '@/lib/utils';
+import type { Prescription } from '@/types';
 import { REGEX, type ServiceabilityCheckResult } from '@healthmart/shared';
+
+interface UploadResult {
+  url: string;
+  publicId: string;
+}
+
+const PRESCRIPTION_STATUS_VARIANT: Record<string, 'success' | 'warning' | 'destructive' | 'secondary'> = {
+  approved: 'success',
+  rejected: 'destructive',
+  pending: 'secondary',
+  ocr_processed: 'warning',
+  under_review: 'warning',
+};
 
 function formatEta(minutes: number): string {
   return minutes < 60 ? `~${minutes} mins` : `~${(minutes / 60).toFixed(1)} hrs`;
@@ -38,6 +55,7 @@ const SLOTS = [
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const accessToken = useAuthStore((s) => s.accessToken);
   const hasHydrated = useAuthStore((s) => s.hasHydrated);
   const { data: cart } = useCart();
@@ -58,6 +76,45 @@ export default function CheckoutPage() {
     pincode: '',
   });
   const [coords, setCoords] = useState(DEFAULT_CENTER);
+  const [selectedPrescriptionIds, setSelectedPrescriptionIds] = useState<string[]>([]);
+  const [newPrescriptionFiles, setNewPrescriptionFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const hasPrescriptionItems = !!cart?.items.some((i) => i.prescriptionRequired);
+
+  const { data: prescriptions } = useQuery({
+    queryKey: ['prescriptions'],
+    queryFn: () => api.get<Prescription[]>('/prescriptions/mine?page=1&limit=20'),
+    enabled: hasPrescriptionItems,
+  });
+
+  const uploadPrescription = useMutation({
+    mutationFn: async () => {
+      const formData = new FormData();
+      newPrescriptionFiles.forEach((file) => formData.append('files', file));
+
+      const uploadResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api/v1'}/uploads/multiple?folder=prescriptions`,
+        { method: 'POST', headers: { Authorization: `Bearer ${accessToken}` }, body: formData },
+      );
+      const uploadJson = await uploadResponse.json();
+      if (!uploadResponse.ok) throw new ApiClientError(uploadJson.message, uploadResponse.status);
+
+      const imageUrls = (uploadJson.data as UploadResult[]).map((r) => r.url);
+      return api.post<Prescription>('/prescriptions', { imageUrls });
+    },
+    onSuccess: (prescription) => {
+      queryClient.invalidateQueries({ queryKey: ['prescriptions'] });
+      setSelectedPrescriptionIds((prev) => [...prev, prescription.id]);
+      setNewPrescriptionFiles([]);
+      toast.success('Prescription uploaded and attached to this order.');
+    },
+    onError: (err: ApiClientError) => toast.error(err.message),
+  });
+
+  function togglePrescription(id: string) {
+    setSelectedPrescriptionIds((prev) => (prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]));
+  }
 
   useEffect(() => {
     if (!selectedAddressId && addresses && addresses.length > 0) {
@@ -95,13 +152,16 @@ export default function CheckoutPage() {
 
   async function handlePlaceOrder() {
     if (!selectedAddressId || !cart) return;
-    const prescriptionIds: string[] = [];
+    if (hasPrescriptionItems && selectedPrescriptionIds.length === 0) {
+      toast.error('Please select or upload a prescription before placing this order.');
+      return;
+    }
 
     const result = await checkout.mutateAsync({
       addressId: selectedAddressId,
       deliverySlot: { type: slotType },
       paymentMethod,
-      prescriptionIds,
+      prescriptionIds: selectedPrescriptionIds,
     });
 
     if (result.requiresPayment && result.paymentSessionId) {
@@ -110,8 +170,6 @@ export default function CheckoutPage() {
       router.push(`/orders/${result.order.id}`);
     }
   }
-
-  const hasPrescriptionItems = cart?.items.some((i) => i.prescriptionRequired);
 
   return (
     <div className="container py-8">
@@ -195,12 +253,64 @@ export default function CheckoutPage() {
 
           {hasPrescriptionItems && (
             <Card className="border-amber-300 bg-amber-50 dark:bg-amber-900/20">
-              <CardContent className="p-5 text-sm">
-                Your cart contains prescription-only medicines. Please{' '}
-                <a href="/prescription-upload" className="font-medium text-primary underline">
-                  upload your prescription
-                </a>{' '}
-                before placing this order — our pharmacist will verify it.
+              <CardContent className="space-y-3 p-5 text-sm">
+                <p>
+                  Your cart contains prescription-only medicines. Select an uploaded prescription below, or upload a
+                  new one — our pharmacist will verify it.
+                </p>
+
+                {prescriptions && prescriptions.length > 0 && (
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {prescriptions.map((prescription) => (
+                      <button
+                        key={prescription.id}
+                        type="button"
+                        onClick={() => togglePrescription(prescription.id)}
+                        className={cn(
+                          'flex items-center gap-2 rounded-lg border p-2 text-left',
+                          selectedPrescriptionIds.includes(prescription.id)
+                            ? 'border-primary bg-primary/5'
+                            : 'border-border/60 bg-background',
+                        )}
+                      >
+                        {prescription.imageUrls[0] && (
+                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md border">
+                            <Image src={prescription.imageUrls[0]} alt="Prescription" fill className="object-cover" />
+                          </div>
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-medium">{new Date(prescription.createdAt).toLocaleDateString()}</p>
+                          <Badge variant={PRESCRIPTION_STATUS_VARIANT[prescription.status] ?? 'secondary'} className="mt-0.5">
+                            {prescription.status.replace(/_/g, ' ')}
+                          </Badge>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    hidden
+                    onChange={(e) => setNewPrescriptionFiles(Array.from(e.target.files ?? []))}
+                  />
+                  <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                    <UploadCloud className="h-3.5 w-3.5" />
+                    {newPrescriptionFiles.length > 0 ? `${newPrescriptionFiles.length} file(s) selected` : 'Choose photo'}
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    disabled={newPrescriptionFiles.length === 0 || uploadPrescription.isPending}
+                    onClick={() => uploadPrescription.mutate()}
+                  >
+                    Upload
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           )}
@@ -258,7 +368,12 @@ export default function CheckoutPage() {
             <Button
               className="w-full"
               size="lg"
-              disabled={!selectedAddressId || checkout.isPending || isBlockedByServiceability}
+              disabled={
+                !selectedAddressId ||
+                checkout.isPending ||
+                isBlockedByServiceability ||
+                (hasPrescriptionItems && selectedPrescriptionIds.length === 0)
+              }
               onClick={handlePlaceOrder}
             >
               Place Order

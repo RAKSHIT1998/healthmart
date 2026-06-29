@@ -42,3 +42,6 @@ apps/api/backups/
 # Misc
 *.pem
 .vercel
+
+# Tesseract OCR training data (auto-downloaded at runtime)
+*.traineddata
