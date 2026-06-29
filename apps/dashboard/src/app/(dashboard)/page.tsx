@@ -1,23 +1,40 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
 import { AlertTriangle, Banknote, CalendarRange, Package, ShoppingBag, TimerOff, Users, Wallet } from 'lucide-react';
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { api } from '@/lib/api';
-import { formatCurrency } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import type { DashboardMetrics, SalesTrendPoint } from '@/types';
 
-const WIDGETS: Array<{ key: keyof DashboardMetrics; label: string; icon: React.ComponentType<{ className?: string }>; format: 'currency' | 'number' }> = [
-  { key: 'todaySales', label: "Today's Sales", icon: Banknote, format: 'currency' },
-  { key: 'todayOrders', label: "Today's Orders", icon: ShoppingBag, format: 'number' },
-  { key: 'monthlySales', label: 'Monthly Sales', icon: CalendarRange, format: 'currency' },
-  { key: 'monthlyOrders', label: 'Monthly Orders', icon: ShoppingBag, format: 'number' },
-  { key: 'totalCustomers', label: 'Total Customers', icon: Users, format: 'number' },
-  { key: 'cancelledOrdersToday', label: 'Cancelled Today', icon: TimerOff, format: 'number' },
-  { key: 'averageOrderValue', label: 'Avg. Order Value', icon: Wallet, format: 'currency' },
-  { key: 'inventoryValue', label: 'Inventory Value', icon: Package, format: 'currency' },
+const WIDGETS: Array<{
+  key: keyof DashboardMetrics;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  format: 'currency' | 'number';
+  tint: string;
+}> = [
+  { key: 'todaySales', label: "Today's Sales", icon: Banknote, format: 'currency', tint: 'text-emerald-500 bg-emerald-500/10' },
+  { key: 'todayOrders', label: "Today's Orders", icon: ShoppingBag, format: 'number', tint: 'text-blue-500 bg-blue-500/10' },
+  { key: 'monthlySales', label: 'Monthly Sales', icon: CalendarRange, format: 'currency', tint: 'text-violet-500 bg-violet-500/10' },
+  { key: 'monthlyOrders', label: 'Monthly Orders', icon: ShoppingBag, format: 'number', tint: 'text-indigo-500 bg-indigo-500/10' },
+  { key: 'totalCustomers', label: 'Total Customers', icon: Users, format: 'number', tint: 'text-cyan-500 bg-cyan-500/10' },
+  { key: 'cancelledOrdersToday', label: 'Cancelled Today', icon: TimerOff, format: 'number', tint: 'text-rose-500 bg-rose-500/10' },
+  { key: 'averageOrderValue', label: 'Avg. Order Value', icon: Wallet, format: 'currency', tint: 'text-amber-500 bg-amber-500/10' },
+  { key: 'inventoryValue', label: 'Inventory Value', icon: Package, format: 'currency', tint: 'text-teal-500 bg-teal-500/10' },
 ];
+
+function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-lg border border-border/60 bg-card px-3 py-2 text-xs shadow-lg">
+      <p className="text-muted-foreground">{label}</p>
+      <p className="font-semibold text-primary">{formatCurrency(payload[0]!.value)}</p>
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const { data: metrics, isLoading } = useQuery({
@@ -30,25 +47,37 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+    <div className="ambient-glow -m-6 space-y-6 p-6">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+        <p className="text-sm text-muted-foreground">A snapshot of how the store is doing right now.</p>
+      </div>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        {WIDGETS.map((widget) => {
+        {WIDGETS.map((widget, index) => {
           const Icon = widget.icon;
           const value = metrics?.[widget.key] ?? 0;
           return (
-            <Card key={widget.key}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-muted-foreground">{widget.label}</span>
-                  <Icon className="h-4 w-4 text-primary" />
-                </div>
-                <p className="mt-2 text-xl font-bold">
-                  {isLoading ? '...' : widget.format === 'currency' ? formatCurrency(value) : value}
-                </p>
-              </CardContent>
-            </Card>
+            <motion.div
+              key={widget.key}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, delay: index * 0.03 }}
+            >
+              <Card className="card-hover">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-muted-foreground">{widget.label}</span>
+                    <span className={cn('flex h-8 w-8 items-center justify-center rounded-lg', widget.tint)}>
+                      <Icon className="h-4 w-4" />
+                    </span>
+                  </div>
+                  <p className="mt-3 text-2xl font-bold tracking-tight">
+                    {isLoading ? '···' : widget.format === 'currency' ? formatCurrency(value) : value}
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
           );
         })}
       </div>
@@ -87,14 +116,21 @@ export default function DashboardPage() {
             <AreaChart data={trend ?? []} margin={{ left: 12, right: 24, top: 10 }}>
               <defs>
                 <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.45} />
                   <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(d: string) => d.slice(5)} />
-              <YAxis tick={{ fontSize: 11 }} width={50} />
-              <Tooltip formatter={(value: number) => formatCurrency(value)} />
-              <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" fill="url(#revenueGradient)" strokeWidth={2} />
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+                tickFormatter={(d: string) => d.slice(5)}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} width={50} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" fill="url(#revenueGradient)" strokeWidth={2.5} />
             </AreaChart>
           </ResponsiveContainer>
         </CardContent>
