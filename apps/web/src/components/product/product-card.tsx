@@ -11,6 +11,7 @@ import { useAddToCart } from '@/hooks/use-cart';
 import { useActiveFlashSales } from '@/hooks/use-promotions';
 import { useAuthStore } from '@/store/auth-store';
 import { useRouter } from 'next/navigation';
+import { WishlistButton } from '@/components/product/wishlist-button';
 import type { Medicine } from '@/types';
 
 export function ProductCard({ medicine }: { medicine: Medicine }) {
@@ -60,11 +61,10 @@ export function ProductCard({ medicine }: { medicine: Medicine }) {
             </Badge>
           )
         )}
-        {medicine.prescriptionRequired && (
-          <Badge variant="warning" className="absolute right-2 top-2">
-            Rx
-          </Badge>
-        )}
+        <div className="absolute right-2 top-2 flex flex-col items-end gap-1">
+          <WishlistButton medicineId={medicine.id} />
+          {medicine.prescriptionRequired && <Badge variant="warning">Rx</Badge>}
+        </div>
       </Link>
 
       <div className="flex flex-1 flex-col gap-1 p-3">

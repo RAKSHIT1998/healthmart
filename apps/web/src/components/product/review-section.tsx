@@ -14,6 +14,7 @@ export function ReviewSection({ medicineId }: { medicineId: string }) {
   const accessToken = useAuthStore((s) => s.accessToken);
   const queryClient = useQueryClient();
   const [rating, setRating] = useState(5);
+  const [title, setTitle] = useState('');
   const [comment, setComment] = useState('');
   const [showForm, setShowForm] = useState(false);
 
@@ -24,10 +25,12 @@ export function ReviewSection({ medicineId }: { medicineId: string }) {
   });
 
   const submitReview = useMutation({
-    mutationFn: () => api.post('/reviews', { medicineId, rating, comment: comment || undefined }),
+    mutationFn: () =>
+      api.post('/reviews', { medicineId, rating, title: title || undefined, comment: comment || undefined }),
     onSuccess: () => {
       toast.success('Thank you for your review!');
       setShowForm(false);
+      setTitle('');
       setComment('');
       queryClient.invalidateQueries({ queryKey: ['reviews', medicineId] });
     },
@@ -54,6 +57,13 @@ export function ReviewSection({ medicineId }: { medicineId: string }) {
               </button>
             ))}
           </div>
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Title (optional)"
+            maxLength={120}
+            className="mb-2 w-full rounded-lg border border-input bg-background p-3 text-sm"
+          />
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}

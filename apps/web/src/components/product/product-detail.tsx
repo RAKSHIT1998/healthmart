@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ProductCard } from './product-card';
 import { ReviewSection } from './review-section';
+import { WishlistButton } from './wishlist-button';
 import { formatCurrency } from '@/lib/utils';
 import { useAddToCart } from '@/hooks/use-cart';
 import { useAuthStore } from '@/store/auth-store';
@@ -75,8 +76,13 @@ export function ProductDetail({ data }: { data: MedicineDetailResponse }) {
         </div>
 
         <div>
-          {manufacturerName && <p className="text-sm text-muted-foreground">by {manufacturerName}</p>}
-          <h1 className="mt-1 text-2xl font-bold">{medicine.name}</h1>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              {manufacturerName && <p className="text-sm text-muted-foreground">by {manufacturerName}</p>}
+              <h1 className="mt-1 text-2xl font-bold">{medicine.name}</h1>
+            </div>
+            <WishlistButton medicineId={medicine.id} className="border border-border/60" />
+          </div>
 
           <div className="mt-2 flex items-center gap-3">
             {medicine.ratingsCount > 0 && (
