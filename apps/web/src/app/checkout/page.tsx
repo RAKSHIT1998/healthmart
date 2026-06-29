@@ -20,7 +20,7 @@ import { useCheckout } from '@/hooks/use-orders';
 import { launchCashfreeCheckout } from '@/lib/cashfree';
 import { api, ApiClientError, publicApiFetch } from '@/lib/api';
 import { formatCurrency, cn } from '@/lib/utils';
-import type { Prescription } from '@/types';
+import type { Prescription, Wallet } from '@/types';
 import { REGEX, type ServiceabilityCheckResult } from '@healthmart/shared';
 
 interface UploadResult {
@@ -87,6 +87,13 @@ export default function CheckoutPage() {
     queryFn: () => api.get<Prescription[]>('/prescriptions/mine?page=1&limit=20'),
     enabled: hasPrescriptionItems,
   });
+
+  const { data: wallet } = useQuery({
+    queryKey: ['wallet'],
+    queryFn: () => api.get<Wallet>('/wallet'),
+  });
+  const walletBalance = wallet?.balance ?? 0;
+  const walletCoversOrder = !!cart && walletBalance >= cart.totalAmount;
 
   const uploadPrescription = useMutation({
     mutationFn: async () => {
@@ -156,12 +163,17 @@ export default function CheckoutPage() {
       toast.error('Please select or upload a prescription before placing this order.');
       return;
     }
+    if (paymentMethod === 'wallet' && !walletCoversOrder) {
+      toast.error('Your wallet balance is not enough to cover this order. Choose another payment method.');
+      return;
+    }
 
     const result = await checkout.mutateAsync({
       addressId: selectedAddressId,
       deliverySlot: { type: slotType },
       paymentMethod,
       prescriptionIds: selectedPrescriptionIds,
+      useWalletBalance: paymentMethod === 'wallet',
     });
 
     if (result.requiresPayment && result.paymentSessionId) {
@@ -322,19 +334,29 @@ export default function CheckoutPage() {
                 {[
                   { value: 'cashfree' as const, label: 'Pay Online (UPI / Card / Netbanking)' },
                   { value: 'cod' as const, label: 'Cash on Delivery' },
-                  { value: 'wallet' as const, label: 'Wallet Balance' },
+                  {
+                    value: 'wallet' as const,
+                    label: `Wallet Balance (${formatCurrency(walletBalance)} available)`,
+                    disabled: !walletCoversOrder,
+                  },
                 ].map((option) => (
                   <button
                     key={option.value}
-                    onClick={() => setPaymentMethod(option.value)}
+                    onClick={() => !option.disabled && setPaymentMethod(option.value)}
+                    disabled={option.disabled}
                     className={cn(
-                      'flex w-full items-center rounded-lg border p-3 text-left text-sm font-medium',
+                      'flex w-full items-center rounded-lg border p-3 text-left text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50',
                       paymentMethod === option.value ? 'border-primary bg-primary/5' : 'border-border/60',
                     )}
                   >
                     {option.label}
                   </button>
                 ))}
+                {!walletCoversOrder && walletBalance > 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Wallet balance isn&apos;t enough to cover this order yet.
+                  </p>
+                )}
               </div>
             </CardContent>
           </Card>
