@@ -4,9 +4,24 @@ import { sendSuccess } from '../utils/apiResponse';
 import { ApiError } from '../utils/ApiError';
 import * as reportService from '../services/report.service';
 
+// The business operates in India; a plain "YYYY-MM-DD" from/to query param means that IST
+// calendar date, not UTC midnight of that date — without this offset, "to" lands at 5:30am IST
+// and silently excludes the rest of that day's orders/invoices from the report.
+const IST_OFFSET_MS = (5 * 60 + 30) * 60 * 1000;
+
+function startOfIstDay(dateOnly: string): Date {
+  return new Date(new Date(`${dateOnly.slice(0, 10)}T00:00:00.000Z`).getTime() - IST_OFFSET_MS);
+}
+
+function endOfIstDay(dateOnly: string): Date {
+  return new Date(new Date(`${dateOnly.slice(0, 10)}T23:59:59.999Z`).getTime() - IST_OFFSET_MS);
+}
+
 function parseDateRange(req: Request): { from: Date; to: Date } {
-  const from = req.query.from ? new Date(req.query.from as string) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-  const to = req.query.to ? new Date(req.query.to as string) : new Date();
+  const fromParam = req.query.from as string | undefined;
+  const toParam = req.query.to as string | undefined;
+  const from = fromParam ? startOfIstDay(fromParam) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const to = toParam ? endOfIstDay(toParam) : new Date();
   if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) {
     throw ApiError.badRequest('Invalid from/to date');
   }

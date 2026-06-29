@@ -14,12 +14,16 @@ import { useBranches } from '@/hooks/use-catalog';
 import { useExpiryReport, useGstReport, useSalesReport, useStockReport } from '@/hooks/use-reports';
 import { toast } from 'sonner';
 
+// The business operates in India (IST, UTC+5:30) — shift the instant before reading off the
+// UTC date string so the default range matches "today" on an IST wall clock, not UTC.
+const IST_OFFSET_MS = (5 * 60 + 30) * 60 * 1000;
+
 function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
+  return new Date(Date.now() + IST_OFFSET_MS).toISOString().slice(0, 10);
 }
 
 function daysAgoIso(days: number): string {
-  return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  return new Date(Date.now() + IST_OFFSET_MS - days * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
 }
 
 function DateRangeFilter({
