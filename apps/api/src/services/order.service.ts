@@ -31,6 +31,7 @@ import { creditWallet, debitWallet, getWallet } from './wallet.service';
 import { notifyUser } from './notification.service';
 import { generateInvoiceForOrder } from './invoice.service';
 import { rewardReferralOnFirstDelivery } from './promotions.service';
+import { checkServiceability } from './serviceability.service';
 import { emitDriverAssigned, emitOrderStatus } from '../realtime/socket';
 import { createCashfreeOrder, initiateCashfreeRefund } from '../integrations/cashfree';
 import { getMargAdapter } from '../integrations/marg/margAdapterFactory';
@@ -58,6 +59,12 @@ export async function initiateCheckout(userId: string, input: CheckoutInput, ret
   if (!address) throw ApiError.notFound('Delivery address not found');
   if (!branch) throw ApiError.internal('No active branch configured to fulfil orders');
   if (cart.items.length === 0) throw ApiError.badRequest('Your cart is empty');
+
+  // Fail fast, before any stock is reserved, if nobody can actually deliver to this address yet.
+  const serviceability = await checkServiceability(address.pincode);
+  if (!serviceability.serviceable) {
+    throw ApiError.badRequest(`Sorry, we don't deliver to pincode ${address.pincode} yet.`);
+  }
 
   const totals = await computeCartTotals(cart, userId);
   if (totals.items.length === 0) throw ApiError.badRequest('Your cart has no purchasable items');
@@ -131,6 +138,9 @@ export async function initiateCheckout(userId: string, input: CheckoutInput, ret
       paymentStatus: totalAmount === 0 ? PaymentStatus.PAID : PaymentStatus.PENDING,
       status: OrderStatus.PENDING_PAYMENT,
       statusHistory: [{ status: OrderStatus.PENDING_PAYMENT, changedAt: new Date() }],
+      // Rough zone-based estimate up front — refined once a driver is actually assigned and
+      // their live GPS distance to the address is known (see assignDriver below).
+      estimatedDeliveryAt: new Date(Date.now() + (serviceability.estimatedDeliveryMinutes ?? 60) * 60 * 1000),
       subtotal: totals.subtotal,
       discount: totals.discount,
       couponCode: totals.couponCode,

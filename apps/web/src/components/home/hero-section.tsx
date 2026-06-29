@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Clock, ShieldCheck, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PincodeChecker } from './pincode-checker';
 import { APP_TAGLINE } from '@healthmart/shared';
 
 const HIGHLIGHTS = [
@@ -42,6 +43,9 @@ export function HeroSection() {
                 {label}
               </div>
             ))}
+          </div>
+          <div className="mt-6">
+            <PincodeChecker />
           </div>
         </motion.div>
 

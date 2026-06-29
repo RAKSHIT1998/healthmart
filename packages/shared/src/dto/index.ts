@@ -18,3 +18,4 @@ export * from './marg.dto';
 export * from './promotions.dto';
 export * from './telehealth.dto';
 export * from './return.dto';
+export * from './serviceability.dto';

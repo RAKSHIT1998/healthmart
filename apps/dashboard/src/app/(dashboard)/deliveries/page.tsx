@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Camera, Navigation, RefreshCw } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { Camera, MapPin, Navigation, Phone, RefreshCw } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,15 @@ import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { SignaturePad } from '@/components/delivery/signature-pad';
 import { formatCurrency } from '@/lib/utils';
+
+const DestinationMap = dynamic(() => import('@/components/delivery/destination-map').then((m) => m.DestinationMap), {
+  ssr: false,
+  loading: () => <div className="h-36 w-full animate-pulse rounded-lg bg-secondary" />,
+});
+
+function googleMapsDirectionsUrl(lat: number, lng: number): string {
+  return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+}
 import { uploadFile, dataUrlToBlob } from '@/lib/upload';
 import {
   useMyDeliveries,
@@ -92,7 +102,9 @@ export default function DeliveriesPage() {
         <p className="text-sm text-muted-foreground">No orders assigned to you right now.</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
-          {data.items.map((order) => (
+          {data.items.map((order) => {
+            const address = order.addressSnapshot;
+            return (
             <Card key={order.id}>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
@@ -101,6 +113,36 @@ export default function DeliveriesPage() {
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground">{order.items.length} item(s) · {formatCurrency(order.totalAmount)}</p>
                 <p className="mt-1 text-xs text-muted-foreground">{order.paymentMethod === 'cod' ? 'Collect cash on delivery' : 'Paid online'}</p>
+
+                {address && (
+                  <div className="mt-3 space-y-2 rounded-lg border border-border/60 p-2.5">
+                    <div className="flex items-start gap-2">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                      <div className="text-xs">
+                        <p className="font-medium text-foreground">{address.contactName}</p>
+                        <p className="text-muted-foreground">
+                          {address.line1}
+                          {address.landmark ? `, ${address.landmark}` : ''}, {address.city}, {address.state} - {address.pincode}
+                        </p>
+                      </div>
+                    </div>
+                    {address.lat && address.lng && <DestinationMap lat={address.lat} lng={address.lng} />}
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" className="flex-1" asChild>
+                        <a href={googleMapsDirectionsUrl(address.lat, address.lng)} target="_blank" rel="noreferrer">
+                          <Navigation className="h-3.5 w-3.5" /> Navigate
+                        </a>
+                      </Button>
+                      {address.contactPhone && (
+                        <Button size="sm" variant="outline" asChild>
+                          <a href={`tel:${address.contactPhone}`}>
+                            <Phone className="h-3.5 w-3.5" />
+                          </a>
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 <div className="mt-3 flex gap-2">
                   <Button size="sm" onClick={() => setActiveOrder(order)}>
@@ -112,7 +154,8 @@ export default function DeliveriesPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </div>
       )}
 

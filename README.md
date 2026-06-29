@@ -5,7 +5,7 @@
 A production-grade pharmacy e-commerce platform: customer storefront, internal operations
 dashboard, REST API, and a MARG ERP integration layer. Built as a TypeScript monorepo.
 
-## Project status: Phase 1 + Phase 2a + Phase 2b + Phase 2c + Phase 2d
+## Project status: Phase 1 + Phase 2a + Phase 2b + Phase 2c + Phase 2d + Phase 2e
 
 This is a genuinely large platform (storefront + 5 internal role panels + ERP sync + telehealth +
 live GPS tracking + multi-pharmacy support, etc.) — too large to build to full production maturity
@@ -41,6 +41,16 @@ post-delivery returns/refunds workflow (7-day window, prescription items exclude
 returns, stock restoration, refund to wallet or back to the original Cashfree payment, customer +
 admin UI) and per-channel notification preferences (SMS/email/push/WhatsApp opt-out on the profile
 page, actually enforced in the notification dispatch path, not just cosmetic).
+
+**Phase 2e** closes the loop between "can we deliver here" and "can the driver find it": a
+pincode serviceability system (admin-managed list of pincode → branch → estimated delivery time;
+a public check endpoint backs a homepage widget and a checkout-time block + ETA display; checkout
+itself now refuses orders to unserviceable pincodes instead of silently accepting undeliverable
+ones) and a proper driver delivery view (destination address, a static map preview, and a
+one-tap "Navigate" deep link into Google Maps — previously a driver saw only the order total and
+a "Mark Delivered" button, with no indication of where to actually go). Also a full visual
+refresh of the admin dashboard's design system (sectioned sidebar, richer color tokens, per-metric
+stat card colors, dark-mode-aware chart tooltips).
 
 **Explicitly out of scope still** (see [the plan](#roadmap--phase-3) below): a load-testing and
 index-tuning pass validated against real traffic, and the deeper analytics (heatmaps, retention
@@ -345,7 +355,8 @@ program, gift cards, flash-sale scheduler), Phase 2b (live driver GPS tracking +
 delivery, multi-branch admin + permission matrix + backup/restore, full blog CMS, doctor
 telehealth with video/audio + payments + prescriptions), Phase 2c (location picker UI,
 unified product+stock creation, inventory movement audit trail, MARG CSV upload UI, GST/sales/
-stock/expiry reports), and Phase 2d (returns/refunds workflow, notification preferences) — no
+stock/expiry reports), Phase 2d (returns/refunds workflow, notification preferences), and Phase 2e
+(pincode serviceability + ETA system, driver navigation view, admin dashboard redesign) — no
 longer on this list.
 
 ## License

@@ -24,6 +24,7 @@ import promotionsRoutes from './promotions.routes';
 import blogRoutes from './blog.routes';
 import telehealthRoutes from './telehealth.routes';
 import returnRoutes from './return.routes';
+import serviceabilityRoutes from './serviceability.routes';
 
 const router = Router();
 
@@ -52,5 +53,6 @@ router.use('/promotions', promotionsRoutes);
 router.use('/blog', blogRoutes);
 router.use('/telehealth', telehealthRoutes);
 router.use('/returns', returnRoutes);
+router.use('/serviceability', serviceabilityRoutes);
 
 export default router;

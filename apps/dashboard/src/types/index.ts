@@ -68,6 +68,15 @@ export interface Branch {
   createdAt: string;
 }
 
+export interface ServiceablePincode {
+  id: string;
+  pincode: string;
+  branchId: { id: string; name: string; code: string } | string;
+  estimatedDeliveryMinutes: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
 export interface InventoryItem {
   id: string;
   medicineId: { id: string; name: string; sellingPrice: number; images?: string[]; mrp?: number } | string;
@@ -123,6 +132,19 @@ export interface ReturnRequest {
   createdAt: string;
 }
 
+export interface AddressSnapshot {
+  contactName: string;
+  contactPhone: string;
+  line1: string;
+  line2?: string;
+  landmark?: string;
+  city: string;
+  state: string;
+  pincode: string;
+  lat: number;
+  lng: number;
+}
+
 export interface AdminOrder {
   id: string;
   orderNumber: string;
@@ -134,6 +156,7 @@ export interface AdminOrder {
   totalAmount: number;
   items: Array<{ name: string; quantity: number; sellingPrice: number; prescriptionRequired: boolean }>;
   driverId?: string;
+  addressSnapshot?: AddressSnapshot;
   createdAt: string;
 }
 

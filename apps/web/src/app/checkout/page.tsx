@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { MapPin, Plus } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { CheckCircle2, MapPin, Plus, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -14,8 +15,13 @@ import { useCart } from '@/hooks/use-cart';
 import { useAddresses, useCreateAddress } from '@/hooks/use-addresses';
 import { useCheckout } from '@/hooks/use-orders';
 import { launchCashfreeCheckout } from '@/lib/cashfree';
+import { publicApiFetch } from '@/lib/api';
 import { formatCurrency, cn } from '@/lib/utils';
-import { REGEX } from '@healthmart/shared';
+import { REGEX, type ServiceabilityCheckResult } from '@healthmart/shared';
+
+function formatEta(minutes: number): string {
+  return minutes < 60 ? `~${minutes} mins` : `~${(minutes / 60).toFixed(1)} hrs`;
+}
 
 const LocationPickerMap = dynamic(
   () => import('@/components/location/location-picker-map').then((m) => m.LocationPickerMap),
@@ -57,6 +63,14 @@ export default function CheckoutPage() {
       setSelectedAddressId(addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id);
     }
   }, [addresses, selectedAddressId]);
+
+  const selectedAddress = addresses?.find((a) => a.id === selectedAddressId);
+  const { data: serviceability } = useQuery({
+    queryKey: ['serviceability', selectedAddress?.pincode],
+    queryFn: () => publicApiFetch<ServiceabilityCheckResult>(`/serviceability/check/${selectedAddress!.pincode}`),
+    enabled: !!selectedAddress?.pincode,
+  });
+  const isBlockedByServiceability = !!selectedAddress && serviceability?.serviceable === false;
 
   useEffect(() => {
     if (!accessToken) router.push('/login');
@@ -136,6 +150,24 @@ export default function CheckoutPage() {
                   <p className="text-sm text-muted-foreground">No saved addresses. Add one to continue.</p>
                 )}
               </div>
+              {serviceability && (
+                <p
+                  className={cn(
+                    'mt-3 flex items-center gap-1.5 text-sm font-medium',
+                    serviceability.serviceable ? 'text-emerald-600' : 'text-destructive',
+                  )}
+                >
+                  {serviceability.serviceable ? (
+                    <>
+                      <CheckCircle2 className="h-4 w-4" /> Delivering here in {formatEta(serviceability.estimatedDeliveryMinutes ?? 60)}
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="h-4 w-4" /> Sorry, we don&apos;t deliver to this pincode yet — try a different address.
+                    </>
+                  )}
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -225,7 +257,7 @@ export default function CheckoutPage() {
             <Button
               className="w-full"
               size="lg"
-              disabled={!selectedAddressId || checkout.isPending}
+              disabled={!selectedAddressId || checkout.isPending || isBlockedByServiceability}
               onClick={handlePlaceOrder}
             >
               Place Order
