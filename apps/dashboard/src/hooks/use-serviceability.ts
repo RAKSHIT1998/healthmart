@@ -54,3 +54,37 @@ export function useDeleteServiceablePincode() {
     onError: (err: ApiClientError) => toast.error(err.message),
   });
 }
+
+export interface CityPincodeResult {
+  pincode: string;
+  area: string;
+  district: string;
+  state: string;
+  districtMatch: boolean;
+}
+
+export function useLookupCityPincodes() {
+  return useMutation({
+    mutationFn: (city: string) => api.get<CityPincodeResult[]>(`/serviceability/lookup-city?city=${encodeURIComponent(city)}`),
+    onError: (err: ApiClientError) => toast.error(err.message),
+  });
+}
+
+export interface BulkCreateServiceablePincodesInput {
+  pincodes: string[];
+  branchId: string;
+  estimatedDeliveryMinutes: number;
+}
+
+export function useBulkCreateServiceablePincodes() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: BulkCreateServiceablePincodesInput) =>
+      api.post<{ created: number; skipped: number; total: number }>('/serviceability/bulk', input),
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ['serviceable-pincodes'] });
+      toast.success(`${result.created} pincode(s) added${result.skipped ? `, ${result.skipped} already existed` : ''}`);
+    },
+    onError: (err: ApiClientError) => toast.error(err.message),
+  });
+}

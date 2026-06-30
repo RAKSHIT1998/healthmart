@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import {
   Role,
+  bulkCreateServiceablePincodesSchema,
+  cityPincodeLookupQuerySchema,
   createServiceablePincodeSchema,
   objectIdSchema,
   paginationQuerySchema,
@@ -20,6 +22,8 @@ router.get('/check/:pincode', validate({ params: z.object({ pincode: z.string() 
 router.use(authenticate, requireRole(Role.ADMIN, Role.MANAGER));
 router.get('/', validate({ query: paginationQuerySchema }), serviceabilityController.list);
 router.post('/', validate({ body: createServiceablePincodeSchema }), serviceabilityController.create);
+router.get('/lookup-city', validate({ query: cityPincodeLookupQuerySchema }), serviceabilityController.lookupCity);
+router.post('/bulk', validate({ body: bulkCreateServiceablePincodesSchema }), serviceabilityController.bulkCreate);
 router.patch('/:id', validate({ params: z.object({ id: objectIdSchema }), body: updateServiceablePincodeSchema }), serviceabilityController.update);
 router.delete('/:id', validate({ params: z.object({ id: objectIdSchema }) }), serviceabilityController.remove);
 

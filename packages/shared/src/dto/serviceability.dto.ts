@@ -25,3 +25,17 @@ export interface ServiceabilityCheckResult {
   estimatedDeliveryMinutes?: number;
   branchName?: string;
 }
+
+export const cityPincodeLookupQuerySchema = z.object({
+  city: z.string().min(2).max(100),
+});
+
+export type CityPincodeLookupQuery = z.infer<typeof cityPincodeLookupQuerySchema>;
+
+export const bulkCreateServiceablePincodesSchema = z.object({
+  pincodes: z.array(z.string().regex(REGEX.PINCODE)).min(1).max(500),
+  branchId: objectIdSchema,
+  estimatedDeliveryMinutes: z.number().int().min(5).max(1440),
+});
+
+export type BulkCreateServiceablePincodesInput = z.infer<typeof bulkCreateServiceablePincodesSchema>;

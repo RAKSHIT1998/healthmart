@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import {
   AuditAction,
+  type BulkCreateServiceablePincodesInput,
   type CreateServiceablePincodeInput,
   type PaginationQuery,
   type UpdateServiceablePincodeInput,
@@ -38,4 +39,15 @@ export const remove = asyncHandler(async (req: Request, res: Response) => {
   await serviceabilityService.deleteServiceablePincode(req.params.id as string);
   recordAudit({ req, action: AuditAction.DELETE, entityType: 'ServiceablePincode', entityId: req.params.id as string });
   sendSuccess(res, null, 'Removed');
+});
+
+export const lookupCity = asyncHandler(async (req: Request, res: Response) => {
+  sendSuccess(res, await serviceabilityService.lookupCityPincodes(req.query.city as string));
+});
+
+export const bulkCreate = asyncHandler(async (req: Request, res: Response) => {
+  const input = req.body as BulkCreateServiceablePincodesInput;
+  const result = await serviceabilityService.bulkCreateServiceablePincodes(input);
+  recordAudit({ req, action: AuditAction.CREATE, entityType: 'ServiceablePincode', entityId: input.branchId });
+  sendSuccess(res, result, `${result.created} pincode(s) added${result.skipped ? `, ${result.skipped} already existed` : ''}`, 201);
 });
