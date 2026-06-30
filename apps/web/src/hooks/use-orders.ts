@@ -41,6 +41,28 @@ export function useOrder(orderId: string) {
   });
 }
 
+interface Invoice {
+  invoiceNumber: string;
+  pdfUrl?: string;
+}
+
+/** Fetches the invoice via the authenticated API client and opens the PDF — a plain <a href> to
+ * the API endpoint can't work here since the route requires a bearer token and returns JSON, not
+ * a file. */
+export function useViewInvoice() {
+  return useMutation({
+    mutationFn: (orderId: string) => api.get<Invoice>(`/orders/${orderId}/invoice`),
+    onSuccess: (invoice) => {
+      if (invoice.pdfUrl) {
+        window.open(invoice.pdfUrl, '_blank', 'noopener,noreferrer');
+      } else {
+        toast.info(`Invoice ${invoice.invoiceNumber} is generated but the PDF isn't ready yet — please check back shortly or contact support.`);
+      }
+    },
+    onError: (err: ApiClientError) => toast.error(err.message),
+  });
+}
+
 export function useCancelOrder() {
   const queryClient = useQueryClient();
   return useMutation({

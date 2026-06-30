@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatCurrency, formatDate, cn } from '@/lib/utils';
-import { useCancelOrder, useOrder } from '@/hooks/use-orders';
+import { useCancelOrder, useOrder, useViewInvoice } from '@/hooks/use-orders';
 import { useOrderTracking } from '@/hooks/use-order-tracking';
 import { useCreateReturn } from '@/hooks/use-returns';
 
@@ -44,6 +44,7 @@ export default function OrderTrackingPage() {
   const params = useParams<{ id: string }>();
   const { data: order, isLoading } = useOrder(params.id);
   const cancelOrder = useCancelOrder();
+  const viewInvoice = useViewInvoice();
   const createReturn = useCreateReturn();
   const [reason] = useState('Changed my mind');
   const [returnOpen, setReturnOpen] = useState(false);
@@ -210,10 +211,8 @@ export default function OrderTrackingPage() {
       )}
 
       <div className="mt-6 flex gap-3">
-        <Button variant="outline" asChild>
-          <a href={`${process.env.NEXT_PUBLIC_API_URL}/orders/${order.id}/invoice`} target="_blank" rel="noreferrer">
-            View Invoice
-          </a>
+        <Button variant="outline" onClick={() => viewInvoice.mutate(order.id)} disabled={viewInvoice.isPending}>
+          View Invoice
         </Button>
         {canCancel && (
           <Button
