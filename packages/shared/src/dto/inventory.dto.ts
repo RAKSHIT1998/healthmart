@@ -14,3 +14,17 @@ export const receivePurchaseSchema = z.object({
 });
 
 export type ReceivePurchaseInput = z.infer<typeof receivePurchaseSchema>;
+
+export const writeOffBatchSchema = z.object({
+  quantity: z.number().int().positive(),
+  reason: z.enum(['damaged', 'expired']),
+  notes: z.string().max(300).optional(),
+});
+
+export type WriteOffBatchInput = z.infer<typeof writeOffBatchSchema>;
+
+export const updateLowStockThresholdSchema = z.object({
+  lowStockThreshold: z.number().int().min(0),
+});
+
+export type UpdateLowStockThresholdInput = z.infer<typeof updateLowStockThresholdSchema>;

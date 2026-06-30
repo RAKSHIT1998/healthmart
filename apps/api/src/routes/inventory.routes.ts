@@ -1,5 +1,12 @@
 import { Router } from 'express';
-import { Role, objectIdSchema, paginationQuerySchema, receivePurchaseSchema } from '@healthmart/shared';
+import {
+  Role,
+  objectIdSchema,
+  paginationQuerySchema,
+  receivePurchaseSchema,
+  writeOffBatchSchema,
+  updateLowStockThresholdSchema,
+} from '@healthmart/shared';
 import { z } from 'zod';
 import * as inventoryController from '../controllers/inventory.controller';
 import { validate } from '../middlewares/validate.middleware';
@@ -27,6 +34,19 @@ router.get(
   '/:medicineId/:branchId/availability',
   validate({ params: z.object({ medicineId: objectIdSchema, branchId: objectIdSchema }) }),
   inventoryController.availability,
+);
+router.post(
+  '/batches/:batchId/write-off',
+  validate({ params: z.object({ batchId: objectIdSchema }), body: writeOffBatchSchema }),
+  inventoryController.writeOffBatch,
+);
+router.patch(
+  '/:medicineId/:branchId/low-stock-threshold',
+  validate({
+    params: z.object({ medicineId: objectIdSchema, branchId: objectIdSchema }),
+    body: updateLowStockThresholdSchema,
+  }),
+  inventoryController.updateLowStockThreshold,
 );
 
 export default router;

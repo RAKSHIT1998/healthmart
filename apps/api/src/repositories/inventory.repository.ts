@@ -68,6 +68,19 @@ class InventoryRepository extends BaseRepository<IInventory> {
     );
   }
 
+  /** Atomically removes `quantity` units (e.g. a damaged/expired write-off); fails if it would go negative. */
+  async removeStock(medicineId: string, branchId: string, quantity: number) {
+    return this.model.findOneAndUpdate(
+      { medicineId, branchId, totalQuantity: { $gte: quantity } },
+      { $inc: { totalQuantity: -quantity } },
+      { new: true },
+    );
+  }
+
+  async updateLowStockThreshold(medicineId: string, branchId: string, lowStockThreshold: number) {
+    return this.model.findOneAndUpdate({ medicineId, branchId }, { $set: { lowStockThreshold } }, { new: true });
+  }
+
   async setTotalQuantity(medicineId: string, branchId: string, totalQuantity: number) {
     return this.model.findOneAndUpdate(
       { medicineId, branchId },

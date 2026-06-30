@@ -19,6 +19,8 @@ import {
   useInventoryValue,
   useLowStock,
   useReceivePurchase,
+  useUpdateLowStockThreshold,
+  useWriteOffBatch,
 } from '@/hooks/use-inventory';
 import { useBranches } from '@/hooks/use-catalog';
 import { MedicineSearchSelect } from '@/components/medicines/medicine-search-select';
@@ -44,6 +46,8 @@ export default function InventoryPage() {
   const { data: inventoryValue } = useInventoryValue();
   const { data: branches } = useBranches();
   const receivePurchase = useReceivePurchase();
+  const writeOffBatch = useWriteOffBatch();
+  const updateThreshold = useUpdateLowStockThreshold();
 
   const [purchaseOpen, setPurchaseOpen] = useState(false);
   const [productOpen, setProductOpen] = useState(false);
@@ -62,6 +66,40 @@ export default function InventoryPage() {
     setQuickAddItemId(itemId);
     setQuickAddQty('');
     requestAnimationFrame(() => quickAddInputRef.current?.focus());
+  }
+
+  // Write-off (mark damaged/expired) — scraps remaining units of a specific batch.
+  const [writeOffBatchId, setWriteOffBatchId] = useState<string | null>(null);
+  const [writeOffQty, setWriteOffQty] = useState('');
+  const [writeOffReason, setWriteOffReason] = useState<'damaged' | 'expired'>('expired');
+
+  function startWriteOff(batchId: string, quantityRemaining: number) {
+    setWriteOffBatchId(batchId);
+    setWriteOffQty(String(quantityRemaining));
+    setWriteOffReason('expired');
+  }
+
+  function submitWriteOff() {
+    if (!writeOffBatchId) return;
+    const quantity = Number(writeOffQty);
+    if (!quantity || quantity <= 0) return;
+    writeOffBatch.mutate(
+      { batchId: writeOffBatchId, quantity, reason: writeOffReason },
+      { onSuccess: () => setWriteOffBatchId(null) },
+    );
+  }
+
+  // Inline-editable low-stock threshold on the All Stock tab.
+  const [editingThresholdId, setEditingThresholdId] = useState<string | null>(null);
+  const [thresholdValue, setThresholdValue] = useState('');
+
+  function submitThreshold(medicineId: string, branchId: string) {
+    const value = Number(thresholdValue);
+    if (Number.isNaN(value) || value < 0) return;
+    updateThreshold.mutate(
+      { medicineId, branchId, lowStockThreshold: value },
+      { onSuccess: () => setEditingThresholdId(null) },
+    );
   }
 
   function submitQuickAdd(medicineId: string, branchId: string) {
@@ -148,12 +186,13 @@ export default function InventoryPage() {
                     <th className="p-3">Total Qty</th>
                     <th className="p-3">Reserved</th>
                     <th className="p-3">Available</th>
+                    <th className="p-3">Threshold</th>
                     <th className="p-3"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {loadingAll ? (
-                    <tr><td className="p-4 text-muted-foreground" colSpan={6}>Loading...</td></tr>
+                    <tr><td className="p-4 text-muted-foreground" colSpan={7}>Loading...</td></tr>
                   ) : allInventory && allInventory.items.length > 0 ? (
                     allInventory.items.map((item) => {
                       const medicine = typeof item.medicineId === 'object' ? item.medicineId : null;
@@ -174,6 +213,43 @@ export default function InventoryPage() {
                           <td className="p-3">{item.reservedQuantity}</td>
                           <td className="p-3">
                             <Badge variant={available <= item.lowStockThreshold ? 'warning' : 'success'}>{available}</Badge>
+                          </td>
+                          <td className="p-3">
+                            {editingThresholdId === item.id ? (
+                              <form
+                                className="flex items-center gap-1"
+                                onSubmit={(e) => {
+                                  e.preventDefault();
+                                  submitThreshold(medicine!.id, branch?.id ?? String(item.branchId));
+                                }}
+                              >
+                                <Input
+                                  type="number"
+                                  min={0}
+                                  autoFocus
+                                  value={thresholdValue}
+                                  onChange={(e) => setThresholdValue(e.target.value)}
+                                  onKeyDown={(e) => e.key === 'Escape' && setEditingThresholdId(null)}
+                                  className="h-8 w-16"
+                                />
+                                <Button type="submit" size="icon" variant="outline" className="h-8 w-8" disabled={updateThreshold.isPending}>
+                                  <Check className="h-3.5 w-3.5" />
+                                </Button>
+                                <Button type="button" size="icon" variant="ghost" className="h-8 w-8" onClick={() => setEditingThresholdId(null)}>
+                                  <X className="h-3.5 w-3.5" />
+                                </Button>
+                              </form>
+                            ) : (
+                              <button
+                                className="rounded px-1.5 py-0.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                                onClick={() => {
+                                  setEditingThresholdId(item.id);
+                                  setThresholdValue(String(item.lowStockThreshold));
+                                }}
+                              >
+                                {item.lowStockThreshold}
+                              </button>
+                            )}
                           </td>
                           <td className="p-3 text-right">
                             {medicine &&
@@ -281,11 +357,12 @@ export default function InventoryPage() {
                     <th className="p-3">Batch No.</th>
                     <th className="p-3">Expiry Date</th>
                     <th className="p-3">Qty Remaining</th>
+                    <th className="p-3"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {loadingExpiring ? (
-                    <tr><td className="p-4 text-muted-foreground" colSpan={4}>Loading...</td></tr>
+                    <tr><td className="p-4 text-muted-foreground" colSpan={5}>Loading...</td></tr>
                   ) : expiring && expiring.length > 0 ? (
                     expiring.map((batch) => (
                       <tr key={batch.id} className="border-b border-border/40">
@@ -295,10 +372,15 @@ export default function InventoryPage() {
                           <Badge variant="destructive">{formatDate(batch.expiryDate)}</Badge>
                         </td>
                         <td className="p-3">{batch.quantityRemaining}</td>
+                        <td className="p-3 text-right">
+                          <Button size="sm" variant="outline" onClick={() => startWriteOff(batch.id, batch.quantityRemaining)}>
+                            Write Off
+                          </Button>
+                        </td>
                       </tr>
                     ))
                   ) : (
-                    <tr><td className="p-4 text-muted-foreground" colSpan={4}>No batches expiring soon</td></tr>
+                    <tr><td className="p-4 text-muted-foreground" colSpan={5}>No batches expiring soon</td></tr>
                   )}
                 </tbody>
               </table>
@@ -428,6 +510,42 @@ export default function InventoryPage() {
       </Dialog>
 
       <MedicineFormDialog open={productOpen} onOpenChange={setProductOpen} />
+
+      <Dialog open={!!writeOffBatchId} onOpenChange={(open) => !open && setWriteOffBatchId(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Write Off Batch</DialogTitle>
+          </DialogHeader>
+          <form
+            className="grid gap-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              submitWriteOff();
+            }}
+          >
+            <div>
+              <Label>Reason</Label>
+              <Select value={writeOffReason} onValueChange={(v) => setWriteOffReason(v as 'damaged' | 'expired')}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="expired">Expired</SelectItem>
+                  <SelectItem value="damaged">Damaged</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Quantity</Label>
+              <Input type="number" min={1} autoFocus value={writeOffQty} onChange={(e) => setWriteOffQty(e.target.value)} />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              This permanently removes the units from stock and logs the write-off — it can&apos;t be undone.
+            </p>
+            <Button type="submit" variant="destructive" disabled={writeOffBatch.isPending}>
+              Confirm Write Off
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

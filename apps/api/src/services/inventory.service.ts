@@ -179,6 +179,45 @@ export async function listAll(branchId: string | undefined, page: number, limit:
   return inventoryRepository.findAll(branchId, page, limit);
 }
 
+export interface WriteOffBatchInput {
+  batchId: string;
+  quantity: number;
+  reason: 'damaged' | 'expired';
+  notes?: string;
+  createdBy?: string;
+}
+
+/** Scraps `quantity` units of a batch (damaged/expired) — removes it from both the batch and the inventory total, and logs the movement. */
+export async function writeOffBatch(input: WriteOffBatchInput) {
+  const batch = await batchRepository.findById(input.batchId);
+  if (!batch) throw ApiError.notFound('Batch not found');
+  if (input.quantity > batch.quantityRemaining) {
+    throw ApiError.badRequest(`Cannot write off ${input.quantity} units — only ${batch.quantityRemaining} remaining in this batch`);
+  }
+
+  const updatedBatch = await batchRepository.consumeFromBatch(String(batch._id), input.quantity);
+  await inventoryRepository.removeStock(String(batch.medicineId), String(batch.branchId), input.quantity);
+  await InventoryMovementModel.create({
+    medicineId: batch.medicineId,
+    branchId: batch.branchId,
+    batchId: batch._id,
+    type: input.reason === 'expired' ? InventoryMovementType.EXPIRED : InventoryMovementType.ADJUSTMENT,
+    quantity: input.quantity,
+    referenceType: 'Batch',
+    referenceId: batch._id,
+    createdBy: input.createdBy,
+    notes: input.notes,
+  });
+
+  return updatedBatch;
+}
+
+export async function updateLowStockThreshold(medicineId: string, branchId: string, lowStockThreshold: number) {
+  const updated = await inventoryRepository.updateLowStockThreshold(medicineId, branchId, lowStockThreshold);
+  if (!updated) throw ApiError.notFound('Inventory record not found for this medicine/branch');
+  return updated;
+}
+
 export interface MovementFilters {
   medicineId?: string;
   branchId?: string;

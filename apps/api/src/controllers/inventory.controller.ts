@@ -4,6 +4,7 @@ import { asyncHandler } from '../utils/asyncHandler';
 import { sendSuccess, sendPaginated, buildPaginationMeta } from '../utils/apiResponse';
 import * as inventoryService from '../services/inventory.service';
 import { recordAudit } from '../middlewares/audit.middleware';
+import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
 
 export const listAll = asyncHandler(async (req: Request, res: Response) => {
   const { page, limit } = req.query as unknown as PaginationQuery;
@@ -51,4 +52,25 @@ export const availability = asyncHandler(async (req: Request, res: Response) => 
 
 export const inventoryValue = asyncHandler(async (req: Request, res: Response) => {
   sendSuccess(res, { value: await inventoryService.getInventoryValue(req.query.branchId as string | undefined) });
+});
+
+export const writeOffBatch = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+  const batch = await inventoryService.writeOffBatch({
+    batchId: req.params.batchId as string,
+    quantity: req.body.quantity,
+    reason: req.body.reason,
+    notes: req.body.notes,
+    createdBy: req.user!.id,
+  });
+  recordAudit({ req, action: AuditAction.UPDATE, entityType: 'Batch', entityId: String(batch!._id), after: batch!.toJSON() });
+  sendSuccess(res, batch, 'Batch written off');
+});
+
+export const updateLowStockThreshold = asyncHandler(async (req: Request, res: Response) => {
+  const updated = await inventoryService.updateLowStockThreshold(
+    req.params.medicineId as string,
+    req.params.branchId as string,
+    req.body.lowStockThreshold,
+  );
+  sendSuccess(res, updated, 'Low stock threshold updated');
 });

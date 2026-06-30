@@ -61,3 +61,40 @@ export function useReceivePurchase() {
     onError: (err: ApiClientError) => toast.error(err.message),
   });
 }
+
+export interface WriteOffBatchInput {
+  batchId: string;
+  quantity: number;
+  reason: 'damaged' | 'expired';
+  notes?: string;
+}
+
+export function useWriteOffBatch() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ batchId, ...body }: WriteOffBatchInput) => api.post<Batch>(`/inventory/batches/${batchId}/write-off`, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['expiring-soon'] });
+      queryClient.invalidateQueries({ queryKey: ['low-stock'] });
+      queryClient.invalidateQueries({ queryKey: ['inventory-value'] });
+      queryClient.invalidateQueries({ queryKey: ['all-inventory'] });
+      queryClient.invalidateQueries({ queryKey: ['inventory-movements'] });
+      toast.success('Batch written off');
+    },
+    onError: (err: ApiClientError) => toast.error(err.message),
+  });
+}
+
+export function useUpdateLowStockThreshold() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ medicineId, branchId, lowStockThreshold }: { medicineId: string; branchId: string; lowStockThreshold: number }) =>
+      api.patch<InventoryItem>(`/inventory/${medicineId}/${branchId}/low-stock-threshold`, { lowStockThreshold }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-inventory'] });
+      queryClient.invalidateQueries({ queryKey: ['low-stock'] });
+      toast.success('Low stock threshold updated');
+    },
+    onError: (err: ApiClientError) => toast.error(err.message),
+  });
+}
