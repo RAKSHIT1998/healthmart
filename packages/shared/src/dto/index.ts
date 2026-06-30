@@ -20,3 +20,4 @@ export * from './telehealth.dto';
 export * from './return.dto';
 export * from './serviceability.dto';
 export * from './contact.dto';
+export * from './bulk-update.dto';

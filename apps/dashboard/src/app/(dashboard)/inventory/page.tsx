@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import Image from 'next/image';
-import { Check, PackagePlus, Plus, X } from 'lucide-react';
+import { Check, PackagePlus, Plus, Upload, X } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,6 +25,7 @@ import {
 import { useBranches } from '@/hooks/use-catalog';
 import { MedicineSearchSelect } from '@/components/medicines/medicine-search-select';
 import { MedicineFormDialog } from '@/components/medicines/medicine-form-dialog';
+import { BulkUpdateDialog } from '@/components/inventory/bulk-update-dialog';
 
 function defaultExpiryDate(): string {
   const d = new Date();
@@ -51,6 +52,7 @@ export default function InventoryPage() {
 
   const [purchaseOpen, setPurchaseOpen] = useState(false);
   const [productOpen, setProductOpen] = useState(false);
+  const [bulkUpdateOpen, setBulkUpdateOpen] = useState(false);
   const [selectedMedicine, setSelectedMedicine] = useState<{ id: string; name: string } | null>(null);
   const [lastBranchId, setLastBranchId] = useState('');
   const [form, setForm] = useState({ branchId: '', batchNumber: '', expiryDate: '', quantity: '', costPrice: '' });
@@ -151,6 +153,9 @@ export default function InventoryPage() {
           <p className="text-sm text-muted-foreground">Manage stock across all branches.</p>
         </div>
         <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setBulkUpdateOpen(true)}>
+            <Upload className="h-4 w-4" /> Bulk Update
+          </Button>
           <Button variant="outline" onClick={() => openReceivePurchase()}>
             <PackagePlus className="h-4 w-4" /> Receive Purchase
           </Button>
@@ -510,6 +515,8 @@ export default function InventoryPage() {
       </Dialog>
 
       <MedicineFormDialog open={productOpen} onOpenChange={setProductOpen} />
+
+      <BulkUpdateDialog open={bulkUpdateOpen} onOpenChange={setBulkUpdateOpen} />
 
       <Dialog open={!!writeOffBatchId} onOpenChange={(open) => !open && setWriteOffBatchId(null)}>
         <DialogContent>

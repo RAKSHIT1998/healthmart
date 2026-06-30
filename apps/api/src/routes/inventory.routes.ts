@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import path from 'path';
+import multer from 'multer';
 import {
   Role,
   objectIdSchema,
@@ -6,16 +8,32 @@ import {
   receivePurchaseSchema,
   writeOffBatchSchema,
   updateLowStockThresholdSchema,
+  commitBulkUpdateSchema,
 } from '@healthmart/shared';
 import { z } from 'zod';
 import * as inventoryController from '../controllers/inventory.controller';
+import * as bulkUpdateController from '../controllers/bulkUpdate.controller';
 import { validate } from '../middlewares/validate.middleware';
 import { authenticate } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/rbac.middleware';
+import { ApiError } from '../utils/ApiError';
 
 const router = Router();
 
 router.use(authenticate, requireRole(Role.ADMIN, Role.MANAGER, Role.INVENTORY_MANAGER));
+
+const BULK_UPDATE_EXTENSIONS = new Set(['.xlsx', '.xls', '.csv', '.txt', '.pdf']);
+const bulkUpdateUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (!BULK_UPDATE_EXTENSIONS.has(path.extname(file.originalname).toLowerCase())) {
+      cb(ApiError.badRequest('Only .xlsx, .xls, .csv, .txt, or .pdf files are allowed'));
+      return;
+    }
+    cb(null, true);
+  },
+});
 
 const listQuerySchema = paginationQuerySchema.extend({ branchId: objectIdSchema.optional() });
 const movementsQuerySchema = paginationQuerySchema.extend({
@@ -47,6 +65,12 @@ router.patch(
     body: updateLowStockThresholdSchema,
   }),
   inventoryController.updateLowStockThreshold,
+);
+router.post('/bulk-update/preview', bulkUpdateUpload.single('file'), bulkUpdateController.previewBulkUpdate);
+router.post(
+  '/bulk-update/commit',
+  validate({ body: commitBulkUpdateSchema }),
+  bulkUpdateController.commitBulkUpdate,
 );
 
 export default router;
