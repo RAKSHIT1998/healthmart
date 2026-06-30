@@ -12,7 +12,7 @@ const SECTIONS = [
   },
   {
     title: '2. Returns',
-    body: 'Unopened, undamaged medicines in their original packaging can be returned within 7 days of delivery. Temperature-sensitive medicines (e.g. insulin, vaccines), opened strips, and personal-care items that have been used are not eligible for return for safety and hygiene reasons.',
+    body: 'Unopened, undamaged non-prescription items in their original packaging can be returned within 7 days of delivery. Prescription medicines cannot be returned once delivered, regardless of condition, in line with pharmacy regulations. Temperature-sensitive medicines (e.g. insulin, vaccines), opened strips, and personal-care items that have been used are also not eligible for return for safety and hygiene reasons.',
   },
   {
     title: '3. Refunds',
@@ -32,7 +32,7 @@ export default function RefundPage() {
   return (
     <div className="container max-w-3xl py-12">
       <h1 className="text-3xl font-bold">Refund & Cancellation Policy</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Last updated: January 2026</p>
+      <p className="mt-2 text-sm text-muted-foreground">Last updated: June 2026</p>
       <div className="mt-8 space-y-6">
         {SECTIONS.map((section) => (
           <div key={section.title}>

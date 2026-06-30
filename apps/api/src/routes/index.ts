@@ -25,6 +25,7 @@ import blogRoutes from './blog.routes';
 import telehealthRoutes from './telehealth.routes';
 import returnRoutes from './return.routes';
 import serviceabilityRoutes from './serviceability.routes';
+import contactRoutes from './contact.routes';
 
 const router = Router();
 
@@ -54,5 +55,6 @@ router.use('/blog', blogRoutes);
 router.use('/telehealth', telehealthRoutes);
 router.use('/returns', returnRoutes);
 router.use('/serviceability', serviceabilityRoutes);
+router.use('/contact', contactRoutes);
 
 export default router;

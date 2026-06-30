@@ -11,6 +11,7 @@
     "lint": "eslint \"src/**/*.ts\"",
     "seed": "tsx src/scripts/seed.ts",
     "seed:demo": "tsx src/scripts/seed-demo-data.ts",
+    "seed:blog": "tsx src/scripts/seed-blog.ts",
     "marg:sync": "tsx src/scripts/run-marg-sync.ts",
     "backup": "tsx src/scripts/backup.ts",
     "restore": "tsx src/scripts/restore.ts",

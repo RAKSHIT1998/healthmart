@@ -36,7 +36,7 @@ export default function TermsPage() {
   return (
     <div className="container max-w-3xl py-12">
       <h1 className="text-3xl font-bold">Terms & Conditions</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Last updated: January 2026</p>
+      <p className="mt-2 text-sm text-muted-foreground">Last updated: June 2026</p>
       <div className="mt-8 space-y-6">
         {SECTIONS.map((section) => (
           <div key={section.title}>
