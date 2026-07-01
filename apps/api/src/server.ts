@@ -10,7 +10,13 @@ import { initSocketServer } from './realtime/socket';
 async function bootstrap(): Promise<void> {
   // ── 1. Bind to port immediately ────────────────────────────────────────────
   const nextHandleRef: NextHandleRef = { fn: null };
-  const app = createApp(nextHandleRef);
+  let app: ReturnType<typeof createApp>;
+  try {
+    app = createApp(nextHandleRef);
+  } catch (err) {
+    logger.error({ err }, 'FATAL: createApp() threw before app.listen — check middleware/route imports');
+    process.exit(1);
+  }
 
   const server = app.listen(env.PORT, () => {
     logger.info(`BuyMedicines.store API listening on port ${env.PORT} [${env.NODE_ENV}]`);
