@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Sidebar } from '@/components/admin/sidebar';
 import { Topbar } from '@/components/admin/topbar';
 import { useAuthStore } from '@/store/admin-auth-store';
@@ -11,10 +11,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const accessToken = useAuthStore((s) => s.accessToken);
   const hasHydrated = useAuthStore((s) => s.hasHydrated);
   const router = useRouter();
+  const pathname = usePathname();
+
+  const isLoginPage = pathname === '/admin/login';
 
   useEffect(() => {
-    if (hasHydrated && !accessToken) router.push('/admin/login');
-  }, [hasHydrated, accessToken, router]);
+    if (hasHydrated && !accessToken && !isLoginPage) router.push('/admin/login');
+  }, [hasHydrated, accessToken, router, isLoginPage]);
+
+  // Login page renders without the admin shell
+  if (isLoginPage) return <>{children}</>;
 
   if (!hasHydrated || !accessToken) return null;
 
