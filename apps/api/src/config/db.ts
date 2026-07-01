@@ -11,7 +11,8 @@ function logDbError(err: unknown) {
   const now = Date.now();
   if (now - _lastErrorLog > 10_000) {
     _lastErrorLog = now;
-    logger.error({ err }, 'MongoDB connection error');
+    const msg = err instanceof Error ? err.message : String(err);
+    logger.error({ err }, `MongoDB connection error: ${msg}`);
   }
 }
 

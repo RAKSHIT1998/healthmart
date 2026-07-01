@@ -96,11 +96,6 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
 
   async function handleSubmit() {
     if (!form.name.trim()) return;
-    if (form.images.length === 0) {
-      toast.error('Add at least one photo before saving');
-      return;
-    }
-
     const payload = {
       name: form.name,
       description: form.description.trim() || `${form.name} — quality assured, ready to ship.`,
@@ -168,7 +163,7 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
           </div>
 
           <div className="sm:col-span-2">
-            <Label>Photos *</Label>
+            <Label>Photos <span className="text-muted-foreground font-normal">(optional)</span></Label>
             <ImageUpload images={form.images} onChange={(images) => setForm({ ...form, images })} />
           </div>
 
