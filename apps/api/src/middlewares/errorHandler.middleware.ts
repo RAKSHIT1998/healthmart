@@ -32,10 +32,11 @@ export function errorHandler(err: unknown, req: Request, res: Response, _next: N
     return;
   }
 
-  logger.error({ err, path: req.originalUrl }, 'Unhandled error');
+  const message = (err as Error)?.message || 'Internal server error';
+  logger.error({ err, path: req.originalUrl }, `Unhandled error: ${message}`);
   res.status(500).json({
     success: false,
-    message: isProduction ? 'Internal server error' : (err as Error)?.message || 'Internal server error',
+    message,
     code: 'INTERNAL_ERROR',
   });
 }

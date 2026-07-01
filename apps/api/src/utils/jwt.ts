@@ -10,6 +10,7 @@ export interface RefreshTokenPayload {
 }
 
 export function signAccessToken(payload: JwtAccessPayload): string {
+  if (!env.JWT_ACCESS_SECRET) throw new Error('JWT_ACCESS_SECRET is not set in Railway Variables');
   return jwt.sign(payload, env.JWT_ACCESS_SECRET, {
     expiresIn: TOKEN_CONFIG.ACCESS_TOKEN_EXPIRY,
   });
@@ -20,6 +21,7 @@ export function verifyAccessToken(token: string): JwtAccessPayload {
 }
 
 export function signRefreshToken(payload: RefreshTokenPayload): string {
+  if (!env.JWT_REFRESH_SECRET) throw new Error('JWT_REFRESH_SECRET is not set in Railway Variables');
   return jwt.sign(payload, env.JWT_REFRESH_SECRET, {
     expiresIn: `${TOKEN_CONFIG.REFRESH_TOKEN_EXPIRY_DAYS}d`,
   });
