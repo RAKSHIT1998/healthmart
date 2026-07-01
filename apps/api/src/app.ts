@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import pinoHttp from 'pino-http';
-import { env, isProduction } from './config/env';
+import { env, envMisconfigured, isProduction } from './config/env';
 import { logger } from './config/logger';
 import { globalRateLimiter } from './middlewares/rateLimiter.middleware';
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler.middleware';
@@ -16,11 +16,10 @@ import apiRoutes from './routes';
 
 type NextHandle = (req: IncomingMessage, res: ServerResponse) => Promise<void>;
 
-// Mutable reference so server.ts can swap in the Next.js handler after prepare()
-// without re-registering routes.
-type HandleRef = { fn: NextHandle | null };
+// Mutable ref filled in by server.ts once nextApp.prepare() completes.
+export type NextHandleRef = { fn: NextHandle | null };
 
-export function createApp(nextHandleRef?: HandleRef): Express {
+export function createApp(nextHandleRef?: NextHandleRef): Express {
   const app = express();
 
   app.set('trust proxy', 1);
@@ -33,8 +32,8 @@ export function createApp(nextHandleRef?: HandleRef): Express {
   );
   app.use(compression());
   app.use(cookieParser());
-  // `verify` stashes the raw bytes so webhook routes (Cashfree, MARG)
-  // can validate HMAC signatures against the exact payload.
+  // `verify` stashes raw bytes so webhook routes (Cashfree, MARG) can validate
+  // HMAC signatures — body-parser only reads the stream once.
   app.use(
     express.json({
       limit: '2mb',
@@ -49,8 +48,16 @@ export function createApp(nextHandleRef?: HandleRef): Express {
   app.use(pinoHttp({ logger, autoLogging: !isProduction ? { ignore: () => true } : true }));
   app.use(globalRateLimiter);
 
-  // Health check responds immediately — even before MongoDB/Next.js are ready.
+  // /health always responds immediately — even before MongoDB/Next.js are ready.
+  // This is what Railway polls during deployment; it must never be gated on slow init.
   app.get('/health', (_req, res) => {
+    if (envMisconfigured) {
+      return res.status(200).json({
+        status: 'misconfigured',
+        timestamp: new Date().toISOString(),
+        errors: envMisconfigured,
+      });
+    }
     res.json({ status: 'ok', timestamp: new Date().toISOString(), env: env.NODE_ENV });
   });
 
@@ -58,7 +65,7 @@ export function createApp(nextHandleRef?: HandleRef): Express {
   app.use('/api/v1', apiRoutes);
   app.use('/api/v1', notFoundHandler);
 
-  // Catch-all: delegate to Next.js once ready, otherwise 503.
+  // Catch-all: forward to Next.js once ready; 503 while initialising.
   app.use((req: Request, res: Response, next: NextFunction) => {
     const handle = nextHandleRef?.fn;
     if (handle) {

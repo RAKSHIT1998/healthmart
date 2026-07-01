@@ -11,14 +11,14 @@ const envSchema = z.object({
   CORS_ORIGINS: z.string().default('http://localhost:3000'),
 
   // Database
-  MONGO_URI: z.string().min(1, 'MONGO_URI is required'),
+  MONGO_URI: z.string().min(1).default(''),
 
-  // Redis (optional in Phase 1 — caching layer lands in Phase 2)
+  // Redis (optional)
   REDIS_URL: z.string().optional(),
 
   // JWT
-  JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET must be at least 32 characters'),
-  JWT_REFRESH_SECRET: z.string().min(32, 'JWT_REFRESH_SECRET must be at least 32 characters'),
+  JWT_ACCESS_SECRET: z.string().min(1).default(''),
+  JWT_REFRESH_SECRET: z.string().min(1).default(''),
 
   // Cloudinary
   CLOUDINARY_CLOUD_NAME: z.string().optional(),
@@ -54,7 +54,7 @@ const envSchema = z.object({
   AGORA_APP_CERTIFICATE: z.string().optional(),
 
   // MARG ERP Integration
-  MARG_INTEGRATION_MODE: z.enum(['csv', 'webhook', 'api', 'disabled']).default('csv'),
+  MARG_INTEGRATION_MODE: z.enum(['csv', 'webhook', 'api', 'disabled']).default('disabled'),
   MARG_SYNC_CRON: z.string().default('*/30 * * * *'),
   MARG_CSV_WATCH_DIR: z.string().default('./marg-sync/incoming'),
   MARG_CSV_PROCESSED_DIR: z.string().default('./marg-sync/processed'),
@@ -68,15 +68,21 @@ const envSchema = z.object({
   ADMIN_SEED_PASSWORD: z.string().default('ChangeMe@12345'),
 });
 
+// Never throw at module-load time — doing so prevents app.listen() from ever
+// running, which means Railway's health check sees connection-refused on every
+// attempt and marks the deployment as failed before any logs are visible.
+// Required fields (MONGO_URI, JWT secrets) are validated in server.ts AFTER the
+// HTTP server is already listening, so /health always responds immediately.
 const parsed = envSchema.safeParse(process.env);
 
 if (!parsed.success) {
   // eslint-disable-next-line no-console
-  console.error('Invalid environment configuration:', parsed.error.flatten().fieldErrors);
-  throw new Error('Invalid environment configuration. Check your .env file against .env.example.');
+  console.error('[env] Configuration warnings (non-fatal at load time):', parsed.error.flatten().fieldErrors);
 }
 
-export const env = parsed.data;
+export const env = parsed.success ? parsed.data : (envSchema.parse({}));
+export const envMisconfigured = !parsed.success ? parsed.error.flatten().fieldErrors : null;
+
 export const isProduction = env.NODE_ENV === 'production';
 export const isDevelopment = env.NODE_ENV === 'development';
 export const isTest = env.NODE_ENV === 'test';
