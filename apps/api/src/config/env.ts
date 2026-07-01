@@ -8,9 +8,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().default(5000),
   API_BASE_URL: z.string().url().default('http://localhost:5000'),
-  WEB_BASE_URL: z.string().url().default('http://localhost:3000'),
-  DASHBOARD_BASE_URL: z.string().url().default('http://localhost:3001'),
-  CORS_ORIGINS: z.string().default('http://localhost:3000,http://localhost:3001'),
+  CORS_ORIGINS: z.string().default('http://localhost:3000'),
 
   // Database
   MONGO_URI: z.string().min(1, 'MONGO_URI is required'),
