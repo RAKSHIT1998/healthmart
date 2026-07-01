@@ -53,7 +53,7 @@ const envSchema = z.object({
   AGORA_APP_CERTIFICATE: z.string().optional(),
 
   // MARG ERP (optional)
-  MARG_INTEGRATION_MODE: z.enum(['csv', 'webhook', 'api', 'disabled']).default('disabled'),
+  MARG_INTEGRATION_MODE: z.enum(['csv', 'webhook', 'api', 'disabled']).catch('disabled'),
   MARG_SYNC_CRON: z.string().default('*/30 * * * *'),
   MARG_CSV_WATCH_DIR: z.string().default('./marg-sync/incoming'),
   MARG_CSV_PROCESSED_DIR: z.string().default('./marg-sync/processed'),
