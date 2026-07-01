@@ -10,6 +10,7 @@ RUN npm install
 
 FROM base AS build
 COPY --from=deps /repo/node_modules ./node_modules
+COPY --from=deps /repo/package.json ./
 COPY tsconfig.base.json ./
 COPY packages/shared ./packages/shared
 COPY apps/api ./apps/api
