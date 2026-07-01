@@ -9,10 +9,10 @@ import {
   ReturnStatus,
   WalletTransactionReason,
   type CreateReturnRequestInput,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { orderRepository, returnRequestRepository } from '../repositories';
 import { InventoryMovementModel } from '../models';
-import { InventoryMovementType } from '@healthmart/shared';
+import { InventoryMovementType } from '@buymedicines/shared';
 import { ApiError } from '../utils/ApiError';
 import { inventoryRepository } from '../repositories/inventory.repository';
 import { creditWallet } from './wallet.service';

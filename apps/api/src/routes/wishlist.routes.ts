@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { objectIdSchema } from '@healthmart/shared';
+import { objectIdSchema } from '@buymedicines/shared';
 import { z } from 'zod';
 import * as wishlistController from '../controllers/wishlist.controller';
 import { validate } from '../middlewares/validate.middleware';

@@ -1,4 +1,4 @@
-import { CouponType, type CreateCouponInput, type UpdateCouponInput } from '@healthmart/shared';
+import { CouponType, type CreateCouponInput, type UpdateCouponInput } from '@buymedicines/shared';
 import { couponRedemptionRepository, couponRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import type { ICoupon } from '../models';

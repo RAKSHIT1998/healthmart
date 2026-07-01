@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import type { ContactMessageInput } from '@healthmart/shared';
+import type { ContactMessageInput } from '@buymedicines/shared';
 import { asyncHandler } from '../utils/asyncHandler';
 import { sendSuccess } from '../utils/apiResponse';
 import { sendEmail } from '../integrations/resend';

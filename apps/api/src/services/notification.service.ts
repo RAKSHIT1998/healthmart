@@ -1,4 +1,4 @@
-import { NotificationChannel, NotificationType } from '@healthmart/shared';
+import { NotificationChannel, NotificationType } from '@buymedicines/shared';
 import { notificationRepository } from '../repositories';
 import { UserModel } from '../models';
 import { sendTransactionalSms, sendWhatsAppMessage } from '../integrations/msg91';

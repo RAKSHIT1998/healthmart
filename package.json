@@ -1,8 +1,8 @@
 {
-  "name": "medicare-medical-store",
+  "name": "buymedicines-store",
   "private": true,
   "version": "1.0.0",
-  "description": "Medicare Medical Store - Your trusted pharmacy delivered within minutes.",
+  "description": "BuyMedicines.store - Your trusted pharmacy delivered within minutes.",
   "workspaces": [
     "apps/api",
     "apps/web",

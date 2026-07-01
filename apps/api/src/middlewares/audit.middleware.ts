@@ -1,5 +1,5 @@
 import type { Request } from 'express';
-import { AuditAction } from '@healthmart/shared';
+import { AuditAction } from '@buymedicines/shared';
 import { AuditLogModel } from '../models';
 import { logger } from '../config/logger';
 import type { AuthenticatedRequest } from './auth.middleware';

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { ShieldCheck, Truck, Users } from 'lucide-react';
-import { APP_NAME, APP_TAGLINE } from '@healthmart/shared';
+import { APP_NAME, APP_TAGLINE } from '@buymedicines/shared';
 
 export const metadata: Metadata = {
   title: 'About Us',

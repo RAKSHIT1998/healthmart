@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addCartItemSchema, applyCouponSchema, objectIdSchema, updateCartItemSchema } from '@healthmart/shared';
+import { addCartItemSchema, applyCouponSchema, objectIdSchema, updateCartItemSchema } from '@buymedicines/shared';
 import { z } from 'zod';
 import * as cartController from '../controllers/cart.controller';
 import { validate } from '../middlewares/validate.middleware';

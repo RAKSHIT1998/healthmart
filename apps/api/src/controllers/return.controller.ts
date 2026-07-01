@@ -4,7 +4,7 @@ import {
   type CreateReturnRequestInput,
   type PaginationQuery,
   type ProcessReturnRequestInput,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { asyncHandler } from '../utils/asyncHandler';
 import { sendPaginated, sendSuccess } from '../utils/apiResponse';
 import * as returnService from '../services/return.service';

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'How Medicare Medical Store collects, uses, and protects your personal and health information.',
+  description: 'How BuyMedicines.store collects, uses, and protects your personal and health information.',
 };
 
 const SECTIONS = [
@@ -28,7 +28,7 @@ const SECTIONS = [
   },
   {
     title: '6. Your Rights',
-    body: 'You may request access to, correction of, or deletion of your personal data by contacting support@medicaremedicalstore.com, subject to regulatory retention requirements for pharmacy records.',
+    body: 'You may request access to, correction of, or deletion of your personal data by contacting support@buymedicines.store, subject to regulatory retention requirements for pharmacy records.',
   },
 ];
 

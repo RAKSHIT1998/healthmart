@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role, createMedicineSchema, medicineSearchQuerySchema, objectIdSchema, updateMedicineSchema } from '@healthmart/shared';
+import { Role, createMedicineSchema, medicineSearchQuerySchema, objectIdSchema, updateMedicineSchema } from '@buymedicines/shared';
 import { z } from 'zod';
 import * as medicineController from '../controllers/medicine.controller';
 import { validate } from '../middlewares/validate.middleware';

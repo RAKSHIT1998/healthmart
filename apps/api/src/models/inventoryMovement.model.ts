@@ -1,5 +1,5 @@
 import { Schema, model, Types, type Document } from 'mongoose';
-import { InventoryMovementType } from '@healthmart/shared';
+import { InventoryMovementType } from '@buymedicines/shared';
 import { toJSONPlugin } from './plugins/toJSON.plugin';
 
 export interface IInventoryMovement extends Document {

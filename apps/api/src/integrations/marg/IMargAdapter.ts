@@ -5,7 +5,7 @@ import type {
   MargSaleInvoicePush,
   MargStockPayload,
   MargSupplierPayload,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 
 export interface MargPushResult {
   success: boolean;

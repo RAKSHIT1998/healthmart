@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import { BaseRepository } from './BaseRepository';
 import { InventoryModel, type IInventory } from '../models';
-import { LOW_STOCK_THRESHOLD_UNITS } from '@healthmart/shared';
+import { LOW_STOCK_THRESHOLD_UNITS } from '@buymedicines/shared';
 
 class InventoryRepository extends BaseRepository<IInventory> {
   constructor() {

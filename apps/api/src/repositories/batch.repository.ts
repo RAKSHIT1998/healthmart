@@ -1,6 +1,6 @@
 import { BaseRepository } from './BaseRepository';
 import { BatchModel, type IBatch } from '../models';
-import { EXPIRY_ALERT_WINDOW_DAYS } from '@healthmart/shared';
+import { EXPIRY_ALERT_WINDOW_DAYS } from '@buymedicines/shared';
 
 class BatchRepository extends BaseRepository<IBatch> {
   constructor() {

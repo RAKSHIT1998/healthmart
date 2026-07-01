@@ -3,7 +3,7 @@ import { BlogListClient } from './blog-list-client';
 
 export const metadata: Metadata = {
   title: 'Health Blog',
-  description: 'Health tips, medicine guides, and wellness articles from Medicare Medical Store.',
+  description: 'Health tips, medicine guides, and wellness articles from BuyMedicines.store.',
 };
 
 export default function BlogPage() {

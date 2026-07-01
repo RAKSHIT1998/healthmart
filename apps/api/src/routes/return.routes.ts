@@ -5,7 +5,7 @@ import {
   objectIdSchema,
   paginationQuerySchema,
   processReturnRequestSchema,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { z } from 'zod';
 import * as returnController from '../controllers/return.controller';
 import { validate } from '../middlewares/validate.middleware';

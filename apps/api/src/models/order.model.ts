@@ -1,5 +1,5 @@
 import { Schema, model, Types, type Document } from 'mongoose';
-import { OrderStatus, PaymentMethod, PaymentStatus } from '@healthmart/shared';
+import { OrderStatus, PaymentMethod, PaymentStatus } from '@buymedicines/shared';
 import { toJSONPlugin } from './plugins/toJSON.plugin';
 
 export interface IBatchAllocation {

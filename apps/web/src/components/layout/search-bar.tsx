@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { formatCurrency } from '@/lib/utils';
 import type { Medicine } from '@/types';
 
-const RECENT_SEARCHES_KEY = 'healthmart-recent-searches';
+const RECENT_SEARCHES_KEY = 'buymedicines-recent-searches';
 const POPULAR_SEARCHES = ['Paracetamol', 'Vitamin C', 'Cough Syrup', 'Hand Sanitizer', 'Thermometer'];
 
 function getRecentSearches(): string[] {

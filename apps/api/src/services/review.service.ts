@@ -1,7 +1,7 @@
-import type { CreateReviewInput } from '@healthmart/shared';
+import type { CreateReviewInput } from '@buymedicines/shared';
 import { medicineRepository, orderRepository, reviewRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
-import { OrderStatus } from '@healthmart/shared';
+import { OrderStatus } from '@buymedicines/shared';
 
 async function refreshMedicineRating(medicineId: string): Promise<void> {
   const { average, count } = await reviewRepository.getAggregateRating(medicineId);

@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useRequestOtp, useVerifyOtp } from '@/hooks/use-auth';
-import { REGEX } from '@healthmart/shared';
+import { REGEX } from '@buymedicines/shared';
 
 export default function LoginPage() {
   const router = useRouter();

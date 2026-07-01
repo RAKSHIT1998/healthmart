@@ -6,8 +6,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
-  title: { default: 'Medicare Admin', template: '%s | Medicare Admin' },
-  description: 'Internal control panel for Medicare Medical Store — orders, inventory, prescriptions, and MARG sync.',
+  title: { default: 'BuyMedicines.store Admin', template: '%s | BuyMedicines.store Admin' },
+  description: 'Internal control panel for BuyMedicines.store — orders, inventory, prescriptions, and MARG sync.',
   robots: { index: false, follow: false },
 };
 

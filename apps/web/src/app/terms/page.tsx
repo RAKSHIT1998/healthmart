@@ -2,13 +2,13 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Terms & Conditions',
-  description: 'Terms and conditions for using the Medicare Medical Store platform.',
+  description: 'Terms and conditions for using the BuyMedicines.store platform.',
 };
 
 const SECTIONS = [
   {
     title: '1. Acceptance of Terms',
-    body: 'By accessing or using Medicare Medical Store, you agree to be bound by these Terms & Conditions and our Privacy Policy.',
+    body: 'By accessing or using BuyMedicines.store, you agree to be bound by these Terms & Conditions and our Privacy Policy.',
   },
   {
     title: '2. Prescription Medicines',
@@ -16,7 +16,7 @@ const SECTIONS = [
   },
   {
     title: '3. Account Responsibility',
-    body: 'You are responsible for maintaining the confidentiality of your account and OTP. Medicare Medical Store is not liable for unauthorized access resulting from your failure to safeguard your login credentials.',
+    body: 'You are responsible for maintaining the confidentiality of your account and OTP. BuyMedicines.store is not liable for unauthorized access resulting from your failure to safeguard your login credentials.',
   },
   {
     title: '4. Pricing & Availability',
@@ -24,7 +24,7 @@ const SECTIONS = [
   },
   {
     title: '5. Limitation of Liability',
-    body: 'Medicare Medical Store is a marketplace connecting you with licensed pharmacy partners and is not a substitute for professional medical advice. Always consult a qualified healthcare provider before starting, stopping, or changing any medication.',
+    body: 'BuyMedicines.store is a marketplace connecting you with licensed pharmacy partners and is not a substitute for professional medical advice. Always consult a qualified healthcare provider before starting, stopping, or changing any medication.',
   },
   {
     title: '6. Governing Law',

@@ -27,7 +27,7 @@ export async function setupTestDB(): Promise<void> {
 
   if (externalUri) {
     usingExternalServer = true;
-    const dbName = `healthmart_test_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
+    const dbName = `buymedicines_test_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
     const uri = externalUri.replace(/\/?$/, `/${dbName}`);
     await mongoose.connect(uri);
   } else {

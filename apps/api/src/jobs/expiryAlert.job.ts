@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { EXPIRY_ALERT_WINDOW_DAYS, NotificationType, Role } from '@healthmart/shared';
+import { EXPIRY_ALERT_WINDOW_DAYS, NotificationType, Role } from '@buymedicines/shared';
 import { batchRepository } from '../repositories';
 import { UserModel } from '../models';
 import { notifyUser } from '../services/notification.service';

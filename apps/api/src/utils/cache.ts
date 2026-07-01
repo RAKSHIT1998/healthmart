@@ -1,7 +1,7 @@
 import { getRedisClient } from '../config/redis';
 import { logger } from '../config/logger';
 
-const CACHE_PREFIX = 'healthmart:';
+const CACHE_PREFIX = 'buymedicines:';
 
 /**
  * Cache-aside helper: returns the cached value for `key` if present, otherwise

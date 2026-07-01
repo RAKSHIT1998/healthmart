@@ -1,4 +1,4 @@
-import type { CreateBlogInput, UpdateBlogInput } from '@healthmart/shared';
+import type { CreateBlogInput, UpdateBlogInput } from '@buymedicines/shared';
 import { blogCommentRepository, blogRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { slugify } from '../utils/slugify';

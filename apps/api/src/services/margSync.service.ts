@@ -5,7 +5,7 @@ import {
   type MargMedicinePayload,
   type MargStockPayload,
   type MargSupplierPayload,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import {
   batchRepository,
   branchRepository,

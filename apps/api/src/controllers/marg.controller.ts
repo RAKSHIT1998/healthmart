@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { Request, Response } from 'express';
-import { MargSyncEntity, type PaginationQuery } from '@healthmart/shared';
+import { MargSyncEntity, type PaginationQuery } from '@buymedicines/shared';
 import { asyncHandler } from '../utils/asyncHandler';
 import { sendPaginated, sendSuccess } from '../utils/apiResponse';
 import * as margSyncService from '../services/margSync.service';

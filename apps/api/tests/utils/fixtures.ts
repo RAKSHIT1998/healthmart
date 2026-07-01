@@ -1,5 +1,5 @@
 import { BranchModel, CategoryModel, ManufacturerModel, MedicineModel, OrderModel, UserModel } from '../../src/models';
-import { OrderStatus, PaymentMethod, PaymentStatus, Role } from '@healthmart/shared';
+import { OrderStatus, PaymentMethod, PaymentStatus, Role } from '@buymedicines/shared';
 import type { Types } from 'mongoose';
 
 export async function createBranch(overrides: Partial<Record<string, unknown>> = {}) {

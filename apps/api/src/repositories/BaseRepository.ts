@@ -7,7 +7,7 @@ import type {
   UpdateQuery,
 } from 'mongoose';
 import { buildPaginationMeta } from '../utils/apiResponse';
-import type { PaginatedResult, PaginationMeta } from '@healthmart/shared';
+import type { PaginatedResult, PaginationMeta } from '@buymedicines/shared';
 
 export interface PaginateOptions {
   page: number;

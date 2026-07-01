@@ -1,4 +1,4 @@
-import { OrderStatus, PaymentStatus } from '@healthmart/shared';
+import { OrderStatus, PaymentStatus } from '@buymedicines/shared';
 import { analyticsRepository, inventoryRepository, medicineRepository, orderRepository } from '../repositories';
 import { OrderModel, UserModel } from '../models';
 import * as inventoryService from './inventory.service';

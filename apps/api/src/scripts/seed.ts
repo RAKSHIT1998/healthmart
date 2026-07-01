@@ -1,4 +1,4 @@
-import { Role } from '@healthmart/shared';
+import { Role } from '@buymedicines/shared';
 import { connectDatabase, disconnectDatabase } from '../config/db';
 import { env } from '../config/env';
 import { logger } from '../config/logger';
@@ -12,7 +12,7 @@ async function seed(): Promise<void> {
     { code: 'MAIN' },
     {
       $setOnInsert: {
-        name: 'Medicare Medical Store - Main Branch',
+        name: 'BuyMedicines.store - Main Branch',
         code: 'MAIN',
         address: '123 MG Road',
         city: 'Bengaluru',

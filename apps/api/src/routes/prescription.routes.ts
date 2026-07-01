@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role, paginationQuerySchema, reviewPrescriptionSchema, uploadPrescriptionSchema } from '@healthmart/shared';
+import { Role, paginationQuerySchema, reviewPrescriptionSchema, uploadPrescriptionSchema } from '@buymedicines/shared';
 import * as prescriptionController from '../controllers/prescription.controller';
 import { validate } from '../middlewares/validate.middleware';
 import { authenticate } from '../middlewares/auth.middleware';

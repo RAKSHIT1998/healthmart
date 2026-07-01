@@ -1,4 +1,4 @@
-import { PrescriptionStatus } from '@healthmart/shared';
+import { PrescriptionStatus } from '@buymedicines/shared';
 import { BaseRepository } from './BaseRepository';
 import { PrescriptionModel, type IPrescription } from '../models';
 

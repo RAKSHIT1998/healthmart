@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role, createBlogCommentSchema, createBlogSchema, objectIdSchema, paginationQuerySchema, updateBlogSchema } from '@healthmart/shared';
+import { Role, createBlogCommentSchema, createBlogSchema, objectIdSchema, paginationQuerySchema, updateBlogSchema } from '@buymedicines/shared';
 import { z } from 'zod';
 import * as blogController from '../controllers/blog.controller';
 import { validate } from '../middlewares/validate.middleware';

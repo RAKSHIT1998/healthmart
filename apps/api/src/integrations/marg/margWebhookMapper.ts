@@ -3,7 +3,7 @@ import type {
   MargMedicinePayload,
   MargSupplierPayload,
   MargStockPayload,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 
 type RawRecord = Record<string, unknown>;
 

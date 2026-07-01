@@ -1,4 +1,4 @@
-import { Role, type CreateStaffUserInput, type PaginationQuery } from '@healthmart/shared';
+import { Role, type CreateStaffUserInput, type PaginationQuery } from '@buymedicines/shared';
 import { userRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { hashPassword } from '../utils/hash';

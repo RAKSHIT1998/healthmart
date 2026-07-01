@@ -49,5 +49,5 @@ export const REFERRAL_CONFIG = {
   REFEREE_REWARD: 50,
 } as const;
 
-export const APP_NAME = 'Medicare Medical Store';
+export const APP_NAME = 'BuyMedicines.store';
 export const APP_TAGLINE = 'Your trusted pharmacy delivered within minutes.';

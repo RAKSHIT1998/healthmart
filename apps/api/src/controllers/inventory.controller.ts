@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { AuditAction, type PaginationQuery } from '@healthmart/shared';
+import { AuditAction, type PaginationQuery } from '@buymedicines/shared';
 import { asyncHandler } from '../utils/asyncHandler';
 import { sendSuccess, sendPaginated, buildPaginationMeta } from '../utils/apiResponse';
 import * as inventoryService from '../services/inventory.service';

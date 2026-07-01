@@ -21,7 +21,7 @@ import { launchCashfreeCheckout } from '@/lib/cashfree';
 import { api, ApiClientError, publicApiFetch } from '@/lib/api';
 import { formatCurrency, cn } from '@/lib/utils';
 import type { Prescription, Wallet } from '@/types';
-import { REGEX, type ServiceabilityCheckResult } from '@healthmart/shared';
+import { REGEX, type ServiceabilityCheckResult } from '@buymedicines/shared';
 
 interface UploadResult {
   url: string;

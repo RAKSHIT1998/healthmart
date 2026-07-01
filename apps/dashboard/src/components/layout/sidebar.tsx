@@ -21,7 +21,7 @@ import {
   Users,
   Zap,
 } from 'lucide-react';
-import { Role } from '@healthmart/shared';
+import { Role } from '@buymedicines/shared';
 import { useAuthStore } from '@/store/auth-store';
 import { cn } from '@/lib/utils';
 
@@ -81,7 +81,7 @@ export function Sidebar() {
           M
         </span>
         <div className="leading-tight">
-          <p className="text-sm font-bold">Medicare Admin</p>
+          <p className="text-sm font-bold">BuyMedicines.store Admin</p>
           <p className="text-[11px] text-muted-foreground">Control Panel</p>
         </div>
       </div>

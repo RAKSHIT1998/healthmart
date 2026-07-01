@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role, paginationQuerySchema } from '@healthmart/shared';
+import { Role, paginationQuerySchema } from '@buymedicines/shared';
 import { z } from 'zod';
 import * as userController from '../controllers/user.controller';
 import { validate } from '../middlewares/validate.middleware';

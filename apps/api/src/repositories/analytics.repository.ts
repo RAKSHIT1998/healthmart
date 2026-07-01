@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { OrderStatus, PaymentStatus } from '@healthmart/shared';
+import { OrderStatus, PaymentStatus } from '@buymedicines/shared';
 import { BaseRepository } from './BaseRepository';
 import { AnalyticsSnapshotModel, OrderModel, UserModel, type IAnalyticsSnapshot } from '../models';
 

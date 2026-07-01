@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role, createDriverSchema, paginationQuerySchema, updateDriverAvailabilitySchema, updateDriverLocationSchema } from '@healthmart/shared';
+import { Role, createDriverSchema, paginationQuerySchema, updateDriverAvailabilitySchema, updateDriverLocationSchema } from '@buymedicines/shared';
 import * as driverController from '../controllers/driver.controller';
 import { validate } from '../middlewares/validate.middleware';
 import { authenticate } from '../middlewares/auth.middleware';

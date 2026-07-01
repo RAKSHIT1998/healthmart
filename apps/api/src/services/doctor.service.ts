@@ -1,4 +1,4 @@
-import { Role, type CreateDoctorInput, type UpdateDoctorInput } from '@healthmart/shared';
+import { Role, type CreateDoctorInput, type UpdateDoctorInput } from '@buymedicines/shared';
 import { appointmentRepository, doctorRepository, userRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { hashPassword } from '../utils/hash';

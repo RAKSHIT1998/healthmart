@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Role } from '@healthmart/shared';
+import type { Role } from '@buymedicines/shared';
 
 export interface StaffUser {
   id: string;
@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState>()(
       setHasHydrated: (hasHydrated) => set({ hasHydrated }),
     }),
     {
-      name: 'healthmart-dashboard-auth',
+      name: 'buymedicines-dashboard-auth',
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },

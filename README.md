@@ -1,4 +1,4 @@
-# Medicare Medical Store
+# BuyMedicines.store
 
 > Your trusted pharmacy delivered within minutes.
 
@@ -87,7 +87,7 @@ env var change, not a rewrite (see [MARG Integration](#marg-erp-integration)).
 ## Monorepo Layout
 
 ```
-healthmart/
+buymedicines/
   apps/
     api/         Express + TypeScript backend (REST API, Swagger docs, cron jobs)
     web/         Customer storefront (Next.js)
@@ -183,7 +183,7 @@ thresholds have not yet been validated against a real staging deployment — see
 
 ```bash
 k6 run apps/api/loadtest/browse.k6.js
-k6 run -e BASE_URL=https://api.medicaremedicalstore.com/api/v1 apps/api/loadtest/browse.k6.js
+k6 run -e BASE_URL=https://api.buymedicines.store/api/v1 apps/api/loadtest/browse.k6.js
 ```
 
 Coverage includes: concurrent-reservation never-oversell guarantees, FIFO batch allocation/commit/

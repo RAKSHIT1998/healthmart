@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role, createReviewSchema, moderateReviewSchema, objectIdSchema, paginationQuerySchema } from '@healthmart/shared';
+import { Role, createReviewSchema, moderateReviewSchema, objectIdSchema, paginationQuerySchema } from '@buymedicines/shared';
 import { z } from 'zod';
 import * as reviewController from '../controllers/review.controller';
 import { validate } from '../middlewares/validate.middleware';

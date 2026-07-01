@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { MargIntegrationMode } from '@healthmart/shared';
+import { MargIntegrationMode } from '@buymedicines/shared';
 import { env } from '../config/env';
 import { runFullSync } from '../services/margSync.service';
 import { logger } from '../config/logger';

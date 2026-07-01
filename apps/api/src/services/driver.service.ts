@@ -1,4 +1,4 @@
-import { Role, type CreateDriverInput } from '@healthmart/shared';
+import { Role, type CreateDriverInput } from '@buymedicines/shared';
 import { driverRepository, orderRepository, userRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { hashPassword } from '../utils/hash';

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { APP_NAME, APP_TAGLINE } from '@healthmart/shared';
+import { APP_NAME, APP_TAGLINE } from '@buymedicines/shared';
 
 const COLUMNS = [
   {

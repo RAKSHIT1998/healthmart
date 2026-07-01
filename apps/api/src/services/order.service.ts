@@ -9,7 +9,7 @@ import {
   PaymentStatus,
   WalletTransactionReason,
   type CheckoutInput,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import {
   addressRepository,
   branchRepository,
@@ -38,7 +38,7 @@ import { getMargAdapter } from '../integrations/marg/margAdapterFactory';
 import { getDrivingDistance } from '../integrations/googleMaps';
 import { env } from '../config/env';
 import { logger } from '../config/logger';
-import { MargSyncStatus } from '@healthmart/shared';
+import { MargSyncStatus } from '@buymedicines/shared';
 import { DriverModel, MargSyncLogModel } from '../models';
 import { sendOtpSms } from '../integrations/msg91';
 

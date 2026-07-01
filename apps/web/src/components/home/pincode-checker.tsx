@@ -5,7 +5,7 @@ import { CheckCircle2, MapPin, XCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { publicApiFetch } from '@/lib/api';
-import type { ServiceabilityCheckResult } from '@healthmart/shared';
+import type { ServiceabilityCheckResult } from '@buymedicines/shared';
 
 export function PincodeChecker() {
   const [pincode, setPincode] = useState('');

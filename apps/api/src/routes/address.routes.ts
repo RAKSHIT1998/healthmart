@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addressSchema, objectIdSchema, updateAddressSchema } from '@healthmart/shared';
+import { addressSchema, objectIdSchema, updateAddressSchema } from '@buymedicines/shared';
 import { z } from 'zod';
 import * as addressController from '../controllers/address.controller';
 import { validate } from '../middlewares/validate.middleware';

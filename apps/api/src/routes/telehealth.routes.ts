@@ -8,7 +8,7 @@ import {
   objectIdSchema,
   paginationQuerySchema,
   updateDoctorSchema,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { z } from 'zod';
 import * as telehealthController from '../controllers/telehealth.controller';
 import { validate } from '../middlewares/validate.middleware';

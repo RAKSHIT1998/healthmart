@@ -1,4 +1,4 @@
-import { InventoryMovementType } from '@healthmart/shared';
+import { InventoryMovementType } from '@buymedicines/shared';
 import { batchRepository, inventoryRepository } from '../repositories';
 import { InventoryMovementModel, type IBatchAllocation } from '../models';
 import { ApiError } from '../utils/ApiError';

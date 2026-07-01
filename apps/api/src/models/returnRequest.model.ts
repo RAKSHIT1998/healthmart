@@ -1,5 +1,5 @@
 import { Schema, model, Types, type Document } from 'mongoose';
-import { RefundMethod, ReturnReasonCategory, ReturnStatus } from '@healthmart/shared';
+import { RefundMethod, ReturnReasonCategory, ReturnStatus } from '@buymedicines/shared';
 import { toJSONPlugin } from './plugins/toJSON.plugin';
 
 export interface IReturnRequestItem {

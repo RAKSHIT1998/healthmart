@@ -249,11 +249,11 @@ export function buildOpenApiDocument() {
   return {
     openapi: '3.0.3',
     info: {
-      title: 'Medicare Medical Store API',
+      title: 'BuyMedicines.store API',
       version: '1.0.0',
       description:
-        'REST API for Medicare Medical Store — pharmacy e-commerce, inventory, orders, payments, and MARG ERP sync. ' +
-        'Request bodies are validated against the zod schemas in @healthmart/shared (see source for exact field contracts).',
+        'REST API for BuyMedicines.store — pharmacy e-commerce, inventory, orders, payments, and MARG ERP sync. ' +
+        'Request bodies are validated against the zod schemas in @buymedicines/shared (see source for exact field contracts).',
     },
     servers: [{ url: `${env.API_BASE_URL}/api/v1`, description: env.NODE_ENV }],
     components: {

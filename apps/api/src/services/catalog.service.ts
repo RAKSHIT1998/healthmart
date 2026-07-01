@@ -5,7 +5,7 @@ import type {
   CreateSupplierInput,
   UpdateBranchInput,
   UpdateCategoryInput,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { branchRepository, categoryRepository, manufacturerRepository, supplierRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { slugify } from '../utils/slugify';

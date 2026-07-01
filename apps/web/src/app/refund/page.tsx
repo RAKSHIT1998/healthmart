@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Refund & Cancellation Policy',
-  description: 'Medicare Medical Store refund, return, and order cancellation policy.',
+  description: 'BuyMedicines.store refund, return, and order cancellation policy.',
 };
 
 const SECTIONS = [
@@ -16,7 +16,7 @@ const SECTIONS = [
   },
   {
     title: '3. Refunds',
-    body: 'Approved refunds are credited to your original payment method within 5-7 business days, or instantly to your Medicare Wallet if you choose wallet credit. Cash on Delivery refunds are processed via bank transfer or wallet credit.',
+    body: 'Approved refunds are credited to your original payment method within 5-7 business days, or instantly to your BuyMedicines.store Wallet if you choose wallet credit. Cash on Delivery refunds are processed via bank transfer or wallet credit.',
   },
   {
     title: '4. Damaged or Incorrect Items',

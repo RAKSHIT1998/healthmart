@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role, createCouponSchema, updateCouponSchema } from '@healthmart/shared';
+import { Role, createCouponSchema, updateCouponSchema } from '@buymedicines/shared';
 import * as couponController from '../controllers/coupon.controller';
 import { validate } from '../middlewares/validate.middleware';
 import { authenticate } from '../middlewares/auth.middleware';

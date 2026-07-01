@@ -1,5 +1,5 @@
 import { Schema, model, Types, type Document } from 'mongoose';
-import { PrescriptionStatus } from '@healthmart/shared';
+import { PrescriptionStatus } from '@buymedicines/shared';
 import { toJSONPlugin } from './plugins/toJSON.plugin';
 
 export interface IPrescription extends Document {

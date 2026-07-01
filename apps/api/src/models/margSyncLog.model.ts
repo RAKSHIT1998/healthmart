@@ -1,5 +1,5 @@
 import { Schema, model, Types, type Document } from 'mongoose';
-import { MargIntegrationMode, MargSyncEntity, MargSyncStatus } from '@healthmart/shared';
+import { MargIntegrationMode, MargSyncEntity, MargSyncStatus } from '@buymedicines/shared';
 import { toJSONPlugin } from './plugins/toJSON.plugin';
 
 export interface IMargSyncLog extends Document {

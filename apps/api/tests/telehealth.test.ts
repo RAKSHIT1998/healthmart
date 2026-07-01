@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { AppointmentStatus, Role } from '@healthmart/shared';
+import { AppointmentStatus, Role } from '@buymedicines/shared';
 import { setupTestDB, teardownTestDB, clearDatabase } from './utils/db';
 import { createCustomer } from './utils/fixtures';
 import { DoctorModel, UserModel } from '../src/models';

@@ -8,7 +8,7 @@ import {
   type CreateFlashSaleInput,
   type IssueGiftCardInput,
   type UpdateFlashSaleInput,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { UserModel, OrderModel } from '../models';
 import { flashSaleRepository, giftCardRepository, referralRewardRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';

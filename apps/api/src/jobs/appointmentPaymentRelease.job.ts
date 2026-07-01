@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { AppointmentStatus, CHECKOUT_CONFIG, PaymentStatus } from '@healthmart/shared';
+import { AppointmentStatus, CHECKOUT_CONFIG, PaymentStatus } from '@buymedicines/shared';
 import { appointmentRepository } from '../repositories';
 import { logger } from '../config/logger';
 

@@ -53,7 +53,7 @@ export async function createCashfreeOrder(
       customer_details: {
         customer_id: params.customerId,
         customer_phone: params.customerPhone,
-        customer_email: params.customerEmail || 'guest@medicaremedicalstore.com',
+        customer_email: params.customerEmail || 'guest@buymedicines.store',
       },
       order_meta: {
         return_url: `${params.returnUrl}?order_id={order_id}`,

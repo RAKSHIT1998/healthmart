@@ -4,7 +4,7 @@ import { ContactForm } from './contact-form';
 
 export const metadata: Metadata = {
   title: 'Contact Us',
-  description: 'Get in touch with Medicare Medical Store for order support, prescriptions, or general queries.',
+  description: 'Get in touch with BuyMedicines.store for order support, prescriptions, or general queries.',
 };
 
 export default function ContactPage() {
@@ -19,7 +19,7 @@ export default function ContactPage() {
             <Phone className="h-5 w-5 text-primary" /> +91 1800-123-4567 (Toll-free, 24x7)
           </div>
           <div className="flex items-center gap-3 text-sm">
-            <Mail className="h-5 w-5 text-primary" /> support@medicaremedicalstore.com
+            <Mail className="h-5 w-5 text-primary" /> support@buymedicines.store
           </div>
           <div className="flex items-center gap-3 text-sm">
             <MapPin className="h-5 w-5 text-primary" /> 123 MG Road, Bengaluru, Karnataka 560001

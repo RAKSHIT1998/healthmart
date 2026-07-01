@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Clock, ShieldCheck, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PincodeChecker } from './pincode-checker';
-import { APP_TAGLINE } from '@healthmart/shared';
+import { APP_TAGLINE } from '@buymedicines/shared';
 
 const HIGHLIGHTS = [
   { icon: Truck, label: 'Same-day delivery' },

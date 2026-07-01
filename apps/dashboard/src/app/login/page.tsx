@@ -35,7 +35,7 @@ export default function LoginPage() {
           <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-lg font-bold text-primary-foreground">
             M
           </div>
-          <CardTitle>Medicare Admin</CardTitle>
+          <CardTitle>BuyMedicines.store Admin</CardTitle>
           <CardDescription>Sign in with your staff credentials</CardDescription>
         </CardHeader>
         <CardContent>

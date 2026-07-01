@@ -1,4 +1,4 @@
-import { AppointmentStatus } from '@healthmart/shared';
+import { AppointmentStatus } from '@buymedicines/shared';
 import { BaseRepository } from './BaseRepository';
 import { AppointmentModel, DoctorModel, type IAppointment, type IDoctor } from '../models';
 

@@ -1,5 +1,5 @@
 {
-  "name": "@healthmart/web",
+  "name": "@buymedicines/web",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@healthmart/shared": "*",
+    "@buymedicines/shared": "*",
     "agora-rtc-sdk-ng": "^4.22.2",
     "@radix-ui/react-dialog": "^1.1.4",
     "@radix-ui/react-label": "^2.1.1",

@@ -1,5 +1,5 @@
 import type { Response } from 'express';
-import type { PaginationMeta } from '@healthmart/shared';
+import type { PaginationMeta } from '@buymedicines/shared';
 
 export function sendSuccess<T>(
   res: Response,

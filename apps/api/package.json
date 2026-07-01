@@ -1,8 +1,8 @@
 {
-  "name": "@healthmart/api",
+  "name": "@buymedicines/api",
   "version": "1.0.0",
   "private": true,
-  "description": "Medicare Medical Store - REST API backend",
+  "description": "BuyMedicines.store - REST API backend",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^7.3.0",
-    "@healthmart/shared": "*",
+    "@buymedicines/shared": "*",
     "agora-token": "^2.0.5",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",

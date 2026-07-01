@@ -1,5 +1,5 @@
 import type { NextFunction, Response } from 'express';
-import { Role } from '@healthmart/shared';
+import { Role } from '@buymedicines/shared';
 import { ApiError } from '../utils/ApiError';
 import type { AuthenticatedRequest } from './auth.middleware';
 

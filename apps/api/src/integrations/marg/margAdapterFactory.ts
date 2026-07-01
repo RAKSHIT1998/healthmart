@@ -1,4 +1,4 @@
-import { MargIntegrationMode } from '@healthmart/shared';
+import { MargIntegrationMode } from '@buymedicines/shared';
 import { env } from '../../config/env';
 import type { IMargAdapter } from './IMargAdapter';
 import { MargCsvAdapter } from './MargCsvAdapter';

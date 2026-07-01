@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import { asyncHandler } from '../utils/asyncHandler';
 import { sendSuccess } from '../utils/apiResponse';
 import * as catalogService from '../services/catalog.service';
-import { AuditAction } from '@healthmart/shared';
+import { AuditAction } from '@buymedicines/shared';
 import { recordAudit } from '../middlewares/audit.middleware';
 
 export const listCategories = asyncHandler(async (req: Request, res: Response) => {

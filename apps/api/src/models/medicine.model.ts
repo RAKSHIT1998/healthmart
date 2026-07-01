@@ -3,7 +3,7 @@ import {
   MedicineType,
   ProductCategoryGroup,
   ScheduleDrugClass,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { toJSONPlugin } from './plugins/toJSON.plugin';
 
 export interface IMedicineVariant {

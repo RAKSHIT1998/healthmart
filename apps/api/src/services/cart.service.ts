@@ -1,4 +1,4 @@
-import { CHECKOUT_CONFIG, type AddCartItemInput, type UpdateCartItemInput } from '@healthmart/shared';
+import { CHECKOUT_CONFIG, type AddCartItemInput, type UpdateCartItemInput } from '@buymedicines/shared';
 import { cartRepository, flashSaleRepository, medicineRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { validateAndPriceCoupon } from './coupon.service';

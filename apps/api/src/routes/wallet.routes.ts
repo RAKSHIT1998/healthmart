@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role, adjustWalletSchema, paginationQuerySchema } from '@healthmart/shared';
+import { Role, adjustWalletSchema, paginationQuerySchema } from '@buymedicines/shared';
 import * as walletController from '../controllers/wallet.controller';
 import { validate } from '../middlewares/validate.middleware';
 import { authenticate } from '../middlewares/auth.middleware';

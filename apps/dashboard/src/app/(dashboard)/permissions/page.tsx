@@ -1,7 +1,7 @@
 'use client';
 
 import { Check } from 'lucide-react';
-import { Role } from '@healthmart/shared';
+import { Role } from '@buymedicines/shared';
 import { Card, CardContent } from '@/components/ui/card';
 import { NAV_ITEMS } from '@/components/layout/sidebar';
 

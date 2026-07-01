@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { objectIdSchema, paginationQuerySchema } from '@healthmart/shared';
+import { objectIdSchema, paginationQuerySchema } from '@buymedicines/shared';
 import * as notificationController from '../controllers/notification.controller';
 import { validate } from '../middlewares/validate.middleware';
 import { authenticate } from '../middlewares/auth.middleware';

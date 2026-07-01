@@ -7,7 +7,7 @@ import {
   deliveryOtpVerifySchema,
   objectIdSchema,
   updateOrderStatusSchema,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { z } from 'zod';
 import * as orderController from '../controllers/order.controller';
 import { validate } from '../middlewares/validate.middleware';

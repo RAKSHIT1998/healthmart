@@ -3,7 +3,7 @@ import { createCustomer, createMedicine } from './utils/fixtures';
 import { cartRepository, couponRepository } from '../src/repositories';
 import { computeCartTotals } from '../src/services/cart.service';
 import { validateAndPriceCoupon } from '../src/services/coupon.service';
-import { CouponType } from '@healthmart/shared';
+import { CouponType } from '@buymedicines/shared';
 import { ApiError } from '../src/utils/ApiError';
 
 beforeAll(setupTestDB);

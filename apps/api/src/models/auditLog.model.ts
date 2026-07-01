@@ -1,5 +1,5 @@
 import { Schema, model, Types, type Document } from 'mongoose';
-import { AuditAction } from '@healthmart/shared';
+import { AuditAction } from '@buymedicines/shared';
 
 export interface IAuditLog extends Document {
   _id: Types.ObjectId;

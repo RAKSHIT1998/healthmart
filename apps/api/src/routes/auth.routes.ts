@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { createStaffUserSchema, refreshTokenSchema, sendOtpSchema, staffLoginSchema, verifyOtpSchema } from '@healthmart/shared';
+import { createStaffUserSchema, refreshTokenSchema, sendOtpSchema, staffLoginSchema, verifyOtpSchema } from '@buymedicines/shared';
 import * as authController from '../controllers/auth.controller';
 import { validate } from '../middlewares/validate.middleware';
 import { authenticate } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/rbac.middleware';
-import { Role } from '@healthmart/shared';
+import { Role } from '@buymedicines/shared';
 import { authRateLimiter, otpRateLimiter } from '../middlewares/rateLimiter.middleware';
 import { asyncHandler } from '../utils/asyncHandler';
 import { sendSuccess } from '../utils/apiResponse';

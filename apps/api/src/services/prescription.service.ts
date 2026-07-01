@@ -1,4 +1,4 @@
-import { NotificationChannel, NotificationType, PrescriptionStatus, type ReviewPrescriptionInput } from '@healthmart/shared';
+import { NotificationChannel, NotificationType, PrescriptionStatus, type ReviewPrescriptionInput } from '@buymedicines/shared';
 import { medicineRepository, prescriptionRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { getOcrProvider } from '../integrations/ocr';

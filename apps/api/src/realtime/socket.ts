@@ -1,6 +1,6 @@
 import type { Server as HttpServer } from 'http';
 import { Server, type Socket } from 'socket.io';
-import { Role } from '@healthmart/shared';
+import { Role } from '@buymedicines/shared';
 import { env } from '../config/env';
 import { logger } from '../config/logger';
 import { verifyAccessToken } from '../utils/jwt';

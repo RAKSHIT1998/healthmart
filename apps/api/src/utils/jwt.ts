@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { env } from '../config/env';
-import { TOKEN_CONFIG, type JwtAccessPayload } from '@healthmart/shared';
+import { TOKEN_CONFIG, type JwtAccessPayload } from '@buymedicines/shared';
 
 export interface RefreshTokenPayload {
   sub: string;

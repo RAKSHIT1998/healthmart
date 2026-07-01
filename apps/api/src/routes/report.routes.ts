@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role } from '@healthmart/shared';
+import { Role } from '@buymedicines/shared';
 import * as reportController from '../controllers/report.controller';
 import { authenticate } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/rbac.middleware';

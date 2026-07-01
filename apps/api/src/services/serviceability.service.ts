@@ -3,7 +3,7 @@ import type {
   CreateServiceablePincodeInput,
   ServiceabilityCheckResult,
   UpdateServiceablePincodeInput,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { serviceablePincodeRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { lookupPincodesByCity, type CityPincodeResult } from '../integrations/indiaPost';

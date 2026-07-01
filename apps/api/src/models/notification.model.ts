@@ -1,5 +1,5 @@
 import { Schema, model, Types, type Document } from 'mongoose';
-import { NotificationChannel, NotificationType } from '@healthmart/shared';
+import { NotificationChannel, NotificationType } from '@buymedicines/shared';
 import { toJSONPlugin } from './plugins/toJSON.plugin';
 
 export interface INotification extends Document {

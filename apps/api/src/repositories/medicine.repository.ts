@@ -1,5 +1,5 @@
 import type { FilterQuery } from 'mongoose';
-import type { MedicineSearchQuery } from '@healthmart/shared';
+import type { MedicineSearchQuery } from '@buymedicines/shared';
 import { buildPaginationMeta } from '../utils/apiResponse';
 import { BaseRepository } from './BaseRepository';
 import { MedicineModel, type IMedicine } from '../models';

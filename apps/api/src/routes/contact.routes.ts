@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { contactMessageSchema } from '@healthmart/shared';
+import { contactMessageSchema } from '@buymedicines/shared';
 import * as contactController from '../controllers/contact.controller';
 import { validate } from '../middlewares/validate.middleware';
 import { authRateLimiter } from '../middlewares/rateLimiter.middleware';

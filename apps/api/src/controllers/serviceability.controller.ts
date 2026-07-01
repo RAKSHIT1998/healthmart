@@ -5,7 +5,7 @@ import {
   type CreateServiceablePincodeInput,
   type PaginationQuery,
   type UpdateServiceablePincodeInput,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { asyncHandler } from '../utils/asyncHandler';
 import { sendPaginated, sendSuccess } from '../utils/apiResponse';
 import * as serviceabilityService from '../services/serviceability.service';

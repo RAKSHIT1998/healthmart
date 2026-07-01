@@ -1,5 +1,5 @@
 import type { FilterQuery } from 'mongoose';
-import { OrderStatus, type PaginationQuery } from '@healthmart/shared';
+import { OrderStatus, type PaginationQuery } from '@buymedicines/shared';
 import { buildPaginationMeta } from '../utils/apiResponse';
 import { BaseRepository } from './BaseRepository';
 import { OrderModel, type IOrder, type IStatusHistoryEntry } from '../models';

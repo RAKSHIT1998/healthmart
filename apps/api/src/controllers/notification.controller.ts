@@ -1,5 +1,5 @@
 import type { Response } from 'express';
-import type { PaginationQuery } from '@healthmart/shared';
+import type { PaginationQuery } from '@buymedicines/shared';
 import { asyncHandler } from '../utils/asyncHandler';
 import { sendSuccess } from '../utils/apiResponse';
 import { notificationRepository, userRepository } from '../repositories';

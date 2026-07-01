@@ -13,7 +13,7 @@ async function bootstrap(): Promise<void> {
   startAllCronJobs();
 
   const server = app.listen(env.PORT, () => {
-    logger.info(`Medicare Medical Store API listening on port ${env.PORT} [${env.NODE_ENV}]`);
+    logger.info(`BuyMedicines.store API listening on port ${env.PORT} [${env.NODE_ENV}]`);
     logger.info(`Swagger docs available at ${env.API_BASE_URL}/api/docs`);
   });
 

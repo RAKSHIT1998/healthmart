@@ -33,7 +33,7 @@ export async function generateConsultationPrescriptionPdf(
     y -= amount;
   };
 
-  drawText('Medicare Medical Store — Teleconsultation Prescription', MARGIN, 16, true, rgb(0.05, 0.4, 0.3));
+  drawText('BuyMedicines.store — Teleconsultation Prescription', MARGIN, 16, true, rgb(0.05, 0.4, 0.3));
   lineBreak(26);
 
   drawText(`Doctor: Dr. ${getDoctorName(doctor)}`, MARGIN, 10, true);

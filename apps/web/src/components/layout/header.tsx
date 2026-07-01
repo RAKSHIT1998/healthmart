@@ -37,7 +37,7 @@ export function Header() {
             M
           </span>
           <div className="hidden flex-col leading-tight sm:flex">
-            <span className="text-base font-bold text-primary">Medicare Medical Store</span>
+            <span className="text-base font-bold text-primary">BuyMedicines.store</span>
             <span className="text-[11px] text-muted-foreground">trusted pharmacy, delivered fast</span>
           </div>
         </Link>

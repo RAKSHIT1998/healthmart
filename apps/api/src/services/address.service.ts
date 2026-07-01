@@ -1,4 +1,4 @@
-import type { AddressInput, UpdateAddressInput } from '@healthmart/shared';
+import type { AddressInput, UpdateAddressInput } from '@buymedicines/shared';
 import { addressRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 

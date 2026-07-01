@@ -32,7 +32,7 @@ export async function sendEmail({ to, subject, html }: SendEmailParams): Promise
 export async function sendOtpEmail(to: string, otp: string): Promise<void> {
   await sendEmail({
     to,
-    subject: 'Your Medicare Medical Store verification code',
+    subject: 'Your BuyMedicines.store verification code',
     html: `<p>Your one-time password is <strong>${otp}</strong>. It expires in 10 minutes.</p>`,
   });
 }

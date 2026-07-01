@@ -1,4 +1,4 @@
-import { ReturnStatus } from '@healthmart/shared';
+import { ReturnStatus } from '@buymedicines/shared';
 import { BaseRepository } from './BaseRepository';
 import { ReturnRequestModel, type IReturnRequest } from '../models';
 

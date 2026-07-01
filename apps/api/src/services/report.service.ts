@@ -1,4 +1,4 @@
-import { PaymentStatus } from '@healthmart/shared';
+import { PaymentStatus } from '@buymedicines/shared';
 import { Types } from 'mongoose';
 import { OrderModel } from '../models';
 import { invoiceRepository } from '../repositories';

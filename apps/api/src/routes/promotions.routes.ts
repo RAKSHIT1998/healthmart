@@ -8,7 +8,7 @@ import {
   paginationQuerySchema,
   redeemGiftCardSchema,
   updateFlashSaleSchema,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { z } from 'zod';
 import * as promotionsController from '../controllers/promotions.controller';
 import { validate } from '../middlewares/validate.middleware';

@@ -1,4 +1,4 @@
-import { WalletTransactionType, type WalletTransactionReason } from '@healthmart/shared';
+import { WalletTransactionType, type WalletTransactionReason } from '@buymedicines/shared';
 import { walletRepository, walletTransactionRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 

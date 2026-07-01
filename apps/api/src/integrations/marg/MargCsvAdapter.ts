@@ -7,7 +7,7 @@ import type {
   MargSaleInvoicePush,
   MargStockPayload,
   MargSupplierPayload,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { env } from '../../config/env';
 import { logger } from '../../config/logger';
 import type { IMargAdapter, MargPushResult } from './IMargAdapter';

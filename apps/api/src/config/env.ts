@@ -35,7 +35,7 @@ const envSchema = z.object({
 
   // Resend (Email)
   RESEND_API_KEY: z.string().optional(),
-  RESEND_FROM_EMAIL: z.string().default('Medicare Medical Store <orders@medicaremedicalstore.com>'),
+  RESEND_FROM_EMAIL: z.string().default('BuyMedicines.store <orders@buymedicines.store>'),
 
   // Cashfree
   CASHFREE_APP_ID: z.string().optional(),
@@ -66,7 +66,7 @@ const envSchema = z.object({
   MARG_BRANCH_CODE: z.string().optional(),
 
   // Misc
-  ADMIN_SEED_EMAIL: z.string().email().default('admin@medicaremedicalstore.com'),
+  ADMIN_SEED_EMAIL: z.string().email().default('admin@buymedicines.store'),
   ADMIN_SEED_PASSWORD: z.string().default('ChangeMe@12345'),
 });
 

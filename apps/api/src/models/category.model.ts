@@ -1,5 +1,5 @@
 import { Schema, model, Types, type Document } from 'mongoose';
-import { ProductCategoryGroup } from '@healthmart/shared';
+import { ProductCategoryGroup } from '@buymedicines/shared';
 import { toJSONPlugin } from './plugins/toJSON.plugin';
 
 export interface ICategory extends Document {

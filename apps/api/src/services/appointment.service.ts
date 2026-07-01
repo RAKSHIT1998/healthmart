@@ -6,7 +6,7 @@ import {
   PaymentStatus,
   type BookAppointmentInput,
   type CompleteConsultationInput,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { appointmentRepository, doctorRepository, userRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { createCashfreeOrder, initiateCashfreeRefund } from '../integrations/cashfree';

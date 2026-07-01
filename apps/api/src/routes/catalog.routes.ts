@@ -7,7 +7,7 @@ import {
   createSupplierSchema,
   updateBranchSchema,
   updateCategorySchema,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import * as catalogController from '../controllers/catalog.controller';
 import { validate } from '../middlewares/validate.middleware';
 import { authenticate } from '../middlewares/auth.middleware';

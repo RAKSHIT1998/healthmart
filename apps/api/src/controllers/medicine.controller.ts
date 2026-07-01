@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { AuditAction, type MedicineSearchQuery } from '@healthmart/shared';
+import { AuditAction, type MedicineSearchQuery } from '@buymedicines/shared';
 import { asyncHandler } from '../utils/asyncHandler';
 import { sendPaginated, sendSuccess } from '../utils/apiResponse';
 import * as medicineService from '../services/medicine.service';

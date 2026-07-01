@@ -1,5 +1,5 @@
 import type { Request } from 'express';
-import { Role, TOKEN_CONFIG, type SendOtpInput, type StaffLoginInput, type VerifyOtpInput } from '@healthmart/shared';
+import { Role, TOKEN_CONFIG, type SendOtpInput, type StaffLoginInput, type VerifyOtpInput } from '@buymedicines/shared';
 import { OtpModel, RefreshTokenModel, UserModel, type IUser } from '../models';
 import { userRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
@@ -8,7 +8,7 @@ import { generateOtp, otpExpiryDate } from '../utils/otp';
 import { hashToken, generateTokenId, signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt';
 import { sendOtpSms } from '../integrations/msg91';
 import { sendOtpEmail } from '../integrations/resend';
-import { OTP_CONFIG } from '@healthmart/shared';
+import { OTP_CONFIG } from '@buymedicines/shared';
 
 export interface TokenPair {
   accessToken: string;

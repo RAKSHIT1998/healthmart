@@ -1,5 +1,5 @@
-import type { BulkUpdateRowInput } from '@healthmart/shared';
-import { InventoryMovementType } from '@healthmart/shared';
+import type { BulkUpdateRowInput } from '@buymedicines/shared';
+import { InventoryMovementType } from '@buymedicines/shared';
 import { medicineRepository, inventoryRepository } from '../repositories';
 import { InventoryMovementModel } from '../models';
 import { parseUploadedFile, normalizeBulkUpdateRow } from '../integrations/bulkUpdate/parseUploadedFile';

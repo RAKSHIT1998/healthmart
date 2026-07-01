@@ -1,4 +1,4 @@
-import type { CreateMedicineInput, MedicineSearchQuery, UpdateMedicineInput } from '@healthmart/shared';
+import type { CreateMedicineInput, MedicineSearchQuery, UpdateMedicineInput } from '@buymedicines/shared';
 import { branchRepository, medicineRepository, reviewRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { slugify } from '../utils/slugify';

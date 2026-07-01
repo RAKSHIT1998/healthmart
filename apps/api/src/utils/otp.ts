@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { OTP_CONFIG } from '@healthmart/shared';
+import { OTP_CONFIG } from '@buymedicines/shared';
 
 export function generateOtp(): string {
   const max = 10 ** OTP_CONFIG.LENGTH;

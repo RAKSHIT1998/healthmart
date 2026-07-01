@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState>()(
       setHasHydrated: (hasHydrated) => set({ hasHydrated }),
     }),
     {
-      name: 'healthmart-auth',
+      name: 'buymedicines-auth',
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },

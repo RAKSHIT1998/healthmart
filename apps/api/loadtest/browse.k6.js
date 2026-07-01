@@ -13,7 +13,7 @@ import { Trend } from 'k6/metrics';
 //
 // Install k6: https://k6.io/docs/get-started/installation/ (not an npm package — a standalone binary)
 // Run:        k6 run apps/api/loadtest/browse.k6.js
-// Against a deployed env: k6 run -e BASE_URL=https://api.medicaremedicalstore.com/api/v1 apps/api/loadtest/browse.k6.js
+// Against a deployed env: k6 run -e BASE_URL=https://api.buymedicines.store/api/v1 apps/api/loadtest/browse.k6.js
 
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:5000/api/v1';
 const searchLatency = new Trend('search_latency_ms');

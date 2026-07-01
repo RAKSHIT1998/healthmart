@@ -31,7 +31,7 @@ export async function uploadToCloudinary(
 
   try {
     const result = await cloudinary.uploader.upload(base64, {
-      folder: `medicare-medical-store/${folder}`,
+      folder: `buymedicines-store/${folder}`,
       resource_type: resourceType,
     });
     return { url: result.secure_url, publicId: result.public_id };

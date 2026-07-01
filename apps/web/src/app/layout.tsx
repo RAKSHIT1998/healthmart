@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { APP_NAME, APP_TAGLINE } from '@healthmart/shared';
+import { APP_NAME, APP_TAGLINE } from '@buymedicines/shared';
 import { Providers } from './providers';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';

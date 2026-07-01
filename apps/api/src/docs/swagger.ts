@@ -6,5 +6,5 @@ export function mountSwaggerDocs(app: Express): void {
   const document = buildOpenApiDocument();
 
   app.get('/api/docs.json', (_req, res) => res.json(document));
-  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(document, { customSiteTitle: 'Medicare Medical Store API Docs' }));
+  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(document, { customSiteTitle: 'BuyMedicines.store API Docs' }));
 }

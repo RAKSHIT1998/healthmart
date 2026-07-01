@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { REFERRAL_CONFIG, APP_NAME } from '@healthmart/shared';
+import { REFERRAL_CONFIG, APP_NAME } from '@buymedicines/shared';
 import { useApplyReferralCode, useMyReferralCode } from '@/hooks/use-promotions';
 
 export default function ReferralsPage() {

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
-import { Role, margWebhookEnvelopeSchema, paginationQuerySchema, triggerMargSyncSchema } from '@healthmart/shared';
+import { Role, margWebhookEnvelopeSchema, paginationQuerySchema, triggerMargSyncSchema } from '@buymedicines/shared';
 import * as margController from '../controllers/marg.controller';
 import { validate } from '../middlewares/validate.middleware';
 import { authenticate } from '../middlewares/auth.middleware';

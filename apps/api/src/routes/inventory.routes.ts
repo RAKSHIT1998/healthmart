@@ -9,7 +9,7 @@ import {
   writeOffBatchSchema,
   updateLowStockThresholdSchema,
   commitBulkUpdateSchema,
-} from '@healthmart/shared';
+} from '@buymedicines/shared';
 import { z } from 'zod';
 import * as inventoryController from '../controllers/inventory.controller';
 import * as bulkUpdateController from '../controllers/bulkUpdate.controller';

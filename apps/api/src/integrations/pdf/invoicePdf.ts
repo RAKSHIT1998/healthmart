@@ -29,7 +29,7 @@ export async function generateInvoicePdf(
     page.drawText(text, { x, y, size, font: bold ? fontBold : font, color });
   };
 
-  drawText('Medicare Medical Store', MARGIN, 18, true);
+  drawText('BuyMedicines.store', MARGIN, 18, true);
   y -= 22;
   drawText(branch.name, MARGIN, 10);
   y -= 14;

@@ -1,5 +1,5 @@
 import type { Response } from 'express';
-import { AuditAction } from '@healthmart/shared';
+import { AuditAction } from '@buymedicines/shared';
 import { asyncHandler } from '../utils/asyncHandler';
 import { sendSuccess } from '../utils/apiResponse';
 import { ApiError } from '../utils/ApiError';

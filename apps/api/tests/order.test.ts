@@ -1,4 +1,4 @@
-import { OrderStatus } from '@healthmart/shared';
+import { OrderStatus } from '@buymedicines/shared';
 import { setupTestDB, teardownTestDB, clearDatabase } from './utils/db';
 import { createBranch, createCustomer, createMedicine, createOrder } from './utils/fixtures';
 import { inventoryRepository } from '../src/repositories';

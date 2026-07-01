@@ -1,5 +1,5 @@
 import { Schema, model, Types, type Document } from 'mongoose';
-import { WalletTransactionReason, WalletTransactionType } from '@healthmart/shared';
+import { WalletTransactionReason, WalletTransactionType } from '@buymedicines/shared';
 import { toJSONPlugin } from './plugins/toJSON.plugin';
 
 export interface IWalletTransaction extends Document {

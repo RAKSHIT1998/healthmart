@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "Medicare Medical Store API",
+    "name": "BuyMedicines.store API",
     "description": "Phase 1 REST API collection. Set the `baseUrl`, `accessToken`, and `refreshToken` collection variables after running the OTP login flow.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -43,7 +43,7 @@
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "url": "{{baseUrl}}/auth/staff/login",
-            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@medicaremedicalstore.com\",\n  \"password\": \"ChangeMe@12345\"\n}" }
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@buymedicines.store\",\n  \"password\": \"ChangeMe@12345\"\n}" }
           }
         },
         {
