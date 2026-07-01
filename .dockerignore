@@ -1,0 +1,27 @@
+# Dependency directories — reinstalled in the image
+**/node_modules
+
+# Next.js build output — rebuilt in the image
+**/.next
+
+# TypeScript compiled output — rebuilt in the image
+**/dist
+
+# Local dev artifacts
+**/.env
+**/.env.local
+**/.env.*.local
+
+# Editor / OS noise
+.git
+.gitignore
+**/.DS_Store
+**/Thumbs.db
+
+# Test artifacts
+**/coverage
+**/__tests__/fixtures/large
+
+# Logs
+**/*.log
+**/npm-debug.log*

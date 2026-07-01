@@ -1,3 +1,4 @@
+import path from 'path';
 import { createApp } from './app';
 import { env } from './config/env';
 import { logger } from './config/logger';
@@ -9,7 +10,23 @@ import { initSocketServer } from './realtime/socket';
 async function bootstrap(): Promise<void> {
   await connectDatabase();
 
-  const app = createApp();
+  // Boot Next.js as the frontend server — skipped in test / when explicitly disabled.
+  let nextHandle: ((req: any, res: any) => Promise<void>) | undefined;
+  if (env.NODE_ENV !== 'test' && process.env.SERVE_NEXT !== 'false') {
+    try {
+      const next = (await import('next')).default;
+      const dev = env.NODE_ENV !== 'production';
+      const webDir = path.join(__dirname, '../../web');
+      const nextApp = next({ dev, dir: webDir });
+      await nextApp.prepare();
+      nextHandle = nextApp.getRequestHandler();
+      logger.info(`Next.js ${dev ? 'dev' : 'production'} server ready (dir: ${webDir})`);
+    } catch (err) {
+      logger.warn({ err }, 'Next.js not available — serving API only');
+    }
+  }
+
+  const app = createApp(nextHandle);
   startAllCronJobs();
 
   const server = app.listen(env.PORT, () => {

@@ -1,4 +1,5 @@
 import express, { type Express } from 'express';
+import type { IncomingMessage, ServerResponse } from 'http';
 import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
@@ -13,7 +14,9 @@ import { errorHandler, notFoundHandler } from './middlewares/errorHandler.middle
 import { mountSwaggerDocs } from './docs/swagger';
 import apiRoutes from './routes';
 
-export function createApp(): Express {
+type NextHandle = (req: IncomingMessage, res: ServerResponse) => Promise<void>;
+
+export function createApp(nextHandle?: NextHandle): Express {
   const app = express();
 
   app.set('trust proxy', 1);
@@ -50,8 +53,13 @@ export function createApp(): Express {
 
   mountSwaggerDocs(app);
   app.use('/api/v1', apiRoutes);
+  app.use('/api/v1', notFoundHandler);
 
-  app.use(notFoundHandler);
+  if (nextHandle) {
+    app.all('*', (req, res) => nextHandle(req, res));
+  } else {
+    app.use(notFoundHandler);
+  }
   app.use(errorHandler);
 
   return app;
