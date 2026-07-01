@@ -1,4 +1,4 @@
-import express, { type Express } from 'express';
+import express, { type Express, type Request, type Response, type NextFunction } from 'express';
 import type { IncomingMessage, ServerResponse } from 'http';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -16,7 +16,11 @@ import apiRoutes from './routes';
 
 type NextHandle = (req: IncomingMessage, res: ServerResponse) => Promise<void>;
 
-export function createApp(nextHandle?: NextHandle): Express {
+// Mutable reference so server.ts can swap in the Next.js handler after prepare()
+// without re-registering routes.
+type HandleRef = { fn: NextHandle | null };
+
+export function createApp(nextHandleRef?: HandleRef): Express {
   const app = express();
 
   app.set('trust proxy', 1);
@@ -29,10 +33,8 @@ export function createApp(nextHandle?: NextHandle): Express {
   );
   app.use(compression());
   app.use(cookieParser());
-  // `verify` stashes the raw bytes on every request so webhook routes (Cashfree, MARG)
-  // can validate their HMAC signatures against the exact payload — re-parsing the
-  // body a second time in those routes would silently no-op since body-parser only
-  // reads the stream once.
+  // `verify` stashes the raw bytes so webhook routes (Cashfree, MARG)
+  // can validate HMAC signatures against the exact payload.
   app.use(
     express.json({
       limit: '2mb',
@@ -47,6 +49,7 @@ export function createApp(nextHandle?: NextHandle): Express {
   app.use(pinoHttp({ logger, autoLogging: !isProduction ? { ignore: () => true } : true }));
   app.use(globalRateLimiter);
 
+  // Health check responds immediately — even before MongoDB/Next.js are ready.
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString(), env: env.NODE_ENV });
   });
@@ -55,11 +58,16 @@ export function createApp(nextHandle?: NextHandle): Express {
   app.use('/api/v1', apiRoutes);
   app.use('/api/v1', notFoundHandler);
 
-  if (nextHandle) {
-    app.all('*', (req, res) => nextHandle(req, res));
-  } else {
-    app.use(notFoundHandler);
-  }
+  // Catch-all: delegate to Next.js once ready, otherwise 503.
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    const handle = nextHandleRef?.fn;
+    if (handle) {
+      handle(req as unknown as IncomingMessage, res as unknown as ServerResponse).catch(next);
+    } else {
+      res.status(503).json({ status: 'starting', message: 'Server is still initialising, retry in a moment.' });
+    }
+  });
+
   app.use(errorHandler);
 
   return app;
