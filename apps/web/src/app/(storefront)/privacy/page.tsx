@@ -28,7 +28,7 @@ const SECTIONS = [
   },
   {
     title: '6. Your Rights',
-    body: 'You may request access to, correction of, or deletion of your personal data by contacting support@buymedicines.store, subject to regulatory retention requirements for pharmacy records.',
+    body: 'You may request access to, correction of, or deletion of your personal data by contacting support@buymedicine.store, subject to regulatory retention requirements for pharmacy records.',
   },
 ];
 

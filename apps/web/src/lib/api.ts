@@ -2,6 +2,13 @@ import { useAuthStore } from '@/store/auth-store';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api/v1';
 
+// Server-side fetches require an absolute URL. NEXT_PUBLIC_API_URL may be relative (/api/v1)
+// which is valid for browsers but not for Node.js fetch. Use the internal loopback instead.
+const SERVER_API_URL =
+  typeof process !== 'undefined' && process.env.INTERNAL_API_URL
+    ? process.env.INTERNAL_API_URL
+    : `http://127.0.0.1:${typeof process !== 'undefined' ? (process.env.PORT ?? 5000) : 5000}/api/v1`;
+
 export class ApiClientError extends Error {
   constructor(
     message: string,
@@ -85,7 +92,8 @@ export const api = {
 
 /** For server components / generateMetadata — no auth, no client store access. */
 export async function publicApiFetch<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  const base = typeof window === 'undefined' ? SERVER_API_URL : API_BASE_URL;
+  const response = await fetch(`${base}${path}`, {
     ...init,
     headers: { 'Content-Type': 'application/json', ...init?.headers },
   });

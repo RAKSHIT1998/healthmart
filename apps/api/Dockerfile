@@ -19,9 +19,16 @@ COPY packages/shared ./packages/shared
 COPY apps/api        ./apps/api
 COPY apps/web        ./apps/web
 
-# NEXT_PUBLIC_* vars must be baked in at build time
+# NEXT_PUBLIC_* vars are inlined into the JS bundle at build time.
+# Set them here (Railway can override via Build Variables in the dashboard).
 ARG NEXT_PUBLIC_API_URL=/api/v1
+ARG NEXT_PUBLIC_SITE_URL=https://buymedicine.store
+ARG NEXT_PUBLIC_CASHFREE_ENV=SANDBOX
+ARG NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+ENV NEXT_PUBLIC_CASHFREE_ENV=${NEXT_PUBLIC_CASHFREE_ENV}
+ENV NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
 
 RUN npm run build --workspace=packages/shared \
  && npm run build --workspace=apps/web \
