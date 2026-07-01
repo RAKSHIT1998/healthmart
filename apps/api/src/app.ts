@@ -46,7 +46,11 @@ export function createApp(nextHandleRef?: NextHandleRef): Express {
   app.use(express.urlencoded({ extended: true }));
   app.use(mongoSanitize());
   app.use(hpp());
-  app.use(pinoHttp({ logger, autoLogging: !isProduction ? { ignore: () => true } : true }));
+  app.use(pinoHttp({
+    logger,
+    // Skip health-check pings and suppress all request logs in dev
+    autoLogging: { ignore: (req) => !isProduction || req.url === '/health' },
+  }));
   app.use(globalRateLimiter);
 
   // /health always responds immediately — never gated on slow async init.
