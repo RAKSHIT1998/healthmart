@@ -23,9 +23,16 @@ export function createApp(nextHandleRef?: NextHandleRef): Express {
   const app = express();
 
   app.set('trust proxy', 1);
+
+  // /health must be first — before rate limiter, logger, and all other middleware.
+  // Railway polls this immediately after container start; any middleware before it
+  // can delay or block the response and cause the health check to fail.
+  app.get('/health', (_req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString(), env: env.NODE_ENV });
+  });
+
   // Disable helmet's default CSP — it sets `script-src 'self'` which blocks
   // Next.js's inline <script> tags (__NEXT_DATA__, RSC payload, hydration bootstrap).
-  // The storefront goes blank because React can't hydrate without those scripts.
   app.use(helmet({ contentSecurityPolicy: false }));
   app.use(
     cors({
@@ -48,11 +55,6 @@ export function createApp(nextHandleRef?: NextHandleRef): Express {
   app.use(hpp());
   app.use(pinoHttp({ logger, autoLogging: isProduction }));
   app.use(globalRateLimiter);
-
-  // /health always responds immediately — never gated on slow async init.
-  app.get('/health', (_req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString(), env: env.NODE_ENV });
-  });
 
   mountSwaggerDocs(app);
   app.use('/api/v1', apiRoutes);
