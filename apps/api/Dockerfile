@@ -14,6 +14,8 @@ RUN npm ci
 # ── 2. Build shared → web → api ──────────────────────────────────────────────
 FROM base AS build
 COPY --from=deps /repo/node_modules ./node_modules
+# Root package.json is required for npm --workspace= commands to resolve
+COPY package*.json ./
 COPY tsconfig.base.json ./
 COPY packages/shared ./packages/shared
 COPY apps/api        ./apps/api
