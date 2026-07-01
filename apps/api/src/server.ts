@@ -29,6 +29,7 @@ async function bootstrap(): Promise<void> {
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   process.on('SIGINT',  () => shutdown('SIGINT'));
   process.on('unhandledRejection', (reason) => logger.error({ reason }, 'Unhandled rejection'));
+  process.on('uncaughtException', (err) => logger.error({ err }, 'Uncaught exception — process survived'));
 
   // ── 2. Check required env vars ─────────────────────────────────────────────
   const missing: string[] = [];

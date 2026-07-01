@@ -42,6 +42,8 @@ FROM node:20-alpine AS production
 WORKDIR /repo
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+# Limit heap to 460 MB — leaves headroom for Railway's 512 MB container limit.
+ENV NODE_OPTIONS=--max-old-space-size=460
 
 # Production deps only (workspace symlinks are set up correctly here)
 COPY package*.json ./
