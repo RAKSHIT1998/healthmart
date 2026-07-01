@@ -23,7 +23,10 @@ export function createApp(nextHandleRef?: NextHandleRef): Express {
   const app = express();
 
   app.set('trust proxy', 1);
-  app.use(helmet());
+  // Disable helmet's default CSP — it sets `script-src 'self'` which blocks
+  // Next.js's inline <script> tags (__NEXT_DATA__, RSC payload, hydration bootstrap).
+  // The storefront goes blank because React can't hydrate without those scripts.
+  app.use(helmet({ contentSecurityPolicy: false }));
   app.use(
     cors({
       origin: env.CORS_ORIGINS.split(',').map((o) => o.trim()),
