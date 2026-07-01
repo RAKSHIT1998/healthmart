@@ -5,8 +5,8 @@ import { logger } from '../config/logger';
 import { BranchModel, CategoryModel, ManufacturerModel, UserModel } from '../models';
 import { hashPassword } from '../utils/hash';
 
-async function seed(): Promise<void> {
-  await connectDatabase();
+// Exported so server.ts can call this after DB connects on first boot.
+export async function runSeed(): Promise<void> {
 
   const branch = await BranchModel.findOneAndUpdate(
     { code: 'MAIN' },
@@ -80,11 +80,19 @@ async function seed(): Promise<void> {
   }
   logger.info(`Seeded ${manufacturers.length} manufacturers`);
 
-  await disconnectDatabase();
   logger.info('Seed complete');
 }
 
-seed().catch((err) => {
-  logger.error({ err }, 'Seed failed');
-  process.exit(1);
-});
+async function seed(): Promise<void> {
+  await connectDatabase();
+  await runSeed();
+  await disconnectDatabase();
+}
+
+// Only run as a script when invoked directly (not when imported by server.ts)
+if (require.main === module) {
+  seed().catch((err) => {
+    logger.error({ err }, 'Seed failed');
+    process.exit(1);
+  });
+}

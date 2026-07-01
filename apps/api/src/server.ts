@@ -6,6 +6,7 @@ import { connectDatabase, disconnectDatabase } from './config/db';
 import { disconnectRedis } from './config/redis';
 import { startAllCronJobs } from './jobs';
 import { initSocketServer } from './realtime/socket';
+import { runSeed } from './scripts/seed';
 
 async function bootstrap(): Promise<void> {
   // ── 1. Bind to port immediately ────────────────────────────────────────────
@@ -47,6 +48,7 @@ async function bootstrap(): Promise<void> {
     (async () => {
       if (!env.MONGO_URI) throw new Error('MONGO_URI not set');
       await connectDatabase();
+      await runSeed();
       startAllCronJobs();
     })(),
 
