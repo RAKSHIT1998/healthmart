@@ -1,11 +1,10 @@
-import path from 'path';
-import type { NextConfig } from 'next';
+const path = require('path');
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: path.join(__dirname, '../../'),
   transpilePackages: ['@buymedicines/shared'],
-  // Skip TS type-check and ESLint during docker builds (types verified locally / in CI)
   typescript: { ignoreBuildErrors: true },
   eslint: { ignoreDuringBuilds: true },
   images: {
@@ -16,4 +15,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

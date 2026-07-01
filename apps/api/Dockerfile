@@ -60,7 +60,7 @@ COPY --from=builder /repo/apps/api/dist ./apps/api/dist
 
 # Next.js production build
 COPY --from=builder /repo/apps/web/.next      ./apps/web/.next
-COPY --from=builder /repo/apps/web/next.config.ts ./apps/web/next.config.ts
+COPY --from=builder /repo/apps/web/next.config.js ./apps/web/next.config.js
 RUN mkdir -p apps/web/public
 
 EXPOSE 5000
