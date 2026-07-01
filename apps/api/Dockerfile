@@ -10,8 +10,6 @@ RUN npm install
 
 FROM base AS build
 COPY --from=deps /repo/node_modules ./node_modules
-COPY --from=deps /repo/packages/shared/node_modules ./packages/shared/node_modules
-COPY --from=deps /repo/apps/api/node_modules ./apps/api/node_modules
 COPY tsconfig.base.json ./
 COPY packages/shared ./packages/shared
 COPY apps/api ./apps/api
@@ -25,7 +23,6 @@ COPY --from=build /repo/apps/api/package*.json ./
 COPY --from=build /repo/packages/shared/dist ../../packages/shared/dist
 COPY --from=build /repo/packages/shared/package.json ../../packages/shared/package.json
 COPY --from=build /repo/node_modules ../../node_modules
-COPY --from=build /repo/apps/api/node_modules ./node_modules
 
 EXPOSE 5000
 CMD ["node", "dist/server.js"]
