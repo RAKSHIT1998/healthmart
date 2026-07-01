@@ -8,10 +8,7 @@ import { startAllCronJobs } from './jobs';
 import { initSocketServer } from './realtime/socket';
 
 async function bootstrap(): Promise<void> {
-  // ── 1. Bind to the port FIRST ───────────────────────────────────────────────
-  // /health must respond before MongoDB and Next.js initialise.
-  // Railway polls /health immediately after container start — any delay here
-  // causes the deployment to be marked failed.
+  // ── 1. Bind to port immediately ────────────────────────────────────────────
   const nextHandleRef: NextHandleRef = { fn: null };
   const app = createApp(nextHandleRef);
 
@@ -23,7 +20,7 @@ async function bootstrap(): Promise<void> {
   initSocketServer(server);
 
   const shutdown = async (signal: string) => {
-    logger.info(`${signal} received, shutting down gracefully…`);
+    logger.info(`${signal} received, shutting down…`);
     server.close(async () => {
       await Promise.all([disconnectDatabase(), disconnectRedis()]);
       process.exit(0);
@@ -33,49 +30,44 @@ async function bootstrap(): Promise<void> {
   process.on('SIGINT',  () => shutdown('SIGINT'));
   process.on('unhandledRejection', (reason) => logger.error({ reason }, 'Unhandled rejection'));
 
-  // ── 2. Validate required env vars (after the port is bound) ────────────────
+  // ── 2. Check required env vars ─────────────────────────────────────────────
   const missing: string[] = [];
   if (!env.MONGO_URI)          missing.push('MONGO_URI');
   if (!env.JWT_ACCESS_SECRET)  missing.push('JWT_ACCESS_SECRET');
   if (!env.JWT_REFRESH_SECRET) missing.push('JWT_REFRESH_SECRET');
-
   if (missing.length) {
-    logger.error(
-      { missing },
-      'Required environment variables are not set. ' +
-      'Add them in Railway → Service → Variables and redeploy.',
-    );
-    // Keep the process alive so /health keeps returning 200 (misconfigured)
-    // rather than crashing and entering a restart loop that Railway marks as failed.
-    return;
+    logger.error({ missing }, 'Required env vars not set — set them in Railway → Variables');
   }
 
-  // ── 3. Connect to MongoDB ───────────────────────────────────────────────────
-  try {
-    await connectDatabase();
-  } catch (err) {
-    logger.error({ err }, 'Database connection failed');
-    // Stay alive — /health will keep returning 200 so Railway doesn't restart-loop.
-    return;
-  }
+  // ── 3. Start Next.js and MongoDB in parallel ───────────────────────────────
+  // Next.js MUST start regardless of DB status so the storefront is always served.
+  const [dbResult, nextResult] = await Promise.allSettled([
+    // MongoDB
+    (async () => {
+      if (!env.MONGO_URI) throw new Error('MONGO_URI not set');
+      await connectDatabase();
+      startAllCronJobs();
+    })(),
 
-  // ── 4. Boot Next.js (non-blocking — storefront returns 503 until ready) ────
-  if (env.NODE_ENV !== 'test' && process.env.SERVE_NEXT !== 'false') {
-    try {
+    // Next.js
+    (async () => {
+      if (env.NODE_ENV === 'test' || process.env.SERVE_NEXT === 'false') return;
       const next = (await import('next')).default;
-      const dev = env.NODE_ENV !== 'production';
+      const dev  = env.NODE_ENV !== 'production';
       const webDir = path.join(__dirname, '../../web');
       const nextApp = next({ dev, dir: webDir });
       await nextApp.prepare();
       nextHandleRef.fn = nextApp.getRequestHandler();
       logger.info(`Next.js ${dev ? 'dev' : 'production'} server ready`);
-    } catch (err) {
-      logger.warn({ err }, 'Next.js not available — API-only mode');
-    }
-  }
+    })(),
+  ]);
 
-  // ── 5. Start background jobs ────────────────────────────────────────────────
-  startAllCronJobs();
+  if (dbResult.status === 'rejected') {
+    logger.error({ err: dbResult.reason }, 'Database init failed — API routes will error');
+  }
+  if (nextResult.status === 'rejected') {
+    logger.warn({ err: nextResult.reason }, 'Next.js init failed — serving API only');
+  }
 }
 
 bootstrap().catch((err) => {
