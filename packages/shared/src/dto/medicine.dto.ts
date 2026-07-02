@@ -39,7 +39,7 @@ export const createMedicineSchema = z.object({
   prescriptionRequired: z.boolean().default(false),
   isGeneric: z.boolean().default(false),
   mrp: z.number().positive(),
-  sellingPrice: z.number().positive(),
+  sellingPrice: z.number().min(0).default(0),
   gstPercentage: z.number().min(0).max(28),
   hsnCode: z.string().regex(REGEX.HSN, 'Invalid HSN code'),
   packSize: z.string().min(1).max(40),
@@ -48,7 +48,11 @@ export const createMedicineSchema = z.object({
   variants: z.array(medicineVariantSchema).default([]),
   tags: z.array(z.string()).default([]),
   isActive: z.boolean().default(true),
-}).refine((data) => data.sellingPrice <= data.mrp, {
+}).transform((data) => ({
+  ...data,
+  // 0 means "not set — default to MRP"
+  sellingPrice: data.sellingPrice === 0 ? data.mrp : data.sellingPrice,
+})).refine((data) => data.sellingPrice <= data.mrp, {
   message: 'Selling price cannot exceed MRP',
   path: ['sellingPrice'],
 });

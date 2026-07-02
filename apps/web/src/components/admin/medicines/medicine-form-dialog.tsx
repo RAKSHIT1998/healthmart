@@ -96,6 +96,7 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
 
   async function handleSubmit() {
     if (!form.name.trim()) return;
+    const mrpNum = Number(form.mrp);
     const payload = {
       name: form.name,
       description: form.description.trim() || `${form.name} — quality assured, ready to ship.`,
@@ -111,8 +112,8 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
       scheduleClass: form.scheduleClass,
       prescriptionRequired: form.prescriptionRequired,
       isGeneric: form.isGeneric,
-      mrp: Number(form.mrp),
-      sellingPrice: Number(form.sellingPrice),
+      mrp: mrpNum,
+      sellingPrice: Number(form.sellingPrice) || mrpNum,
       gstPercentage: Number(form.gstPercentage),
       hsnCode: form.hsnCode,
       packSize: form.packSize,
@@ -195,8 +196,13 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
             <Input type="number" value={form.mrp} onChange={(e) => setForm({ ...form, mrp: e.target.value })} />
           </div>
           <div>
-            <Label>Selling Price (₹) *</Label>
-            <Input type="number" value={form.sellingPrice} onChange={(e) => setForm({ ...form, sellingPrice: e.target.value })} />
+            <Label>Selling Price (₹) <span className="text-muted-foreground font-normal">(defaults to MRP)</span></Label>
+            <Input
+              type="number"
+              value={form.sellingPrice}
+              onChange={(e) => setForm({ ...form, sellingPrice: e.target.value })}
+              placeholder={form.mrp || 'Same as MRP'}
+            />
           </div>
           <div>
             <Label>Pack Size *</Label>
