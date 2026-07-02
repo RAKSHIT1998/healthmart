@@ -54,7 +54,7 @@ export function BulkUploadDialog({ open, onOpenChange }: BulkUploadDialogProps) 
         </DialogHeader>
 
         <p className="text-sm text-muted-foreground">
-          Upload a CSV or Excel file with one medicine per row. Medicines already in the system (same name) are skipped — not duplicated.
+          Upload a <strong>MARG stock report (.txt)</strong> to import medicines + stock quantities in one step. Or upload a <strong>CSV / Excel</strong> file with one medicine per row. Existing medicines are skipped (no duplicates).
         </p>
 
         <div className="flex items-center gap-3">
@@ -64,17 +64,21 @@ export function BulkUploadDialog({ open, onOpenChange }: BulkUploadDialogProps) 
           <span className="text-xs text-muted-foreground">Start from the template to get the column format right.</span>
         </div>
 
-        <div className="rounded-lg border border-dashed border-border p-2 text-xs text-muted-foreground">
-          <p className="font-medium mb-1">Required columns:</p>
-          <p><span className="font-mono bg-muted px-1 rounded">Name</span>, <span className="font-mono bg-muted px-1 rounded">MRP</span>, <span className="font-mono bg-muted px-1 rounded">Selling Price</span></p>
-          <p className="mt-1 font-medium">Optional:</p>
-          <p>GST%, Pack Size, Manufacturer, Category, Composition, HSN Code, Medicine Type, Prescription Required</p>
+        <div className="rounded-lg border border-dashed border-border p-2 text-xs text-muted-foreground space-y-2">
+          <div>
+            <p className="font-medium">MARG Stock Report (.txt)</p>
+            <p>Export from MARG → Reports → Stock Statement → Save as Text. Upload the .txt file directly — medicines and current stock quantities are imported together.</p>
+          </div>
+          <div>
+            <p className="font-medium">CSV / Excel required columns:</p>
+            <p><span className="font-mono bg-muted px-1 rounded">Name</span>, <span className="font-mono bg-muted px-1 rounded">MRP</span>, <span className="font-mono bg-muted px-1 rounded">Selling Price</span> — everything else is optional.</p>
+          </div>
         </div>
 
         <input
           ref={inputRef}
           type="file"
-          accept=".csv,.xlsx,.xls"
+          accept=".csv,.xlsx,.xls,.txt"
           className="hidden"
           onChange={(e) => {
             handleFile(e.target.files?.[0]);

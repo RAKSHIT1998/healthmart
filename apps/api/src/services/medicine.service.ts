@@ -1,7 +1,15 @@
 import { parse as parseCsv } from 'csv-parse/sync';
 import * as XLSX from 'xlsx';
 import type { CreateMedicineInput, MedicineSearchQuery, UpdateMedicineInput } from '@buymedicines/shared';
-import { branchRepository, categoryRepository, manufacturerRepository, medicineRepository, reviewRepository } from '../repositories';
+import {
+  batchRepository,
+  branchRepository,
+  categoryRepository,
+  inventoryRepository,
+  manufacturerRepository,
+  medicineRepository,
+  reviewRepository,
+} from '../repositories';
 import { CategoryModel } from '../models';
 import { ApiError } from '../utils/ApiError';
 import { slugify } from '../utils/slugify';
@@ -134,7 +142,145 @@ async function getOrCreateGeneralCategory() {
   return cat;
 }
 
+// ── MARG fixed-width stock report parser ─────────────────────────────────────
+// Column layout: code(~10)  name(~40)  unit(~12)  qty  n n n n  cost  total  mrp  ptr  last  manufacturer
+const MARG_LINE_RE =
+  /^(\S+)\s+(.+?)\s{2,}(\S+)\s+([\d.-]+)\s+\d+\s+\d+\s+\d+\s+\d+\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*(.*)/;
+
+interface MargTextRow {
+  itemCode: string;
+  name: string;
+  unit: string;
+  qty: number;
+  costPrice: number;
+  mrp: number;
+  manufacturer: string;
+}
+
+function parseMargTextBuffer(buffer: Buffer): MargTextRow[] {
+  const rows: MargTextRow[] = [];
+  for (const raw of buffer.toString('utf-8').split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line) continue;
+    const m = line.match(MARG_LINE_RE);
+    if (!m) continue;
+    const mrp = parseFloat(m[7]!);
+    const qty = parseFloat(m[4]!);
+    if (!mrp || mrp <= 0 || qty < 0) continue;
+    // Manufacturer text follows the last price column; strip trailing shelf/rack codes
+    const manufacturer = (m[10] ?? '').trim().replace(/\s{3,}\S.*$/, '').trim() || 'Unknown';
+    rows.push({ itemCode: m[1]!.trim(), name: m[2]!.trim(), unit: m[3]!.trim(), qty, costPrice: parseFloat(m[5]!), mrp, manufacturer });
+  }
+  return rows;
+}
+
+function margUnitToType(unit: string): string {
+  const u = unit.toUpperCase();
+  if (/^TAB|^STRP|^STRI/.test(u)) return 'tablet';
+  if (/^CAP/.test(u)) return 'capsule';
+  if (/^SYP|^SUS|^SUSP|^SACH/.test(u)) return 'syrup';
+  if (/^INJ|^INF/.test(u)) return 'injection';
+  if (/^OINT|^OIN|^CRE|^GEL|^PAST/.test(u)) return 'ointment';
+  if (/^DROP|^LIQ|^SOL|^LOT/.test(u)) return 'drops';
+  if (/^INH|^NEBU/.test(u)) return 'inhaler';
+  return 'other';
+}
+
+async function bulkUploadFromMargText(buffer: Buffer): Promise<BulkUploadResult> {
+  const rows = parseMargTextBuffer(buffer);
+  const result: BulkUploadResult = { processed: 0, skipped: 0, failed: 0, errors: [] };
+  const defaultCategory = await getOrCreateGeneralCategory();
+  const branch = (await branchRepository.findMainBranch()) ?? (await branchRepository.find({}))[0];
+  const BATCH_REF = 'MARG-INITIAL';
+  const expiryDate = new Date(Date.now() + 2 * 365 * 24 * 60 * 60 * 1000);
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]!;
+    try {
+      const slug = slugify(row.name);
+      const manufacturer = await manufacturerRepository.findOrCreateByName(row.manufacturer);
+
+      // Find existing by MARG item code first, then by slug
+      let medicine =
+        (await medicineRepository.findByMargItemCode(row.itemCode)) ??
+        (await medicineRepository.findBySlug(slug));
+
+      if (!medicine) {
+        medicine = await medicineRepository.create({
+          name: row.name,
+          slug,
+          description: `${row.name} — ${row.unit}`,
+          composition: [row.name],
+          uses: [],
+          sideEffects: [],
+          manufacturerId: manufacturer._id,
+          categoryId: defaultCategory._id,
+          categoryGroup: 'medicine',
+          medicineType: margUnitToType(row.unit),
+          scheduleClass: 'none',
+          prescriptionRequired: false,
+          isGeneric: false,
+          mrp: row.mrp,
+          sellingPrice: row.mrp,
+          gstPercentage: 12,
+          hsnCode: '3004',
+          packSize: row.unit,
+          images: [],
+          margItemCode: row.itemCode,
+          tags: [],
+          variants: [],
+          alternativeMedicineIds: [],
+          isActive: true,
+        } as never);
+        result.processed++;
+      } else {
+        // Update pricing if MRP changed
+        if (medicine.mrp !== row.mrp) {
+          medicine.mrp = row.mrp;
+          if (medicine.sellingPrice > row.mrp) medicine.sellingPrice = row.mrp;
+          await (medicine as any).save();
+        }
+        result.skipped++;
+      }
+
+      // Create/update stock batch if quantity available
+      if (row.qty > 0 && branch && medicine) {
+        const margBatchRef = `${BATCH_REF}:${row.itemCode}`;
+        const existing = await batchRepository.findByMargBatchRef(margBatchRef);
+        if (existing) {
+          existing.quantityRemaining = row.qty;
+          if (row.costPrice > 0) existing.costPrice = row.costPrice;
+          await existing.save();
+        } else {
+          await batchRepository.create({
+            medicineId: medicine._id,
+            branchId: branch._id,
+            batchNumber: BATCH_REF,
+            expiryDate,
+            quantityReceived: row.qty,
+            quantityRemaining: row.qty,
+            costPrice: row.costPrice,
+            margBatchRef,
+          } as never);
+        }
+        const batches = await batchRepository.find({ medicineId: String(medicine._id), branchId: String(branch._id) });
+        const total = batches.reduce((sum, b) => sum + b.quantityRemaining, 0);
+        await inventoryRepository.setTotalQuantity(String(medicine._id), String(branch._id), total);
+      }
+    } catch (err) {
+      result.failed++;
+      result.errors.push({ row: i + 1, name: row.name, reason: (err as Error).message });
+    }
+  }
+
+  if (result.processed > 0) await invalidateMedicineCaches();
+  return result;
+}
+
 export async function bulkUploadMedicines(buffer: Buffer, originalname: string): Promise<BulkUploadResult> {
+  const ext = (originalname.split('.').pop() ?? '').toLowerCase();
+  if (ext === 'txt') return bulkUploadFromMargText(buffer);
+
   const rows = parseBuffer(buffer, originalname);
   const result: BulkUploadResult = { processed: 0, skipped: 0, failed: 0, errors: [] };
 

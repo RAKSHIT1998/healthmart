@@ -14,8 +14,8 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
-    if (!/\.(csv|xlsx|xls)$/i.test(file.originalname)) {
-      cb(ApiError.badRequest('Only .csv, .xlsx, or .xls files are allowed'));
+    if (!/\.(csv|xlsx|xls|txt)$/i.test(file.originalname)) {
+      cb(ApiError.badRequest('Only .csv, .xlsx, .xls, or .txt (MARG report) files are allowed'));
       return;
     }
     cb(null, true);
