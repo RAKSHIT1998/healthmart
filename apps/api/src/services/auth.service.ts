@@ -20,21 +20,26 @@ function hashOtp(otp: string): string {
   return hashToken(otp);
 }
 
-export async function requestOtp({ phone, purpose }: SendOtpInput): Promise<void> {
-  const recentOtp = await OtpModel.findOne({ phone, purpose }).sort({ createdAt: -1 });
+export async function requestOtp({ phone, email, purpose }: SendOtpInput): Promise<void> {
+  const identifier = phone ? { phone } : { email };
+  const recentOtp = await OtpModel.findOne({ ...identifier, purpose }).sort({ createdAt: -1 });
   if (recentOtp && Date.now() - recentOtp.createdAt.getTime() < OTP_CONFIG.RESEND_COOLDOWN_SECONDS * 1000) {
     throw ApiError.tooManyRequests('Please wait before requesting another OTP');
   }
 
   const otp = generateOtp();
   await OtpModel.create({
-    phone,
+    ...identifier,
     purpose,
     otpHash: hashOtp(otp),
     expiresAt: otpExpiryDate(),
   });
 
-  await sendOtpSms({ phone, otp });
+  if (phone) {
+    await sendOtpSms({ phone, otp });
+  } else {
+    await sendOtpEmail(email!, otp);
+  }
 }
 
 async function issueTokenPair(user: IUser, req: Request, family?: string): Promise<TokenPair> {
@@ -66,10 +71,11 @@ export async function verifyOtpAndAuthenticate(
   input: VerifyOtpInput,
   req: Request,
 ): Promise<{ user: IUser; tokens: TokenPair; isNewUser: boolean }> {
-  const otpRecord = await OtpModel.findOne({ phone: input.phone, verified: false }).sort({ createdAt: -1 });
+  const identifier = input.phone ? { phone: input.phone } : { email: input.email };
+  const otpRecord = await OtpModel.findOne({ ...identifier, verified: false }).sort({ createdAt: -1 });
 
   if (!otpRecord) {
-    throw ApiError.badRequest('No pending OTP request found for this number');
+    throw ApiError.badRequest('No pending OTP request found');
   }
   if (otpRecord.expiresAt < new Date()) {
     throw ApiError.badRequest('OTP has expired, please request a new one');
@@ -86,7 +92,7 @@ export async function verifyOtpAndAuthenticate(
   otpRecord.verified = true;
   await otpRecord.save();
 
-  let user = await userRepository.findByPhone(input.phone);
+  let user = input.phone ? await userRepository.findByPhone(input.phone) : await userRepository.findByEmail(input.email!);
   let isNewUser = false;
 
   if (!user) {
@@ -96,11 +102,12 @@ export async function verifyOtpAndAuthenticate(
       phone: input.phone,
       email: input.email,
       role: Role.CUSTOMER,
-      isPhoneVerified: true,
+      isPhoneVerified: Boolean(input.phone),
+      isEmailVerified: Boolean(input.email),
     });
-  } else if (!user.isPhoneVerified) {
-    user.isPhoneVerified = true;
-    await user.save();
+  } else {
+    if (input.phone && !user.isPhoneVerified) user.isPhoneVerified = true;
+    if (input.email && !user.isEmailVerified) user.isEmailVerified = true;
   }
 
   user.lastLoginAt = new Date();

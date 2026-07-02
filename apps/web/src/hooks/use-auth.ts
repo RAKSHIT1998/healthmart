@@ -13,17 +13,25 @@ interface VerifyOtpResponse {
 
 export function useRequestOtp() {
   return useMutation({
-    mutationFn: (phone: string) => api.post('/auth/otp/request', { phone, purpose: 'login' }, { auth: false }),
-    onSuccess: () => toast.success('OTP sent to your phone'),
+    mutationFn: (identifier: { phone: string } | { email: string }) =>
+      api.post('/auth/otp/request', { ...identifier, purpose: 'login' }, { auth: false }),
+    onSuccess: (_data, identifier) =>
+      toast.success('phone' in identifier ? 'OTP sent to your phone' : 'OTP sent to your email'),
     onError: (err: ApiClientError) => toast.error(err.message),
   });
+}
+
+interface VerifyOtpInput {
+  phone?: string;
+  email?: string;
+  otp: string;
+  name?: string;
 }
 
 export function useVerifyOtp() {
   const setSession = useAuthStore((s) => s.setSession);
   return useMutation({
-    mutationFn: ({ phone, otp, name }: { phone: string; otp: string; name?: string }) =>
-      api.post<VerifyOtpResponse>('/auth/otp/verify', { phone, otp, name }, { auth: false }),
+    mutationFn: (input: VerifyOtpInput) => api.post<VerifyOtpResponse>('/auth/otp/verify', input, { auth: false }),
     onSuccess: (data) => {
       setSession({ accessToken: data.tokens.accessToken, refreshToken: data.tokens.refreshToken, user: data.user });
       toast.success(`Welcome${data.user.name ? `, ${data.user.name}` : ''}!`);

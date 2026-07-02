@@ -1,17 +1,26 @@
 import { z } from 'zod';
 import { REGEX } from '../constants';
 
-export const sendOtpSchema = z.object({
-  phone: z.string().regex(REGEX.PHONE, 'Enter a valid 10-digit Indian mobile number'),
-  purpose: z.enum(['login', 'signup', 'checkout']).default('login'),
-});
+export const sendOtpSchema = z
+  .object({
+    phone: z.string().regex(REGEX.PHONE, 'Enter a valid 10-digit Indian mobile number').optional(),
+    email: z.string().regex(REGEX.EMAIL, 'Enter a valid email').optional(),
+    purpose: z.enum(['login', 'signup', 'checkout']).default('login'),
+  })
+  .refine((data) => Boolean(data.phone) !== Boolean(data.email), {
+    message: 'Provide either a phone number or an email, not both',
+  });
 
-export const verifyOtpSchema = z.object({
-  phone: z.string().regex(REGEX.PHONE),
-  otp: z.string().length(6, 'OTP must be 6 digits'),
-  name: z.string().min(2).max(80).optional(),
-  email: z.string().regex(REGEX.EMAIL).optional(),
-});
+export const verifyOtpSchema = z
+  .object({
+    phone: z.string().regex(REGEX.PHONE).optional(),
+    email: z.string().regex(REGEX.EMAIL).optional(),
+    otp: z.string().length(6, 'OTP must be 6 digits'),
+    name: z.string().min(2).max(80).optional(),
+  })
+  .refine((data) => Boolean(data.phone) !== Boolean(data.email), {
+    message: 'Provide either a phone number or an email',
+  });
 
 export const staffLoginSchema = z.object({
   email: z.string().regex(REGEX.EMAIL, 'Enter a valid email'),
