@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useRequestOtp, useVerifyOtp } from '@/hooks/use-auth';
-import { REGEX } from '@buymedicines/shared';
+import { REGEX, OTP_CONFIG } from '@buymedicines/shared';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,14 +15,31 @@ export default function LoginPage() {
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [name, setName] = useState('');
+  const [resendCooldown, setResendCooldown] = useState(0);
 
   const requestOtp = useRequestOtp();
   const verifyOtp = useVerifyOtp();
 
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => setResendCooldown((s) => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
+
   function handleRequestOtp(e: React.FormEvent) {
     e.preventDefault();
     if (!REGEX.PHONE.test(phone)) return;
-    requestOtp.mutate(phone, { onSuccess: () => setStep('otp') });
+    requestOtp.mutate(phone, {
+      onSuccess: () => {
+        setStep('otp');
+        setResendCooldown(OTP_CONFIG.RESEND_COOLDOWN_SECONDS);
+      },
+    });
+  }
+
+  function handleResendOtp() {
+    if (resendCooldown > 0) return;
+    requestOtp.mutate(phone, { onSuccess: () => setResendCooldown(OTP_CONFIG.RESEND_COOLDOWN_SECONDS) });
   }
 
   function handleVerifyOtp(e: React.FormEvent) {
@@ -86,7 +103,18 @@ export default function LoginPage() {
               </Button>
               <button
                 type="button"
-                onClick={() => setStep('phone')}
+                onClick={handleResendOtp}
+                disabled={resendCooldown > 0 || requestOtp.isPending}
+                className="w-full text-center text-xs text-muted-foreground hover:underline disabled:cursor-not-allowed disabled:opacity-50 disabled:no-underline"
+              >
+                {resendCooldown > 0 ? `Resend OTP in ${resendCooldown}s` : 'Resend OTP'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setStep('phone');
+                  setResendCooldown(0);
+                }}
                 className="w-full text-center text-xs text-muted-foreground hover:underline"
               >
                 Change phone number

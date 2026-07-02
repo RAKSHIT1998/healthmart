@@ -13,7 +13,6 @@ import {
 import { CategoryModel } from '../models';
 import { ApiError } from '../utils/ApiError';
 import { slugify } from '../utils/slugify';
-import { inventoryRepository } from '../repositories/inventory.repository';
 import { getOrSetCache, invalidateCache } from '../utils/cache';
 
 const SEARCH_CACHE_TTL_SECONDS = 45;
