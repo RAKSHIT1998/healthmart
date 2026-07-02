@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { Pencil, Plus, Search, Trash2 } from 'lucide-react';
+import { Pencil, Plus, Search, Trash2, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,12 +10,14 @@ import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@/lib/utils';
 import { useAdminMedicines, useDeactivateMedicine } from '@/hooks/admin/use-medicines';
 import { MedicineFormDialog } from '@/components/admin/medicines/medicine-form-dialog';
+import { BulkUploadDialog } from '@/components/admin/medicines/bulk-upload-dialog';
 import type { Medicine } from '@/types/admin';
 
 export default function MedicinesPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [bulkOpen, setBulkOpen] = useState(false);
   const [editing, setEditing] = useState<Medicine | null>(null);
   const { data, isLoading } = useAdminMedicines(page, search);
   const deactivate = useDeactivateMedicine();
@@ -34,9 +36,14 @@ export default function MedicinesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Medicines</h1>
-        <Button onClick={openCreate}>
-          <Plus className="h-4 w-4" /> Add Product
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setBulkOpen(true)}>
+            <Upload className="h-4 w-4" /> Bulk Upload
+          </Button>
+          <Button onClick={openCreate}>
+            <Plus className="h-4 w-4" /> Add Product
+          </Button>
+        </div>
       </div>
 
       <div className="relative max-w-sm">
@@ -118,6 +125,7 @@ export default function MedicinesPage() {
       )}
 
       <MedicineFormDialog open={dialogOpen} onOpenChange={setDialogOpen} medicine={editing} />
+      <BulkUploadDialog open={bulkOpen} onOpenChange={setBulkOpen} />
     </div>
   );
 }

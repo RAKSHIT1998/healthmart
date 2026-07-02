@@ -4,6 +4,7 @@ import { asyncHandler } from '../utils/asyncHandler';
 import { sendPaginated, sendSuccess } from '../utils/apiResponse';
 import * as medicineService from '../services/medicine.service';
 import { recordAudit } from '../middlewares/audit.middleware';
+import { ApiError } from '../utils/ApiError';
 
 export const search = asyncHandler(async (req: Request, res: Response) => {
   const query = req.query as unknown as MedicineSearchQuery;
@@ -37,4 +38,10 @@ export const deactivate = asyncHandler(async (req: Request, res: Response) => {
 export const getById = asyncHandler(async (req: Request, res: Response) => {
   const medicine = await medicineService.getMedicineById(req.params.id as string);
   sendSuccess(res, medicine);
+});
+
+export const bulkUpload = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.file) throw ApiError.badRequest('A CSV or XLSX file is required');
+  const result = await medicineService.bulkUploadMedicines(req.file.buffer, req.file.originalname);
+  sendSuccess(res, result, `Bulk upload complete: ${result.processed} created, ${result.skipped} skipped, ${result.failed} failed`);
 });
