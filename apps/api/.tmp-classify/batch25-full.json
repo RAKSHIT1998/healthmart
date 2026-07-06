@@ -1,0 +1,69 @@
+[
+  {
+    "name": "ETODY 90 TAB 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/070515/etody-90mg-strip-of-10-tablets-front-2-1756894471-non-watermarked.jpg",
+    "description": "A non-steroidal anti-inflammatory medicine used for relieving moderate pain and swelling in conditions like rheumatoid arthritis, osteoarthritis, and dental surgery.",
+    "composition": ["Etoricoxib 90mg"],
+    "uses": ["Rheumatoid arthritis pain and inflammation", "Osteoarthritis relief", "Gout pain management", "Ankylosing spondylitis", "Post-dental surgery discomfort"],
+    "sideEffects": ["Stomach pain", "Leg/feet swelling", "Dizziness", "Headache", "Constipation/diarrhea", "Indigestion and nausea"],
+    "storageInstructions": "Does not require special storage conditions. Keep out of reach of children."
+  },
+  {
+    "name": "EVION 600 CAP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/071715/evion-600mg-strip-of-10-capsules-6.1-1739446729.jpg",
+    "description": "Vitamin E supplement that supports the body's natural defences and helps repair cells.",
+    "composition": ["Vitamin E (Tocopheryl Acetate) 600mg"],
+    "uses": ["Prevents and treats Vitamin E deficiency", "Supports skin health", "Strengthens hair follicles", "Supports immune system"],
+    "dosage": "One capsule daily or as advised, taken with water after a meal.",
+    "sideEffects": ["Nausea or stomach cramps", "Headache or fatigue", "Loose stools or mild diarrhea"],
+    "storageInstructions": "Store in a cool, dry place away from sunlight."
+  },
+  {
+    "name": "EVION LC 1*15TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/071735/evion-lc-strip-of-10-tablets-side-6.01-1756894478-non-watermarked.jpg",
+    "description": "A nutritional supplement combining levocarnitine and vitamin E used to treat carnitine deficiency and muscle cramps/spasms.",
+    "composition": ["Vitamin E 200mg", "L-Carnitine 150mg"],
+    "uses": ["Carnitine deficiency", "Muscle cramps and spasms"],
+    "dosage": "As prescribed by doctor; take whole with water, with or without food.",
+    "sideEffects": ["Nausea", "Vomiting", "Upset stomach", "Diarrhea", "Headache", "Abdominal cramps"],
+    "storageInstructions": "Store in a cool, dry place, protected from direct sunlight, moisture and heat."
+  },
+  {
+    "name": "EXTACEF 200 DT 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/072300/extacef-dt-200mg-strip-of-10-tablets-front-2-1756894488-non-watermarked.jpg",
+    "description": "An antibiotic medicine containing cefixime used in treating bacterial infections of the urinary tract, lungs, throat, and ear.",
+    "composition": ["Cefixime 200mg"],
+    "uses": ["Bacterial infections of ear, nose, sinuses", "Urinary tract infections", "Throat infections", "Lung infections", "Typhoid fever"],
+    "dosage": "As directed by doctor; swallow whole with water; complete full course.",
+    "sideEffects": ["Diarrhoea", "Nausea", "Vomiting", "Stomach pain", "Indigestion"],
+    "storageInstructions": "Store below 25°C, protected from direct sunlight, heat and moisture."
+  },
+  {
+    "name": "EXTACEF DROPS 1*10ML",
+    "description": "Contains Cefixime, an antibiotic belonging to the cephalosporin group.",
+    "composition": ["Cefixime 50mg/ml"],
+    "uses": ["Ear infections", "Nose/sinus infections", "Urinary tract infections", "Throat infections", "Chest and lung infections"],
+    "dosage": "Take as directed by your doctor; shake well before use.",
+    "sideEffects": ["Severe diarrhea", "Nausea and vomiting", "Stomach pain", "Skin rash/itching", "Headache"],
+    "storageInstructions": "Store below 25°C, protect from direct sunlight, keep away from children."
+  },
+  {
+    "name": "EXTACEF DT 100MG 1*10",
+    "description": "An antibiotic medicine containing cefixime used for treating bacterial infections including urinary tract, respiratory, and throat infections.",
+    "composition": ["Cefixime 100mg"],
+    "uses": ["Bacterial infections of ear, nose, sinuses", "Urinary tract infections", "Throat infections", "Lung infections", "Typhoid fever"],
+    "dosage": "Should be taken as directed by the doctor.",
+    "sideEffects": ["Nausea", "Vomiting", "Stomach pain", "Diarrhea", "Indigestion"],
+    "storageInstructions": "Store below 25°C, protected from direct sunlight, heat and moisture."
+  },
+  {
+    "name": "FEBUTEC 40 10 TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/Y38965/febutec-40mg-strip-of-10-tablets-box-front-1-1756956913-non-watermarked.jpg",
+    "description": "Febuxostat, a xanthine oxidase inhibitor used for long-term management of chronic hyperuricemia in patients with gouty arthritis.",
+    "composition": ["Febuxostat 40mg"],
+    "uses": ["Treatment of chronic hyperuricemia", "Prevention of gouty arthritis", "Long-term uric acid level management"],
+    "dosage": "Take as directed by physician; once daily at a fixed time.",
+    "sideEffects": ["Diarrhea", "Headache", "Nausea", "Increased gout symptoms", "Localized swellings"],
+    "storageInstructions": "Store in a dry place, protected from light, heat and moisture."
+  }
+]

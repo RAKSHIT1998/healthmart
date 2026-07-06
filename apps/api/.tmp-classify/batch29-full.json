@@ -1,0 +1,79 @@
+[
+  {
+    "name": "LASIX 4ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I02980/lasix-10mg-ampoule-of-4ml-injection-front-2-1756903936-non-watermarked.jpg",
+    "description": "A diuretic medicine that helps the body get rid of excess water or fluid, used for heart failure, pulmonary edema, and kidney/liver diseases.",
+    "composition": ["Furosemide 10mg/ml"],
+    "uses": ["Fluid retention management", "Heart failure treatment", "Pulmonary edema", "Kidney disease management"],
+    "sideEffects": ["Dizziness", "Headache", "Blurred vision", "Lightheadedness", "Dehydration", "Electrolyte imbalance"],
+    "storageInstructions": "Store at a temperature below 25°C in a cool and dry place."
+  },
+  {
+    "name": "LEVIPIL 500 1*15TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/Z85578/levipil-500mg-strip-of-15-tablets-side-6.1-1756986875-non-watermarked.jpg",
+    "description": "Medication used to control seizures in people with epilepsy by reducing abnormal brain activity.",
+    "composition": ["Levetiracetam 500mg"],
+    "uses": ["Seizures or fits", "Epilepsy treatment"],
+    "dosage": "Take as prescribed by your doctor at the same time each day, with or without food.",
+    "sideEffects": ["Headache", "Dizziness", "Nausea", "Agitation", "Loss of appetite", "Mood swings", "Weakness"],
+    "storageInstructions": "Store at 25°C and keep out of children's reach."
+  },
+  {
+    "name": "LEVOFLOX 500MG 1*10TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/104215/levoflox-500mg-strip-of-10-tablets-front-2-1756459937-non-watermarked.jpg",
+    "description": "An antibiotic medicine containing levofloxacin used to treat bacterial infections of the lungs, throat, airways, nose, ears, urinary tract, skin, and soft tissues.",
+    "composition": ["Levofloxacin 500mg"],
+    "uses": ["Respiratory tract infections", "Ear and sinus infections", "Urinary tract infections", "Skin and soft tissue infections"],
+    "dosage": "Take as directed by doctor; swallow whole with water; may be taken with or without food.",
+    "sideEffects": ["Headache", "Dizziness", "Nausea", "Vomiting", "Diarrhea"],
+    "storageInstructions": "Store at room temperature, protected from moisture, sunlight, and heat."
+  },
+  {
+    "name": "LEVOLIN INHALER",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/104240/levolin-50mcg-cfc-free-box-of-200md-metered-dose-inhaler-box-front-1-1756459974-non-watermarked.jpg",
+    "description": "Used to treat respiratory conditions such as chronic obstructive pulmonary disease (COPD) and asthma.",
+    "composition": ["Levosalbutamol 50mcg per metered dose"],
+    "uses": ["Asthma relief", "COPD symptom management", "Airway constriction treatment", "Bronchospasm relief"],
+    "dosage": "Exact number of puffs as prescribed by doctor; maximum 12 inhalations in 24 hours.",
+    "sideEffects": ["Headache", "Dizziness", "Vomiting", "Palpitations", "Shakiness"],
+    "storageInstructions": "Store below 25°C in a cool, dry place in its original packaging."
+  },
+  {
+    "name": "LILIFIN CREAM 10GM",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/222453/lulifin-1-tube-of-10gm-cream-box-front-1-1756885116-non-watermarked.jpg",
+    "description": "Topical antifungal cream designed to treat fungal skin infections such as athlete's foot, ringworm, and jock itch.",
+    "composition": ["Luliconazole 1%"],
+    "uses": ["Fungal skin infections in adults", "Tinea infections (athlete's foot, ringworm, jock itch)"],
+    "dosage": "Apply thin film to affected area and 1 inch surrounding skin. External use only.",
+    "sideEffects": ["Skin irritation", "Itching", "Burning sensation", "Local skin reactions"],
+    "storageInstructions": "Store at room temperature between 20-25°C. Use within one month after opening."
+  },
+  {
+    "name": "LIMCEE",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I08644/limcee-500mg-orange-flavour-chewable-strip-of-15-tablets-front-2-1756904334-non-watermarked.jpg",
+    "description": "Chewable Vitamin C supplement designed to support immunity, provide antioxidant protection, and promote skin health.",
+    "composition": ["Vitamin C (Ascorbic Acid) 500mg"],
+    "uses": ["Prevention and treatment of Vitamin C deficiency", "Immunity boosting", "Collagen formation support", "Wound healing assistance"],
+    "dosage": "Take as prescribed by doctor; chew thoroughly before swallowing."
+  },
+  {
+    "name": "LIV-52 TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/105920/himalaya-liv52-tablets-100s-2-1748863387.jpg",
+    "description": "Clinically proven to help care for the liver, with hepatoprotective and antioxidant properties.",
+    "composition": ["Chicory", "Caper Bush", "Mandur Bhasma", "Kakamachi", "Arjuna", "Kasamarda"],
+    "uses": ["Support healthy liver function", "Combat liver infections", "Eliminate acetaldehyde from alcohol", "Reduce indigestion"],
+    "dosage": "2-3 tablets before meals, 3-4 times daily, or as directed by physician."
+  },
+  {
+    "name": "LIV-52 100ML SYP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/105915/himalaya-liv-52-syrup-100ml-2-1671741043.jpg",
+    "description": "Ayurvedic liver care syrup formulated by Himalaya to support hepatic function and overall liver health.",
+    "uses": ["Liver care support", "Digestive health", "Hepatic function support"]
+  },
+  {
+    "name": "LIV-52 200ML SYP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/105915/himalaya-liv-52-syrup-100ml-2-1671741043.jpg",
+    "description": "Ayurvedic liver care syrup formulated by Himalaya to support hepatic function and overall liver health.",
+    "uses": ["Liver care support", "Digestive health", "Hepatic function support"]
+  }
+]

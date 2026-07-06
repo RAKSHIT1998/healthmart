@@ -1,0 +1,35 @@
+[
+  {
+    "name": "TELVAS 40 TAB 1*15",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/W90025/telvas-40mg-strip-of-15-tablets-box-front-1-1756972428-non-watermarked.jpg",
+    "source": "https://pharmeasy.in/online-medicine-order/telvas-40mg-strip-of-15-tablets-3097268",
+    "description": "A blood pressure-lowering medicine containing telmisartan used for treating high blood pressure and reducing heart attack/stroke risk.",
+    "composition": ["Telmisartan 40 mg"],
+    "uses": ["Treatment of high blood pressure", "Prevention of heart attack and stroke"],
+    "dosage": "Swallow it whole without chewing or breaking. It can be taken with or without food, but it's best to take it at the same time each day.",
+    "sideEffects": ["Flu-like symptoms", "Back pain", "Sinus infection", "Dizziness", "Diarrhea", "Headache"],
+    "storageInstructions": "Store it in the original packaging to protect it from sunlight and moisture. Keep out of sight and reach of children."
+  },
+  {
+    "name": "WYSOLONE 5 TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/185287/wysolone-dt-5mg-strip-of-15-tablets-front-2-1756893883-non-watermarked.jpg",
+    "source": "https://pharmeasy.in/online-medicine-order/wysolone-dt-5mg-strip-of-15-tablets-29611",
+    "description": "Steroid tablet containing prednisolone used to treat allergies, inflammation, and autoimmune disorders.",
+    "composition": ["Prednisolone 5 mg"],
+    "uses": ["Allergic conditions", "Autoimmune disorders", "Asthma", "Skin allergies", "Rheumatic disorders", "Cancer treatment (with chemotherapy)", "Organ rejection prevention"],
+    "dosage": "Take as directed by doctor; swallow whole with water; do not cut, break, or chew; consistent timing recommended; do not exceed prescribed dose.",
+    "sideEffects": ["Weight gain", "Mood swings", "Irritation", "Infections", "Bloating", "Weakness", "Fatigue", "Anxiety"],
+    "storageInstructions": "Store below 25°C; keep in original packaging to prevent moisture; store out of children's reach."
+  },
+  {
+    "name": "DEXONA TAB 1*20",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I36694/dexona-05mg-strip-of-30-tablets-front-2-1756952850-non-watermarked.jpg",
+    "source": "https://pharmeasy.in/online-medicine-order/dexona-0-5mg-tab-30-s-210951",
+    "description": "A steroidal medication containing dexamethasone used to treat inflammatory conditions, allergies, and autoimmune disorders.",
+    "composition": ["Dexamethasone 0.5 mg"],
+    "uses": ["Inflammatory conditions", "Allergies and allergic reactions", "Autoimmune disorders", "Certain types of cancer", "Pain and swelling relief"],
+    "dosage": "Take Dexona tablet regularly as directed by the doctor. The medicine must be taken with food or after food. It must be swallowed entirely with a sufficient amount of liquid.",
+    "sideEffects": ["Anxiety", "Stomach discomforts", "Insomnia", "Mood swings", "Dizziness", "Restlessness", "Visual disturbances", "High blood pressure"],
+    "storageInstructions": "Store it at room temperature and away from moisture. Keep it out of reach of children and pets."
+  }
+]

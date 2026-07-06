@@ -1,0 +1,100 @@
+[
+  {
+    "name": "DUPHASTON 10MG 1*10TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/192067/duphaston-10mg-strip-of-10-tablets-side-6.1-1756099783-non-watermarked.jpg",
+    "description": "A prescription-only hormonal medicine containing Dydrogesterone, used for managing female reproductive cycle conditions when natural progesterone levels are insufficient.",
+    "composition": ["Dydrogesterone 10mg"],
+    "uses": ["Threatened miscarriage management", "Recurrent pregnancy loss support", "Secondary amenorrhea", "Dysmenorrhea", "Dysfunctional uterine bleeding", "Endometriosis symptoms", "Luteal phase support"],
+    "dosage": "Prescription-dependent; varies by medical condition. Always follow your doctor's prescription exactly.",
+    "sideEffects": ["Nausea", "Headache/migraine", "Breast tenderness", "Mild dizziness", "Irregular bleeding/spotting", "Bloating"],
+    "storageInstructions": "Store in a cool, dry place at room temperature (below 30°C). Keep in original blister pack."
+  },
+  {
+    "name": "OVRAL-L TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/134095/ovral-l-strip-of-21-tablets-box-front-1-1756893873-non-watermarked.jpg",
+    "description": "Oral contraceptive pill used to prevent pregnancy by preventing egg release and limiting sperm movement.",
+    "composition": ["Levonorgestrel 0.15mg", "Ethinylestradiol 0.03mg"],
+    "uses": ["Birth control/pregnancy prevention", "Painful periods management", "Uterine bleeding regulation", "Endometriosis treatment"],
+    "dosage": "One tablet daily for 21 consecutive days, followed by a 7-day tablet-free interval; swallow whole with water.",
+    "sideEffects": ["Headache", "Nausea and vomiting", "Stomach pain", "Weight changes", "Mood swings", "Breast tenderness", "Reduced libido"],
+    "storageInstructions": "Store below 25°C in a clean and dry place. Keep away from children and pets."
+  },
+  {
+    "name": "UNWANTED-72 TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/177755/unwanted-72-strip-of-1-tablet-6.1-1775911432.jpg",
+    "description": "Emergency contraceptive designed to prevent unwanted pregnancy after unprotected intercourse or contraceptive failure.",
+    "composition": ["Levonorgestrel 1.5mg"],
+    "uses": ["Prevents unplanned pregnancies after unprotected sexual contact", "Halts egg development", "Prevents sperm-egg fertilization", "Prevents fertilized egg implantation"],
+    "dosage": "Single tablet taken as soon as possible, within 72 hours of intercourse.",
+    "sideEffects": ["Breast tenderness", "Headache", "Fatigue, dizziness", "Stomach upset with bloating, nausea, abdominal cramps", "Spotting or vaginal bleeding before expected menstruation"],
+    "storageInstructions": "Store in a cool and dry place, away from direct sunlight and moisture."
+  },
+  {
+    "name": "I PILL",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/192351/i-pill-emergency-contraceptive-pill-1-nos-2-1753265223.jpg",
+    "description": "Emergency contraceptive used to help prevent unwanted pregnancy after contraceptive failure or unprotected intercourse.",
+    "composition": ["Levonorgestrel 1.5mg"],
+    "uses": ["Prevent unintended pregnancy after unprotected intercourse", "Emergency backup when regular contraception fails", "Delay ovulation", "Make uterine lining less suitable for implantation"],
+    "dosage": "Take one tablet as soon as possible, not later than 72 hours after unprotected sex, with food.",
+    "sideEffects": ["Nausea", "Vomiting", "Lower abdominal pain", "Fatigue", "Headache", "Diarrhea", "Dizziness", "Uterine bleeding"],
+    "storageInstructions": "Keep away from light and moisture, in a cool and dry place."
+  },
+  {
+    "name": "METHERGIN TAB 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/113580/methergin-strip-of-10-tablets-front-2-1756884946-non-watermarked.jpg",
+    "description": "A uterine stimulant containing methyl ergometrine used after childbirth to prevent or stop uterine bleeding.",
+    "composition": ["Methyl Ergometrine 0.125mg"],
+    "uses": ["Prevention of postpartum uterine bleeding", "Control of uterine bleeding after childbirth"],
+    "dosage": "Take as directed by your doctor; swallow whole with water.",
+    "sideEffects": ["Headache", "Nausea", "Vomiting", "Stomach pain", "Dizziness"],
+    "storageInstructions": "Store below 25°C in a cool and dry place. Keep out of reach of children and pets."
+  },
+  {
+    "name": "VIAGRA 50MG TAB 1*2TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I46517/viagra-50mg-strip-of-2-tablets-box-front-1-1756954544-non-watermarked.jpg",
+    "description": "Used in men to treat erectile dysfunction. Relaxes blood vessels in the penis and improves blood flow during sexual arousal.",
+    "composition": ["Sildenafil 50mg"],
+    "uses": ["Erectile dysfunction (impotence)", "Sexual wellness support", "Maintenance of erection during intercourse"],
+    "dosage": "Take approximately one hour before sexual activity. Maximum one dose per day.",
+    "sideEffects": ["Headache", "Dizziness", "Flushing", "Nasal congestion", "Nausea", "Abnormal vision", "Back pain", "Muscle pain"],
+    "storageInstructions": "Store in a cool, clean, and dry place, away from direct sunlight."
+  },
+  {
+    "name": "MODULA 10 TAB 1*10",
+    "description": "Used for the treatment of erectile dysfunction and benign prostate hyperplasia (BPH) in men by enhancing blood flow.",
+    "composition": ["Tadalafil 10mg"],
+    "uses": ["Erectile dysfunction (ED)", "Benign prostate hyperplasia (BPH)"],
+    "dosage": "Take as directed by your doctor approximately one hour before sexual activity.",
+    "sideEffects": ["Headache", "Flushing", "Back pain", "Dizziness", "Indigestion", "Nasal congestion", "Muscle pain", "Blurred vision"],
+    "storageInstructions": "Store in a cool and dry place, protected from direct sunlight, moisture and heat."
+  },
+  {
+    "name": "MODULA 5 MG 1*10",
+    "description": "Used for the treatment of erectile dysfunction and benign prostate hyperplasia (BPH) in men by enhancing blood flow.",
+    "composition": ["Tadalafil 5mg"],
+    "uses": ["Erectile dysfunction (ED)", "Benign prostate hyperplasia (BPH)"],
+    "dosage": "Take as directed by your doctor approximately one hour before sexual activity.",
+    "sideEffects": ["Headache", "Flushing", "Back pain", "Dizziness", "Indigestion", "Nasal congestion", "Muscle pain", "Blurred vision"],
+    "storageInstructions": "Store in a cool and dry place, protected from direct sunlight, moisture and heat."
+  },
+  {
+    "name": "VYMADA 50MG 1*14TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I03726/vymada-50mg-strip-of-14-tablets-box-front-1-1774954576-non-watermark.jpg",
+    "description": "Medication combining sacubitril and valsartan used to manage chronic heart failure.",
+    "composition": ["Sacubitril 24mg", "Valsartan 26mg"],
+    "uses": ["Heart failure treatment", "Long-term management of weakened heart function", "Reduction of excess body fluid accumulation", "Improvement of cardiac output"],
+    "dosage": "Prescribed individually by physician; available as 50mg tablets in strips of 14.",
+    "sideEffects": ["Dizziness and lightheadedness", "Nausea and headache", "Fainting episodes", "Loose motions", "Persistent cough", "Fatigue or weakness", "Abdominal pain", "Vertigo"],
+    "storageInstructions": "Store at room temperature and away from light. Keep in original package to protect from moisture."
+  },
+  {
+    "name": "MANFORCE 50 TAB 1*9",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/199420/manforce-50mg-strip-of-9-tablets-box-front-1-1756899514-non-watermark.jpg",
+    "description": "Prescription medicine for erectile dysfunction (impotence) in men that enhances blood flow to achieve or sustain an erection.",
+    "composition": ["Sildenafil 50mg"],
+    "uses": ["Erectile dysfunction treatment in men", "Sexual wellness support"],
+    "dosage": "One tablet approximately one hour before sexual activity; maximum once per 24-hour period.",
+    "sideEffects": ["Headache", "Flushing", "Dizziness", "Blurred/altered vision", "Nausea", "Nasal congestion", "Muscle pain", "Indigestion", "Rash", "Upset stomach"],
+    "storageInstructions": "Store in a cool and dry place, protected from direct sunlight, moisture and heat."
+  }
+]

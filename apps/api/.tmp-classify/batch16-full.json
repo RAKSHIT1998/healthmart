@@ -1,0 +1,101 @@
+[
+  {
+    "name": "GLIMER 1MG TAB 1*15TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/O97474/glimer-1mg-strip-of-15-tablets-box-front-1-1756972837-non-watermarked.jpg",
+    "description": "Anti-diabetic medicine containing glimepiride used for lowering blood glucose in type 2 diabetes when diet and exercise alone are insufficient.",
+    "composition": ["Glimepiride 1mg"],
+    "uses": ["Type 2 diabetes mellitus management", "Blood glucose control when lifestyle modifications fail"],
+    "dosage": "Prescribed by doctor; take with or after meals; swallow whole with water.",
+    "sideEffects": ["Nausea", "Dizziness", "Headache", "Weight gain", "Hypoglycemia"],
+    "storageInstructions": "Store at room temperature in original package; keep out of reach of children and pets."
+  },
+  {
+    "name": "GLIZID 80 1*15TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/246195/glizid-80mg-strip-of-15-tablets-box-front-1-1756885020-non-watermarked.jpg",
+    "description": "An anti-diabetic medicine containing gliclazide used for treating type 2 diabetes mellitus.",
+    "composition": ["Gliclazide 80mg"],
+    "uses": ["Type 2 diabetes mellitus treatment", "Blood sugar reduction when lifestyle modifications fail"],
+    "dosage": "Take as a whole tablet with water before meals, as directed by doctor.",
+    "sideEffects": ["Fever, headache, dizziness", "Nausea, vomiting", "Stomach pain, indigestion", "Diarrhea, constipation", "Rash, itching", "Low blood sugar episodes"],
+    "storageInstructions": "Store in a cool and dry place, protected from direct sunlight, moisture and heat."
+  },
+  {
+    "name": "CETAPIN XR 500 TAB 1*20",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/L11643/cetapin-xr-500mg-strip-of-20-tablets-box-front-1-1756957560-non-watermarked.jpg",
+    "description": "An oral antidiabetic medicine used to lower raised blood sugar levels in type 2 diabetes.",
+    "composition": ["Metformin Hydrochloride 500mg"],
+    "uses": ["Type 2 diabetes mellitus treatment", "Blood sugar control in overweight patients"],
+    "dosage": "Take as prescribed by your doctor, preferably after meals. Swallow whole with water at fixed times.",
+    "sideEffects": ["Nausea", "Vomiting", "Diarrhea", "Abdominal pain", "Loss of appetite", "Taste disturbance"],
+    "storageInstructions": "Store below 25°C in a cool and dry place. Protect from light and moisture."
+  },
+  {
+    "name": "GLUCONORM P 15 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/085125/gluconorm-p-15mg-strip-of-10-tablets-combo-3-1756902602-non-watermarked.jpg",
+    "description": "An anti-diabetic medication taken orally to improve control of blood sugar levels in adults with Type 2 diabetes.",
+    "composition": ["Pioglitazone 15mg", "Metformin 500mg"],
+    "uses": ["Type 2 diabetes mellitus management in adults", "Blood sugar level control", "Prevention of diabetes-related complications"],
+    "dosage": "Take as a whole tablet with water exactly as prescribed by doctor.",
+    "sideEffects": ["Nausea", "Vomiting", "Diarrhea", "Stomach pain", "Loss of appetite"],
+    "storageInstructions": "Store in a cool and dry place away from direct sunlight."
+  },
+  {
+    "name": "GLUCORED TAB 1*10TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/085160/glucored-strip-of-10-tablets-front-2-1756902602-non-watermarked.jpg",
+    "description": "An anti-diabetic medicine containing a combination of Glibenclamide and Metformin, used to treat type 2 diabetes mellitus.",
+    "composition": ["Metformin 400mg", "Glibenclamide 2.5mg"],
+    "uses": ["Type 2 diabetes mellitus treatment", "Non-insulin-dependent diabetes management"],
+    "dosage": "As directed by doctor; swallow whole with water and food; fixed timing recommended.",
+    "sideEffects": ["Headache", "Dizziness", "Nausea", "Vomiting", "Stomach pain", "Diarrhea", "Low blood sugar", "Sweating", "Shakiness"],
+    "storageInstructions": "Store at room temperature protected from moisture and heat."
+  },
+  {
+    "name": "MELMET-500 SR 1*20TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/265012/melmet-sr-500mg-strip-of-20-tablets-front-2-1756884874-non-watermarked.jpg",
+    "description": "Used to treat type 2 diabetes mellitus when diet and exercise have not controlled blood glucose levels.",
+    "composition": ["Metformin Hydrochloride 500mg"],
+    "uses": ["Type 2 diabetes mellitus treatment", "Non-insulin-dependent diabetes management"],
+    "dosage": "Swallow tablets whole with water, taken with or after meals at fixed times as directed by a doctor.",
+    "sideEffects": ["Nausea", "Vomiting", "Diarrhea", "Stomach pain", "Taste disturbance", "Loss of appetite"],
+    "storageInstructions": "Store in a cool and dry place, protected from direct sunlight, moisture and heat."
+  },
+  {
+    "name": "TRAJENTA DUO 500 TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/254937/trajenta-duo-25-500mg-strip-of-10-tablets-front-2-1756459871-non-watermarked.jpg",
+    "description": "An anti-diabetic medicine used to manage type 2 diabetes, enhancing insulin response and reducing blood sugar levels.",
+    "composition": ["Linagliptin 2.5mg", "Metformin Hydrochloride 500mg"],
+    "uses": ["Type 2 diabetes management", "Blood sugar control", "Prevention of diabetes complications"],
+    "dosage": "Take as directed by doctor; swallow whole with water, with or after meals, at the same time daily.",
+    "sideEffects": ["Low blood sugar levels", "Allergic reactions/rashes", "Diarrhoea", "Nausea and vomiting", "Altered taste"],
+    "storageInstructions": "Store in a cool and dry place, below 30°C."
+  },
+  {
+    "name": "DAPANORM M 10 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/Y74431/dapanorm-m-10mg-strip-of-10-tablets-back-7-1756972762-non-watermarked.jpg",
+    "description": "An anti-diabetic medication prescribed to help manage Type 2 diabetes mellitus in adults, alongside a healthy diet and regular exercise.",
+    "composition": ["Dapagliflozin 10mg", "Metformin Hydrochloride 500mg"],
+    "uses": ["Type 2 diabetes mellitus management in adults", "Blood sugar control when combined with diet and exercise"],
+    "sideEffects": ["Low blood sugar levels", "Nausea and vomiting", "Diarrhea", "Loss of appetite", "Sore throat, congestion, headache", "Genital fungal infections"],
+    "storageInstructions": "Store in a cool and dry place away from direct sunlight."
+  },
+  {
+    "name": "SITARED M 50/500 1*15",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/H64259/sitared-m-50-500mg-strip-of-15-tablets-box-front-1-1756986751-non-watermarked.jpg",
+    "description": "A medication used to manage type 2 diabetes, combining metformin and sitagliptin to control blood sugar levels.",
+    "composition": ["Metformin Hydrochloride 500mg", "Sitagliptin 50mg"],
+    "uses": ["Control high blood sugar in type 2 diabetes mellitus", "Used alongside healthy diet and regular exercise"],
+    "dosage": "Take with food as prescribed by doctor.",
+    "sideEffects": ["Nausea", "Vomiting", "Headache", "Metallic taste", "Flatulence", "Loose motion", "Constipation", "Stomach pain", "Loss of appetite"],
+    "storageInstructions": "Store at a temperature not above 30°C in a cool and dry place."
+  },
+  {
+    "name": "SUPERMET AM 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/193094/supermet-am-strip-of-10-tablets-front-2-1755515944-non-watermarked.jpg",
+    "description": "Combination medicine used for the treatment of high blood pressure and angina pectoris.",
+    "composition": ["Metoprolol 50mg", "Amlodipine 5mg"],
+    "uses": ["High blood pressure", "Angina pectoris", "Coronary artery disease"],
+    "dosage": "Take as directed by your doctor at a fixed time; can be taken with or without food.",
+    "sideEffects": ["Headache", "Dizziness", "Nausea", "Sleepiness", "Tiredness", "Ankle swelling", "Stomach pain"],
+    "storageInstructions": "Store in a cool and dry place, protected from direct sunlight, moisture and heat."
+  }
+]

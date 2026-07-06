@@ -1,0 +1,27 @@
+[
+  {
+    "name": "JOHNSON BABY OIL 1*50ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/097360/johnsons-baby-oil-bottle-of-100-ml-2-1671741414.jpg",
+    "description": "Clinically proven mild and irritation-free oil designed for babies' delicate skin, enriched with Vitamin E for gentle nourishment during massage and daily care.",
+    "composition": ["Mineral Oil", "Tocopheryl Acetate (Vitamin E)"],
+    "uses": ["Gentle baby body massage", "Skin nourishment and softening", "Daily baby skincare routine"]
+  },
+  {
+    "name": "KETOMAC SHAMPOO",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products/321999/ketomac-2-shampoo-110ml-1-1664871987.jpg",
+    "description": "An anti-dandruff shampoo used for treatment and prevention of dandruff, controlling flaking, scaling and itching.",
+    "composition": ["Ketoconazole 2% w/w"],
+    "uses": ["Treatment of dandruff", "Control of flaking and scaling", "Relief from itching associated with dandruff"],
+    "dosage": "Wet hair and scalp, apply shampoo, massage, keep for 5-10 minutes before rinsing."
+  },
+  {
+    "name": "KETOROL-DT 1*15TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I02339/ketorol-dt-10mg-strip-of-15-tablets-back-7-1756826450-non-watermarked.jpg",
+    "description": "Pain-relieving medicine used for the short-term management of severe or intense pain, such as post-operative pain, toothache, joint pain, and muscle aches.",
+    "composition": ["Ketorolac 10mg"],
+    "uses": ["Post-operative pain", "Toothache", "Muscle and joint pain", "Back pain", "Headaches"],
+    "dosage": "Take as directed by doctor; dissolve tablet in water. Should not be taken for more than 5 days.",
+    "sideEffects": ["Headache", "Dizziness", "Drowsiness", "Nausea", "Indigestion", "Stomach pain", "Heartburn"],
+    "storageInstructions": "Store at room temperature, away from direct sunlight, heat and moisture."
+  }
+]

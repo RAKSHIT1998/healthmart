@@ -1,0 +1,101 @@
+[
+  {
+    "name": "CIPLADINE-OINT 1*20GM",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/112095/cipladine-5-tube-of-10gm-ointment-2-1760278628.jpg",
+    "description": "Topical antiseptic ointment containing povidone-iodine for wound and skin care applications.",
+    "composition": ["Povidone Iodine 5%"],
+    "uses": ["Antiseptic wound care", "Prevention of infection in minor cuts and wounds"]
+  },
+  {
+    "name": "CIPLADINE OINT 25GM",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/112095/cipladine-5-tube-of-10gm-ointment-2-1760278628.jpg",
+    "description": "Topical antiseptic ointment containing povidone-iodine for wound and skin care applications.",
+    "composition": ["Povidone Iodine 5%"],
+    "uses": ["Antiseptic wound care", "Prevention of infection in minor cuts and wounds"]
+  },
+  {
+    "name": "CIPLADINE SOLUTION 100ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/I36150/cipladine-75-solution-100ml-6.1-1775911868.jpg",
+    "description": "Antiseptic solution containing povidone-iodine for topical application, indicated for wound cleaning and disinfection.",
+    "composition": ["Povidone Iodine 7.5%"],
+    "uses": ["Wound disinfection", "Antiseptic treatment", "Skin infection prevention"]
+  },
+  {
+    "name": "CLOP G CREAM 30GM",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/Y95578/clop-g-tube-of-30gm-cream-box-front-1-1756957002-non-watermarked.jpg",
+    "description": "A combination medicine used for treating inflammation and swelling in skin conditions where secondary bacterial infection is present.",
+    "composition": ["Clobetasol Propionate 0.05%", "Gentamicin 0.1%"],
+    "uses": ["Psoriasis", "Lichen planus", "Eczema", "Dermatitis complicated by bacterial infection"],
+    "dosage": "Use as directed by your doctor; external application only; maximum recommended duration 7 days.",
+    "sideEffects": ["Burning", "Irritation", "Itching", "Allergy", "Skin thinning", "Dryness"],
+    "storageInstructions": "Store below 25°C in a clean and dry place."
+  },
+  {
+    "name": "CLOPILET TAB 75 1*15",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I00876/clopilet-75mg-strip-of-15-tablets-box-front-1-1756885419-non-watermarked.jpg",
+    "description": "Antiplatelet medicine used to treat heart diseases to prevent clot formation and reduce the risk of heart attack, stroke and heart-related chest pain.",
+    "composition": ["Clopidogrel 75mg"],
+    "uses": ["Prevention of blood clots after cardiac stent procedures", "Treatment of peripheral vascular disease", "Post-heart attack management", "Stroke prevention"],
+    "dosage": "Take orally as directed by doctor; can be taken with or without food.",
+    "sideEffects": ["Nausea", "Diarrhea", "Heartburn", "Stomach pain", "Headache", "Dizziness", "Bleeding of nose/gums"],
+    "storageInstructions": "Store in a cool and dry place, protected from direct sunlight, moisture and heat."
+  },
+  {
+    "name": "CLOPITAB 1*15TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/044545/clopitab-75mg-strip-of-15-tablets-front-2-1756894287-non-watermarked.jpg",
+    "description": "An antiplatelet medication that helps prevent blood clotting and lowers the risk of heart attack, stroke and chest pain.",
+    "composition": ["Clopidogrel 75mg"],
+    "uses": ["Prevent blood clot formation in hardened blood vessels", "Reduce heart attack risk", "Lower stroke risk"],
+    "dosage": "Typically taken once daily at the same time as directed by doctor.",
+    "sideEffects": ["Headache", "Dizziness", "Nausea/vomiting", "Stomach pain", "Indigestion", "Heartburn", "Constipation/gas"],
+    "storageInstructions": "Keep in a dry and cool place, not more than 30°C."
+  },
+  {
+    "name": "CLOPIVAS AP 75 1*15",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/254583/clopivas-ap-75mg-strip-of-15-tablets-front-2-1756459947-non-watermarked.jpg",
+    "description": "An antiplatelet medicine combining aspirin and clopidogrel, used to treat heart disorders associated with abnormal blood clot formation.",
+    "composition": ["Clopidogrel 75mg", "Aspirin 75mg"],
+    "uses": ["Treatment of heart diseases with abnormal blood clot formation", "Prevention of in-stent restenosis during angioplasty", "Prevention of heart attacks and strokes"],
+    "dosage": "As directed by doctor; take orally with or without food at the same time daily; swallow whole with water.",
+    "sideEffects": ["Nausea and vomiting", "Diarrhea", "Indigestion", "Stomach pain", "Increased bleeding risk", "Headache"],
+    "storageInstructions": "Store the medicine between 15°C to 30°C."
+  },
+  {
+    "name": "CLEARWAX EAR DROPS",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/043145/clearwax-ear-drops-10ml-box-front-1-1756894273-non-watermarked.jpg",
+    "description": "A combination medicine designed to provide relief from ear pain caused by impacted earwax.",
+    "composition": ["Benzocaine 2.7%", "Chlorbutol 5%", "Paradichlorobenzene 2%", "Turpentine Oil 15%"],
+    "uses": ["Impacted ear wax removal", "Ear pain relief", "Treatment of decreased hearing and fullness sensation"],
+    "dosage": "Instil 2-3 drops into the ear canal with cotton plug coverage for 15-30 minutes, 3-4 times daily as prescribed.",
+    "sideEffects": ["Sleeplessness", "Headache", "Allergic reactions"],
+    "storageInstructions": "Store in a cool and dry place. Keep away from children and pets."
+  },
+  {
+    "name": "CLINSOL ANTT FACE WASH 1*70GM",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/W56030/clinsol-anti-acne-face-wash-70-gm-2-1740721143.jpg",
+    "description": "A cleanser for oily, acne-prone skin with charcoal beads providing dual physical and chemical exfoliation.",
+    "composition": ["Salicylic acid", "Activated charcoal beads"],
+    "uses": ["Daily cleanser for oily, acne-prone skin", "Treatment and prevention of non-inflammatory acne", "Removal of whiteheads and blackheads"],
+    "dosage": "Splash face with water, apply, massage gently for 20-30 seconds, rinse. Use twice daily."
+  },
+  {
+    "name": "COLIMEX DROPS 15 ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/U48312/colimex-bottle-of-15ml-oral-drops-box-front-1-1756988988-non-watermarked.jpg",
+    "description": "Used to relieve abdominal cramps and indigestion and gas.",
+    "composition": ["Dicycloverine 10mg/ml", "Simethicone 40mg/ml"],
+    "uses": ["Painful bowel cramps", "Flatulence", "Abdominal cramps relief", "Bloating and gas relief"],
+    "dosage": "As instructed by doctor; shake well before use; not for babies under 6 months.",
+    "sideEffects": ["Dizziness", "Increased thirst", "Dry mouth", "Tiredness", "Blurred vision", "Constipation"],
+    "storageInstructions": "Store at 20-25°C, in a cool dry place."
+  },
+  {
+    "name": "COLIMEX SUSP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/203015/colimex-bottle-of-30ml-suspension-box-front-1-1756893815-non-watermarked.jpg",
+    "description": "Used to relieve abdominal cramps and indigestion and gas.",
+    "composition": ["Dicycloverine 10mg/5ml", "Simethicone 40mg/5ml"],
+    "uses": ["Painful bowel cramps", "Flatulence", "Abdominal cramps relief", "Bloating relief", "Gas elimination"],
+    "dosage": "Give as instructed by your doctor.",
+    "sideEffects": ["Dizziness", "Increased thirst", "Dry mouth", "Tiredness", "Blurred vision", "Constipation"],
+    "storageInstructions": "Store at 20-25°C, in a cool dry place."
+  }
+]

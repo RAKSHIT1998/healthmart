@@ -1,0 +1,69 @@
+[
+  {
+    "name": "ECOSPRIN AV 75 1*15CAP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/064422/ecosprin-av-75mg-strip-of-15-capsules-box-front-1-1763465982-non-watermark.jpg",
+    "description": "Combination medication that helps prevent heart attacks and strokes and treats high cholesterol.",
+    "composition": ["Atorvastatin 10mg", "Aspirin 75mg"],
+    "uses": ["Prevention of heart attacks and strokes", "Treatment of abnormal cholesterol levels", "Blood clot reduction", "Cardiovascular protection"],
+    "dosage": "One capsule daily at a fixed time; swallow whole without crushing or chewing.",
+    "sideEffects": ["Headache", "Nausea", "Diarrhea", "Indigestion/heartburn", "Body pain", "Weakness"],
+    "storageInstructions": "Store in a cool and dry place and away from light."
+  },
+  {
+    "name": "ELECTRAL MD ORAnge 30 ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/K58574/electral-orange-flavour-sachet-of-2180gm-powder-front-2-1756956870-non-watermarked.jpg",
+    "description": "Oral rehydration therapy of electrolytes and fluid used to prevent dehydration from diarrhea, vomiting, or gastroenteritis.",
+    "composition": ["Anhydrous Dextrose 13.5g", "Potassium Chloride 1.5g", "Sodium Chloride 2.6g", "Sodium Citrate 2.9g"],
+    "uses": ["Treat acute diarrhea", "Replace lost salts and fluids", "Prevent dehydration", "Manage electrolyte imbalance"],
+    "dosage": "Mix sachet contents in fresh drinking water and consume within one hour of preparation.",
+    "storageInstructions": "Store at room temperature below 30°C. Keep away from moisture and heat."
+  },
+  {
+    "name": "ELECTRAL 21.80GM",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/K58574/electral-orange-flavour-sachet-of-2180gm-powder-front-2-1756956870-non-watermarked.jpg",
+    "description": "Oral rehydration therapy of electrolytes and fluid used to prevent dehydration from diarrhea, vomiting, or gastroenteritis.",
+    "composition": ["Anhydrous Dextrose 13.5g", "Potassium Chloride 1.5g", "Sodium Chloride 2.6g", "Sodium Citrate 2.9g"],
+    "uses": ["Treat acute diarrhea", "Replace lost salts and fluids", "Prevent dehydration", "Manage electrolyte imbalance"],
+    "dosage": "Mix sachet contents in fresh drinking water and consume within one hour of preparation.",
+    "storageInstructions": "Store at room temperature below 30°C. Keep away from moisture and heat."
+  },
+  {
+    "name": "EMBETA 25",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/066065/embeta-25mg-strip-of-10-tablets-front-2-1756894428-non-watermarked.jpg",
+    "description": "Used to treat high blood pressure and heart-related conditions such as angina and heart failure.",
+    "composition": ["Metoprolol 25mg"],
+    "uses": ["High blood pressure management", "Angina treatment", "Heart failure management", "Heart attack prevention"],
+    "dosage": "Take as directed by your doctor; swallow whole with water at a fixed time daily.",
+    "sideEffects": ["Dizziness", "Headache", "Nausea and vomiting", "Stomach pain", "Tiredness"],
+    "storageInstructions": "Store below 25°C. Protect from light and moisture."
+  },
+  {
+    "name": "EMBETA XR 25",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I01275/embeta-xr-25mg-strip-of-30-tablets-front-2-1756828290-non-watermarked.jpg",
+    "description": "Used to treat high blood pressure and heart-related conditions such as angina, heart failure.",
+    "composition": ["Metoprolol 25mg"],
+    "uses": ["High blood pressure management", "Angina relief", "Heart failure treatment", "Stroke and heart attack prevention"],
+    "dosage": "Take as instructed by doctor; swallow whole with water at a fixed time daily.",
+    "sideEffects": ["Dizziness", "Headache", "Nausea", "Vomiting", "Stomach pain", "Tiredness"],
+    "storageInstructions": "Store at room temperature and away from direct heat and moisture."
+  },
+  {
+    "name": "EMPASOV SM 10/100/1000 1*10",
+    "description": "A combination medication used to control high blood sugar in patients with type 2 diabetes mellitus.",
+    "composition": ["Empagliflozin 25mg", "Sitagliptin 100mg", "Metformin 1000mg"],
+    "uses": ["Type 2 diabetes mellitus management", "Blood sugar control when diet and exercise alone are insufficient"],
+    "dosage": "Take as prescribed by your doctor, preferably after meals.",
+    "sideEffects": ["Urinary tract infections", "Vaginal/genital infections", "Increased urination and thirst", "Hypoglycemia", "Headache", "Nausea"],
+    "storageInstructions": "Store in a cool, dry place, away from direct sunlight."
+  },
+  {
+    "name": "ENLIVA 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/241322/enliva-strip-of-10-capsules-front-2-1756099794-non-watermarked.jpg",
+    "description": "A combination of Rabeprazole and Levosulpiride for treating gastrointestinal reflux disease.",
+    "composition": ["Levosulpiride 75mg", "Rabeprazole 20mg"],
+    "uses": ["Gastroesophageal reflux disease (GERD)", "Heartburn relief", "Chest discomfort from acid reflux", "Acidity management"],
+    "dosage": "Take as directed by physician before food.",
+    "sideEffects": ["Headache, dizziness, nervousness, drowsiness", "Diarrhea, abdominal pain, bloating, constipation, nausea", "Low blood pressure, weakness"],
+    "storageInstructions": "Store below 30°C in a cool, dry place, away from children."
+  }
+]

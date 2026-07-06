@@ -1,0 +1,55 @@
+[
+  {
+    "name": "FOURDERM 5 gm 5gm",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/266923/fourderm-tube-of-20gm-cream-box-front-1-1756826293-non-watermarked.jpg",
+    "description": "Topical medication combining steroid, antibacterial, and antifungal agents for treating bacterial and fungal skin infections with associated inflammation.",
+    "composition": ["Miconazole 2%", "Chlorhexidine 0.2%", "Clobetasol 0.05%", "Neomycin 0.5%"],
+    "uses": ["Bacterial and fungal skin infections", "Inflammatory skin conditions", "Itching, redness, rashes, sores"],
+    "dosage": "Apply a thin layer and rub gently to cover the affected area, as advised by your doctor.",
+    "sideEffects": ["Burning", "Irritation", "Itching", "Skin thinning", "Redness", "Dryness"],
+    "storageInstructions": "Store below 25°C, protected from moisture, sunlight and heat."
+  },
+  {
+    "name": "FUCIBET CREAM",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/080346/fucibet-tube-of-15gm-cream-box-front-1-1756894543-non-watermarked.jpg",
+    "description": "Topical cream combining a corticosteroid and antibiotic for treating inflammatory skin conditions with bacterial involvement.",
+    "composition": ["Betamethasone 1mg", "Fusidic Acid 20mg"],
+    "uses": ["Eczema", "Dermatitis", "Inflammatory dermatoses with secondary bacterial infection"],
+    "dosage": "Apply as directed by your doctor on clean, dry skin, in a thin layer.",
+    "sideEffects": ["Itching and allergic reactions", "Pain, burning, irritation at application site", "Dry skin"],
+    "storageInstructions": "Store in the original container, protected from moisture, sunlight and heat."
+  },
+  {
+    "name": "GEMCAL CAP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/082727/gemcal-strip-of-15-capsules-box-front-1-1756894560-non-watermarked.jpg",
+    "description": "A dietary supplement providing calcium, vitamin D, and zinc for building and maintaining healthy bones and teeth.",
+    "composition": ["Calcium Carbonate 500mg", "Vitamin D3 0.25mcg", "Zinc 7.5mg"],
+    "uses": ["Treatment of calcium, vitamin D, and zinc deficiency", "Osteoporosis prevention and treatment", "Bone disorder management"],
+    "dosage": "Take as advised by your doctor; do not exceed the recommended daily dose.",
+    "sideEffects": ["Headache", "Heartburn", "Indigestion"],
+    "storageInstructions": "Store at room temperature away from sunlight and heat."
+  },
+  {
+    "name": "HAEM UP GEMS 1*30GEMS",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/087630/haem-up-gems-bottle-of-30-capsules-front-2-1756902643-non-watermarked.jpg",
+    "description": "Haematinics supplement in softgel capsule form, containing iron and essential cofactors for blood health support.",
+    "composition": ["Ferrous Fumarate 200mg", "Magnesium Sulfate 2.5mg", "Folic Acid 1.5mg", "Cupric Sulfate 2.5mg"],
+    "uses": ["Iron supplementation", "Anemia support", "Blood health enhancement"]
+  },
+  {
+    "name": "HONITUSS SYP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/271423/dabur-honitus-syrup-200ml-2-1778852766.jpg",
+    "description": "Ayurvedic cough and cold syrup formulation.",
+    "uses": ["Cold and cough relief", "Respiratory support", "Throat comfort"]
+  },
+  {
+    "name": "HUMINSULIN 30/70 100IU 1*10ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/092245/huminsulin-30-70-100iu-cartridge-of-3ml-injection-box-back-4-1760078581-non-watermark.jpg",
+    "description": "A combination medication designed to manage diabetes mellitus in both adults and children, addressing Type 1 and Type 2 diabetes.",
+    "composition": ["Human Insulin 100 IU/ml (Isophane + Soluble Insulin)"],
+    "uses": ["Type 1 Diabetes Mellitus", "Type 2 Diabetes Mellitus", "Blood sugar control in adults and children"],
+    "dosage": "Individual dosing determined by doctor; administer subcutaneously 15 minutes before meals.",
+    "sideEffects": ["Hypoglycemia", "Light-headedness and dizziness", "Injection site pain, redness, swelling", "Skin rashes"],
+    "storageInstructions": "Store between 2°C to 8°C in the refrigerator. Do not freeze. Once opened, store at room temperature for up to four weeks."
+  }
+]

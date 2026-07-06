@@ -1,0 +1,90 @@
+[
+  {
+    "name": "DERIPHYLLINE RTD 30 1*30",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I00066/deriphyllin-retard-150-strip-of-30-tablets-front-2-1756893934-non-watermarked.jpg",
+    "description": "Bronchodilator medication containing etofylline and theophylline for treating airway obstruction associated with asthma and COPD.",
+    "composition": ["Theophylline 35mg", "Etofylline 115mg"],
+    "uses": ["Asthma management", "Chronic obstructive pulmonary disease (COPD)", "Airway obstruction relief", "Breathing difficulty alleviation"],
+    "dosage": "As prescribed by physician; swallow whole with water at fixed times.",
+    "sideEffects": ["Nausea", "Vomiting", "Diarrhea", "Stomach pain", "Headache", "Dizziness"],
+    "storageInstructions": "Store at room temperature in a clean and dry place, protected from moisture, sunlight and heat."
+  },
+  {
+    "name": "DERIPHYLLIN RTD 150 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I00066/deriphyllin-retard-150-strip-of-30-tablets-front-2-1756893934-non-watermarked.jpg",
+    "description": "Bronchodilator medication containing etofylline and theophylline for treating airway obstruction associated with asthma and COPD.",
+    "composition": ["Theophylline 35mg", "Etofylline 115mg"],
+    "uses": ["Asthma management", "Chronic obstructive pulmonary disease (COPD)", "Airway obstruction relief", "Breathing difficulty alleviation"],
+    "dosage": "As prescribed by physician; swallow whole with water at fixed times.",
+    "sideEffects": ["Nausea", "Vomiting", "Diarrhea", "Stomach pain", "Headache", "Dizziness"],
+    "storageInstructions": "Store at room temperature in a clean and dry place, protected from moisture, sunlight and heat."
+  },
+  {
+    "name": "DERMIFORD OINT 25GM",
+    "description": "Topical antimicrobial and steroid cream for skin treatment applications.",
+    "composition": ["Clobetasol Propionate 0.05%", "Neomycin 0.5%", "Miconazole Nitrate 2%", "Chlorhexidine 0.2%"]
+  },
+  {
+    "name": "DEXORANGE  CAP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/193763/dexorange-bottle-of-30-capsules-box-front-1-1756827334-non-watermarked.jpg",
+    "description": "Dietary supplement containing essential vitamins and minerals used to treat iron-deficiency anaemia and prevent nutritional deficiencies.",
+    "composition": ["Folic Acid 0.5mg", "Vitamin B12 7.5mcg", "Ferric Ammonium Citrate 160mg", "Zinc 20.61mg"],
+    "uses": ["Treatment and prevention of iron-deficiency anaemia", "Prevention of deficiencies during pregnancy and nursing", "Nutritional supplementation in malabsorption conditions"],
+    "dosage": "Take as advised by the doctor, one hour before meals.",
+    "storageInstructions": "Store at a cool and dry place. Keep away from children and pets."
+  },
+  {
+    "name": "DICLOFENAC INJ. (INT)",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/056585/diclotal-ampoule-of-3ml-injection-front-2-1756894369-non-watermarked.jpg",
+    "description": "Injectable pain relief medication containing diclofenac sodium, used to alleviate acute pain and inflammation associated with various conditions.",
+    "composition": ["Diclofenac Sodium 25mg/ml"],
+    "uses": ["Rheumatoid arthritis and osteoarthritis pain relief", "Acute pain from gout attacks", "Post-operative and post-surgical pain management"],
+    "dosage": "Administered by healthcare professional in hospital or clinic.",
+    "sideEffects": ["Injection site pain and tenderness", "Nausea and vomiting", "Diarrhea and indigestion", "Headache and dizziness"],
+    "storageInstructions": "Store below 30°C at a cool and dry place away from direct sunlight."
+  },
+  {
+    "name": "DICLOWIN PLUS TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/M82982/diclowin-plus-sp-strip-of-10-tablets-side-6.1-1757045556-non-watermarked.jpg",
+    "description": "An effective pain reliever used to relieve pain in conditions like joint pain, muscle pain, headache, dental pain, migraine, and period pain.",
+    "composition": ["Diclofenac Potassium 50mg", "Serratiopeptidase 15mg", "Paracetamol 325mg"],
+    "uses": ["Pain and swelling relief", "Joint and muscle pain", "Headache and dental pain", "Post-surgical pain reduction"],
+    "sideEffects": ["Stomach ache", "Diarrhoea", "Nausea", "Indigestion"],
+    "storageInstructions": "Store in a cool and dry place protected from moisture."
+  },
+  {
+    "name": "DIGITAL THERMOMETER 1*1",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/O77647/pharmeasy-digital-thermometer-flexi-tip-6.1-1768974303.jpg",
+    "description": "A digital thermometer featuring a flexible tip, designed for accurate temperature measurement across all age groups.",
+    "uses": ["Body temperature measurement for infants, children, and adults"]
+  },
+  {
+    "name": "DILZEM 30MG 1*15TABS",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I01167/dilzem-30mg-strip-of-15-tablets-front-2-1756885584-non-watermarked.jpg",
+    "description": "Blood pressure-lowering medicine containing diltiazem for treating high blood pressure and angina.",
+    "composition": ["Diltiazem 30mg"],
+    "uses": ["High blood pressure (hypertension)", "Angina pectoris"],
+    "dosage": "Take as prescribed by doctor with or without food.",
+    "sideEffects": ["Swelling", "Fluid retention", "Headache", "Dizziness", "Flushing", "Constipation", "Nausea"],
+    "storageInstructions": "Store in a cool and dry place away from sunlight and moisture."
+  },
+  {
+    "name": "DILZEM-60 1*15TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I11217/dilzem-60mg-strip-of-15-tablets-front-2-1756922419-non-watermarked.jpg",
+    "description": "A medication that lowers blood pressure, containing diltiazem, used for managing high blood pressure and chest pain related to reduced heart blood flow.",
+    "composition": ["Diltiazem 60mg"],
+    "uses": ["High blood pressure (hypertension)", "Angina", "Certain irregular heartbeats (arrhythmias)"],
+    "dosage": "Take as prescribed by doctor before or after meals with water.",
+    "sideEffects": ["Swelling and fluid retention", "Headache and dizziness", "Flushing and constipation", "Nausea and indigestion"],
+    "storageInstructions": "Store in a cool and dry place away from sunlight and moisture."
+  },
+  {
+    "name": "DIOVOL LIQ 1*170ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I11344/diovol-mint-flavour-sugar-free-solution-170ml-front-2-1756922429-non-watermarked.jpg",
+    "description": "A combination oral solution designed to relieve symptoms caused by excess stomach acid and gas.",
+    "composition": ["Activated Dimethicone 50mg/5ml", "Magnesium Hydroxide 250mg/5ml", "Dried Aluminium Hydroxide 250mg/5ml"],
+    "uses": ["Acidity relief", "Heartburn management", "Indigestion treatment", "Bloating and gas reduction"],
+    "dosage": "Take as directed by doctor; shake well before use; typically after meals and at bedtime.",
+    "storageInstructions": "Store in a cool and dry place. Protect from direct sunlight and moisture."
+  }
+]

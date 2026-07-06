@@ -1,0 +1,69 @@
+[
+  {
+    "name": "VERTIN 16",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I08491/vertin-16mg-strip-of-15-tablets-box-front-1-1757409410-non-watermarked.jpg",
+    "description": "A prescription medicine used for treatment of Meniere's disease, an inner ear condition that causes dizziness, vertigo, tinnitus, hearing loss, and balance problems.",
+    "composition": ["Betahistine 16mg"],
+    "uses": ["Meniere's disease symptom relief", "Vertigo and dizziness management", "Tinnitus reduction", "Balance and hearing loss improvement"],
+    "dosage": "As prescribed by doctor; typically 2-3 times daily.",
+    "sideEffects": ["Headache", "Nausea", "Vomiting", "Stomach pain", "Indigestion", "Bloating"],
+    "storageInstructions": "Does not require specific storage conditions. Keep away from children and pets."
+  },
+  {
+    "name": "STUGERON PLUS TAB",
+    "description": "A medication used to treat vertigo, which causes dizziness, spinning sensations, nausea, and vomiting.",
+    "composition": ["Dimenhydrinate 40mg", "Cinnarizine 20mg"],
+    "uses": ["Relief of vertigo symptoms", "Dizziness management", "Spinning sensation reduction", "Nausea and vomiting associated with vertigo"],
+    "sideEffects": ["Drowsiness", "Headache", "Dry mouth", "Abdominal pain"],
+    "storageInstructions": "Store in a cool and dry place, away from direct sunlight."
+  },
+  {
+    "name": "STEMTIL MD 1*15 TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/J03660/stemetil-md-5mg-strip-of-15-tablets-box-front-1-1756956287-non-watermarked.jpg",
+    "description": "Used to treat nausea, vomiting, post-operative and migraine-induced vomiting by blocking dopamine receptors in the brain.",
+    "composition": ["Prochlorperazine 5mg"],
+    "uses": ["Nausea and vomiting", "Post-operative vomiting", "Migraine-induced vomiting"],
+    "dosage": "Take as advised by your doctor; tablet dissolves in the mouth.",
+    "sideEffects": ["Drowsiness", "Dizziness", "Dry mouth", "Blurred vision", "Amenorrhea", "Skin rash"],
+    "storageInstructions": "Do not store above 25°C. Store in original package to protect from light."
+  },
+  {
+    "name": "ONDEM MD 8 40*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/195571/ondem-md-8mg-strip-of-10-tablets-front-2-1756099930-non-watermarked.jpg",
+    "description": "Used to control nausea and vomiting. Contains ondansetron, an antiemetic medicine.",
+    "composition": ["Ondansetron 8mg"],
+    "uses": ["Preventing/managing nausea and vomiting from chemotherapy", "Managing nausea and vomiting from radiotherapy", "Relieving symptoms before and after surgeries"],
+    "dosage": "As determined by your doctor; take as a whole with water, with or without food.",
+    "sideEffects": ["Headache", "Constipation", "Hiccups", "Low blood pressure", "Sensation of warmth", "Flushing"],
+    "storageInstructions": "Store in the original packaging. Keep out of reach of children and pets."
+  },
+  {
+    "name": "ONDEM SYP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/131605/ondem-bottle-of-30ml-syrup-box-front-1-1756099938-non-watermarked.jpg",
+    "description": "Anti-emetic medicine used in children to prevent nausea and vomiting caused by chemotherapy, radiotherapy, and surgery.",
+    "composition": ["Ondansetron 2mg/5ml"],
+    "uses": ["Nausea and vomiting in children", "Post-operative nausea and vomiting", "Chemotherapy-induced nausea", "Radiotherapy-induced nausea"],
+    "dosage": "Doctor-determined based on child's age and body weight.",
+    "sideEffects": ["Headache", "Constipation", "Diarrhoea", "Fatigue", "Sensation of warmth", "Flushing", "Hiccups"],
+    "storageInstructions": "Store at room temperature, away from light and moisture."
+  },
+  {
+    "name": "EMSET SYP 1*30ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I37104/emeset-2mg-juicy-lemon-flavour-bottle-of-30ml-syrup-box-front-1-1756952893-non-watermarked.jpg",
+    "description": "Contains ondansetron; used to control nausea and vomiting, specially designed for use in children.",
+    "composition": ["Ondansetron 2mg/5ml"],
+    "uses": ["Nausea and vomiting prevention/management", "Chemotherapy-induced nausea and vomiting", "Radiotherapy-induced nausea and vomiting", "Pre and post-operative nausea and vomiting"],
+    "dosage": "The dose and duration will be decided by the paediatrician based on the child's age, body weight and severity of the condition.",
+    "sideEffects": ["Headache", "Constipation"],
+    "storageInstructions": "Keep the medicine away from children and pets."
+  },
+  {
+    "name": "ZENTEL SRP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/187835/zentel-bottle-of-10ml-suspension-box-front-1-1756827379-non-watermarked.jpg",
+    "description": "Anti-worm medicine used to treat infections caused by worms in the stomach and intestine.",
+    "composition": ["Albendazole 400mg per 10ml"],
+    "uses": ["Worm infections (intestinal and stomach)", "Treatment of various parasitic infections"],
+    "sideEffects": ["Headache", "Dizziness", "Stomach pain", "Nausea", "Vomiting", "Fever", "Patchy hair loss"],
+    "storageInstructions": "Keep in a dry place below 30°C. Protect from direct sunlight."
+  }
+]

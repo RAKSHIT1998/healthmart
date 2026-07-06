@@ -1,0 +1,79 @@
+[
+  {
+    "name": "OMNACORTIL SOLUTION 60ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/131055/omnacortil-bottle-of-60ml-oral-solution-front-2-1756903779-non-watermark.jpg",
+    "description": "A corticosteroid oral solution containing prednisolone, used to treat allergic conditions, inflammation, and support hormonal balance.",
+    "composition": ["Prednisolone 5mg/5ml"],
+    "uses": ["Treatment of allergic conditions (asthma, skin allergies, psoriasis, lung conditions)", "Relief of swelling and inflammation", "Hormonal support when body cannot produce natural steroids"],
+    "dosage": "Take this medicine as instructed by your doctor.",
+    "sideEffects": ["Irritation", "Mood swings", "Anxiety", "Weight gain", "Bloating", "Weakness", "Fatigue", "Infections"],
+    "storageInstructions": "Store below 25°C and use within 3 months. Store in original packing to protect from light. Keep out of reach of children."
+  },
+  {
+    "name": "MEDROL 4MG 1*10TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/111990/medrol-4mg-strip-of-10-tablets-front-2-1756885030-non-watermarked.jpg",
+    "description": "A corticosteroid medicine containing methylprednisolone used to manage inflammation and immune-related conditions.",
+    "composition": ["Methylprednisolone 4mg"],
+    "uses": ["Allergic conditions", "Inflammatory disorders (arthritis, gout, bursitis)", "Autoimmune diseases", "Organ transplant rejection prevention", "Severe allergic reactions", "Blood disorders"],
+    "dosage": "Take as directed by your doctor. Swallow whole with water after meals at a fixed time.",
+    "sideEffects": ["Bloating and swelling", "Mood disorders", "Blood pressure changes", "Muscle weakness", "Skin thinning and acne", "Delayed wound healing", "Increased infection susceptibility"],
+    "storageInstructions": "Store at room temperature in a cool, dry place away from children and pets."
+  },
+  {
+    "name": "MEDROL 4MG TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/111990/medrol-4mg-strip-of-10-tablets-front-2-1756885030-non-watermarked.jpg",
+    "description": "A corticosteroid medicine containing methylprednisolone used to manage inflammation and immune-related conditions.",
+    "composition": ["Methylprednisolone 4mg"],
+    "uses": ["Allergic conditions", "Inflammatory disorders (arthritis, gout, bursitis)", "Autoimmune diseases", "Organ transplant rejection prevention", "Severe allergic reactions", "Blood disorders"],
+    "dosage": "Take as directed by your doctor. Swallow whole with water after meals at a fixed time.",
+    "sideEffects": ["Bloating and swelling", "Mood disorders", "Blood pressure changes", "Muscle weakness", "Skin thinning and acne", "Delayed wound healing", "Increased infection susceptibility"],
+    "storageInstructions": "Store at room temperature in a cool, dry place away from children and pets."
+  },
+  {
+    "name": "ROXID 150 TAB 1*30",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/154505/roxid-150mg-strip-of-10-tablets-front-2-1756099908-non-watermarked.jpg",
+    "description": "An antibiotic medication containing roxithromycin used for treating various bacterial infections throughout the body.",
+    "composition": ["Roxithromycin 150mg"],
+    "uses": ["Ear, nose, and throat infections", "Lung and airway infections", "Genital area infections", "Meningitis"],
+    "dosage": "Take exactly as directed by your doctor.",
+    "sideEffects": ["Diarrhea", "Stomach pain", "Headache", "Nausea", "Vomiting", "Loss of appetite", "Dizziness"],
+    "storageInstructions": "Store in a cool and dry place away from direct sunlight. Keep out of reach of children and pets."
+  },
+  {
+    "name": "ROZAVEL F 1*15",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/S89393/rozavel-f-10mg-strip-of-15-tablets-box-front-1-1757045798-non-watermarked.jpg",
+    "description": "A combination medication containing rosuvastatin and fenofibrate used to treat high cholesterol and triglyceride levels.",
+    "composition": ["Rosuvastatin 10mg", "Fenofibrate 160mg"],
+    "uses": ["High cholesterol treatment", "Triglyceride reduction", "HDL elevation", "Cardiovascular risk reduction"],
+    "dosage": "Take as directed by your doctor with meals; swallow with water.",
+    "sideEffects": ["Nausea", "Vomiting", "Headache", "Muscle pain", "Diarrhea", "Dizziness", "Gas"]
+  },
+  {
+    "name": "SARIDON TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/L56994/new-saridon-strip-of-10-tablets-2-1688127341.jpg",
+    "description": "Saridon is a trusted remedy for headaches, providing quick relief with a triple-action formula.",
+    "uses": ["Headache relief", "Pain management"],
+    "dosage": "1 tablet every 4-6 hours with a minimum 4-hour gap; maximum 6 tablets per 24 hours."
+  },
+  {
+    "name": "SENSODYNE MINT GEL 1*70GM",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/222331/sensodyne-fresh-gel-40-gm-6.1-1775911515.jpg",
+    "description": "World's No. 1 toothpaste for sensitivity, offering relief and cavity protection for sensitive teeth.",
+    "uses": ["Relief from sensitive teeth", "Cavity protection", "Fresh breath maintenance", "Daily sensitivity protection"],
+    "dosage": "Brush twice daily for long-lasting sensitivity protection."
+  },
+  {
+    "name": "SILVEREX CREAM",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/G14582/silverex-ssd-tube-of-20gm-cream-box-front-1-1756973816-non-watermarked.jpg",
+    "description": "Topical antimicrobial cream combining two active agents for treating burn wounds and infection management.",
+    "composition": ["Chlorhexidine Gluconate 0.2% w/w", "Silver Sulfadiazine 0.5% w/w"],
+    "uses": ["Burn wound treatment", "Wound infection prevention", "Burn management therapy"]
+  },
+  {
+    "name": "SILVEREX GEL 1*20GM",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/G14582/silverex-ssd-tube-of-20gm-cream-box-front-1-1756973816-non-watermarked.jpg",
+    "description": "Topical antimicrobial cream combining two active agents for treating burn wounds and infection management.",
+    "composition": ["Chlorhexidine Gluconate 0.2% w/w", "Silver Sulfadiazine 0.5% w/w"],
+    "uses": ["Burn wound treatment", "Wound infection prevention", "Burn management therapy"]
+  }
+]

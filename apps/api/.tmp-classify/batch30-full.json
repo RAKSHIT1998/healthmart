@@ -1,0 +1,114 @@
+[
+  {
+    "name": "LNBLOC 10 1*15TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/W70613/lnbloc-10mg-strip-of-15-tablets-box-front-1-1756971674-non-watermarked.jpg",
+    "description": "A blood pressure-lowering medicine used for treating hypertension that works by suppressing blood vessel contraction.",
+    "composition": ["Cilnidipine 10mg"],
+    "uses": ["Treatment of high blood pressure (hypertension)"],
+    "dosage": "Doctor-determined; take at fixed times with water.",
+    "sideEffects": ["Dizziness", "Flushing", "Headache", "Low blood pressure", "Swelling"],
+    "storageInstructions": "Store in a cool and dry place, protected from direct sunlight, moisture and heat."
+  },
+  {
+    "name": "LOSACAR-H TABLET",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/107335/losacar-h-strip-of-10-tablets-front-2-1756893940-non-watermarked.jpg",
+    "description": "An anti-hypertensive medicine used to manage high blood pressure when it cannot be controlled using only losartan or hydrochlorothiazide alone.",
+    "composition": ["Hydrochlorothiazide 12.5mg", "Losartan 50mg"],
+    "uses": ["Management of high blood pressure when single agents are ineffective"],
+    "dosage": "Take in the exact dose and duration as recommended by your doctor.",
+    "sideEffects": ["Nausea", "Diarrhoea", "Abdominal pain", "Indigestion", "Tiredness"],
+    "storageInstructions": "Store below 30°C protected from light and moisture."
+  },
+  {
+    "name": "LUPIHEME TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I00310/lupiheme-12mg-strip-of-10-tablets-box-front-1-1749791039-non-watermark.jpg",
+    "description": "Iron supplement used to treat iron deficiency in adults.",
+    "composition": ["Elemental Iron 12mg"],
+    "uses": ["Treatment of iron deficiency in adults", "Iron restoration for normal red blood cell levels", "Hemoglobin formation support"],
+    "dosage": "Take as directed by your doctor on an empty stomach for optimal absorption.",
+    "storageInstructions": "Store in a cool and dry place below 30°C."
+  },
+  {
+    "name": "LYNX 2ML 1*2ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/109140/lynx-300mg-ampoule-of-1ml-injection-box-front-1-1756902729-non-watermarked.jpg",
+    "description": "Used for the treatment of serious bacterial infections in cases where other commonly used antibiotics have failed or could not be used due to allergic problems.",
+    "composition": ["Lincomycin 300mg"],
+    "uses": ["Serious bacterial infections", "Cases where penicillin/other antibiotics failed or caused allergic reactions"],
+    "sideEffects": ["Injection site reactions", "Headache", "Dizziness", "Nausea", "Vomiting", "Diarrhea"],
+    "storageInstructions": "Store under the conditions mentioned on the pack."
+  },
+  {
+    "name": "LYSER DP TAB 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I02629/lyser-d-strip-of-15-tablets-front-2-1756826319-non-watermarked.jpg",
+    "description": "A pain-relieving medicine combining diclofenac and serratiopeptidase, designed to alleviate acute pain and associated swelling.",
+    "composition": ["Diclofenac 50mg", "Serratiopeptidase 10mg"],
+    "uses": ["Acute painful conditions in adults", "Pain relief and swelling reduction", "Anti-inflammatory effects"],
+    "dosage": "Take one tablet with water preferably before meals, as directed by your doctor.",
+    "sideEffects": ["Dizziness", "Headache", "Stomach discomforts", "Nausea", "Indigestion", "Rashes"],
+    "storageInstructions": "Store below 30°C away from moisture and heat."
+  },
+  {
+    "name": "LYSER-D TAB 1*15",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I02629/lyser-d-strip-of-15-tablets-front-2-1756826319-non-watermarked.jpg",
+    "description": "A pain-relieving medicine combining diclofenac and serratiopeptidase, designed to alleviate acute pain and associated swelling.",
+    "composition": ["Diclofenac 50mg", "Serratiopeptidase 10mg"],
+    "uses": ["Acute painful conditions in adults", "Pain relief and swelling reduction", "Anti-inflammatory effects"],
+    "dosage": "Take one tablet with water preferably before meals, as directed by your doctor.",
+    "sideEffects": ["Dizziness", "Headache", "Stomach discomforts", "Nausea", "Indigestion", "Rashes"],
+    "storageInstructions": "Store below 30°C away from moisture and heat."
+  },
+  {
+    "name": "MACBERY LS SYP 1*100ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/210055/macbery-sugar-free-bottle-of-100ml-syrup-front-2-1756883070-non-watermarked.jpg",
+    "description": "A cough and cold preparation in sugar-free formulation.",
+    "composition": ["Dextromethorphan 10mg", "Phenylephrine 5mg", "Ambroxol 15mg", "Menthol 1.5mg", "Chlorpheniramine 2mg"],
+    "uses": ["Cough relief", "Cold symptom management", "Nasal congestion", "Allergic reactions"]
+  },
+  {
+    "name": "MACBERY SYP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/210055/macbery-sugar-free-bottle-of-100ml-syrup-front-2-1756883070-non-watermarked.jpg",
+    "description": "A cough and cold preparation in sugar-free formulation.",
+    "composition": ["Dextromethorphan 10mg", "Phenylephrine 5mg", "Ambroxol 15mg", "Menthol 1.5mg", "Chlorpheniramine 2mg"],
+    "uses": ["Cough relief", "Cold symptom management", "Nasal congestion", "Allergic reactions"]
+  },
+  {
+    "name": "MACBERY JUNIOR",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/210055/macbery-sugar-free-bottle-of-100ml-syrup-front-2-1756883070-non-watermarked.jpg",
+    "description": "A cough and cold preparation in sugar-free formulation for children.",
+    "composition": ["Dextromethorphan 10mg", "Phenylephrine 5mg", "Ambroxol 15mg", "Menthol 1.5mg", "Chlorpheniramine 2mg"],
+    "uses": ["Cough relief", "Cold symptom management", "Nasal congestion", "Allergic reactions"]
+  },
+  {
+    "name": "MACPOD 100 SYP 1*30ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/215667/macpod-100mg-suspension-30ml-box-front-1-1756883078-non-watermarked.jpg",
+    "description": "An antibiotic medicine used for the treatment of bacterial infection of lungs, airways, throat, ears, nose, etc.",
+    "composition": ["Cefpodoxime Proxetil 100mg/5ml"],
+    "uses": ["Bacterial infections of lungs", "Airway infections", "Throat infections", "Ear infections", "Sinus infections"],
+    "sideEffects": ["Diarrhoea", "Vomiting", "Skin rashes"],
+    "storageInstructions": "Store at room temperature, protected from direct sunlight, heat and moisture."
+  },
+  {
+    "name": "MAXIRICH CAP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/205923/maxirich-daily-multivitamin-strip-of-10-softgel-capsules-6.1-1742195522.jpg",
+    "description": "Dietary supplement formulated with essential vitamins and minerals to support immunity, energy levels, and overall well-being.",
+    "composition": ["Multivitamin & mineral complex (Vitamins A, B-complex, C, D3, E; Calcium, Zinc, Iodine, etc.)"],
+    "uses": ["Boosts immunity and strength", "Supports metabolism and fitness", "Improves concentration and memory"],
+    "dosage": "One softgel capsule daily with meals, as directed by physician."
+  },
+  {
+    "name": "MAXTRA DROP 1*15ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/111210/maxtra-bottle-of-60ml-syrup-box-front-1-1756893896-non-watermarked.jpg",
+    "description": "Used to treat common cold symptoms in children, alleviating runny or stuffy nose and sneezing.",
+    "composition": ["Phenylephrine 5mg/5ml", "Chlorpheniramine 2mg/5ml"],
+    "uses": ["Common cold symptom relief", "Allergic rhinitis", "Runny or stuffy nose", "Sneezing"],
+    "dosage": "Should not be used in children under 4 years of age; follow doctor's prescription."
+  },
+  {
+    "name": "MAXTRA SYP 1*60ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/111210/maxtra-bottle-of-60ml-syrup-box-front-1-1756893896-non-watermarked.jpg",
+    "description": "Used to treat common cold symptoms in children, alleviating runny or stuffy nose and sneezing.",
+    "composition": ["Phenylephrine 5mg/5ml", "Chlorpheniramine 2mg/5ml"],
+    "uses": ["Common cold symptom relief", "Allergic rhinitis", "Runny or stuffy nose", "Sneezing"],
+    "dosage": "Should not be used in children under 4 years of age; follow doctor's prescription."
+  }
+]

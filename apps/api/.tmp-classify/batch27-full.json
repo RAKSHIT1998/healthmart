@@ -1,0 +1,69 @@
+[
+  {
+    "name": "HYDROCORT INJ VIAL",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/322157/hydrocort-100mg-dry-vial-of-1-powder-for-injection-side-6.1-1756903817-non-watermarked.jpg",
+    "description": "Injectable steroid medication used to treat inflammation and swelling from rheumatoid arthritis, severe asthma, allergies, and shock conditions.",
+    "composition": ["Hydrocortisone 100mg per vial"],
+    "uses": ["Rheumatoid arthritis inflammation", "Severe asthma relief", "Skin allergies and allergic reactions", "Severe shock", "Adrenal gland deficiency"],
+    "dosage": "Administered by healthcare professional via injection.",
+    "sideEffects": ["Injection site reactions", "Mood swings", "Confusion", "Insomnia"],
+    "storageInstructions": "Store under the conditions mentioned on the pack. Keep away from children and pets."
+  },
+  {
+    "name": "IBUGESIC PLUS SYP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/B66485/ibugesic-plus-orange-flavour-bottle-of-100ml-suspension-front-2-1756972702-non-watermarked.jpg",
+    "description": "A pediatric pain and fever suspension combining ibuprofen and paracetamol for relief of pain and fever.",
+    "composition": ["Ibuprofen 100mg/5ml", "Paracetamol 162.5mg/5ml"],
+    "uses": ["Pain relief", "Fever reduction", "Inflammation management"],
+    "sideEffects": ["Nausea", "Vomiting", "Fatigue", "Diarrhea", "Muscle cramps"],
+    "storageInstructions": "Store in a cool and dry place away from direct sunlight."
+  },
+  {
+    "name": "INTAGESIC MR 1*10TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/207208/intagesic-mr-strip-of-10-tablets-front-2-1756828203-non-watermarked.jpg",
+    "description": "Combination medication used to treat pain and muscle stiffness associated with headaches, arthritis, injuries, and menstrual cramps.",
+    "composition": ["Diclofenac Sodium 50mg", "Paracetamol 325mg", "Chlorzoxazone 250mg"],
+    "uses": ["Relieving pain and inflammation of muscles, joints, and bones", "Arthritis and spondylitis treatment", "Post-operative pain and swelling relief"],
+    "dosage": "Follow doctor's prescription; take at fixed times with water after meals.",
+    "sideEffects": ["Dizziness and lightheadedness", "Nausea and vomiting", "Weakness and fatigue", "Headache and rash"],
+    "storageInstructions": "Store below 30°C, away from moisture and heat."
+  },
+  {
+    "name": "INZIT 4 1*10TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I02502/inzit-4mg-strip-of-10-tablets-front-2-1756827244-non-watermarked.jpg",
+    "description": "A medication used for lowering high blood pressure and managing chest pain caused by reduced blood flow to the heart.",
+    "composition": ["Benidipine Hydrochloride 4mg"],
+    "uses": ["Treatment of high blood pressure", "Management of angina pectoris"],
+    "sideEffects": ["Tiredness", "Ankle swelling", "Drowsiness", "Facial flushing", "Headache", "Dizziness"],
+    "storageInstructions": "Store in dry conditions at room temperature, away from direct sunlight and humidity."
+  },
+  {
+    "name": "INZIT 8 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I02500/inzit-8mg-strip-of-10-tablets-front-2-1756827244-non-watermarked.jpg",
+    "description": "Medication used for lowering high blood pressure and managing chest pain caused by reduced heart blood flow.",
+    "composition": ["Benidipine Hydrochloride 8mg"],
+    "uses": ["High blood pressure management", "Angina pectoris reduction", "Improved blood flow and heart efficiency"],
+    "sideEffects": ["Tiredness", "Ankle swelling", "Drowsiness", "Flushing sensation", "Headache", "Dizziness"],
+    "storageInstructions": "Store in dry conditions at room temperature, away from moisture, sunlight, and humidity."
+  },
+  {
+    "name": "ITASPOR 130 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/A62874/itaspor-130-strip-of-10-capsules-box-front-1-1756988590-non-watermarked.jpg",
+    "description": "Antifungal medication used to treat fungal and yeast infections in various parts of the body, such as the skin, mouth, nails, feet, and hands.",
+    "composition": ["Itraconazole 130mg"],
+    "uses": ["Fungal and yeast infections", "Oral/vaginal thrush", "Skin infections", "Nail infections", "Ringworm infections"],
+    "dosage": "Swallow whole with water; take with meals.",
+    "sideEffects": ["Headache", "Abdominal/stomach pain", "Nausea", "Vomiting", "Diarrhea"],
+    "storageInstructions": "Store at room temperature, away from excess heat and moisture."
+  },
+  {
+    "name": "ITRACIP 200 1*4CAP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/R06756/itracip-200mg-strip-of-10-capsules-box-front-1-1756987438-non-watermarked.jpg",
+    "description": "Antifungal medication used to treat fungal and yeast infections in various parts of the body, such as the skin, mouth, nails, feet, and hands.",
+    "composition": ["Itraconazole 200mg"],
+    "uses": ["Fungal infections of skin, mouth, and nails", "Yeast infections (thrush)", "Ringworm infections", "Vaginal infections"],
+    "dosage": "Take with meals to gain optimal benefits, as prescribed by the doctor.",
+    "sideEffects": ["Headache", "Abdominal pain", "Nausea", "Vomiting", "Diarrhea"],
+    "storageInstructions": "Store at room temperature, away from excess heat and moisture."
+  }
+]

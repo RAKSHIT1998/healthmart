@@ -1,0 +1,77 @@
+[
+  {
+    "name": "COMBIFLAM TAB 15",
+    "description": "A combination of ibuprofen and paracetamol used to treat various pain conditions including joint pain, headaches, dental issues, and post-operative discomfort.",
+    "composition": ["Ibuprofen 400mg", "Paracetamol 325mg"],
+    "uses": ["Joint pain and swelling", "Migraine, headache, backache, menstrual pain", "Dental pain and muscle sprains", "Post-operative and sports injury pain"],
+    "dosage": "Minimum 6-hour gap between doses; maximum 3 tablets in 24 hours; not recommended beyond 4 days without medical consultation.",
+    "sideEffects": ["Stomach pain and diarrhea", "Vomiting and dizziness", "Bloating and constipation", "Headache and excessive sweating", "Skin rashes and itching"],
+    "storageInstructions": "Store below 30°C. Keep out of reach of children."
+  },
+  {
+    "name": "CONTIFLO CAP 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/E86928/contiflo-t-strip-of-10-capsules-box-front-1-1756972896-non-watermarked.jpg",
+    "description": "Used to treat benign prostatic hyperplasia and erectile dysfunction in patients already taking Tamsulosin and Tadalafil concomitantly.",
+    "composition": ["Tamsulosin 0.4mg", "Tadalafil 5mg"],
+    "uses": ["Benign prostatic hyperplasia treatment", "Erectile dysfunction management", "Improved urinary flow in prostate conditions"],
+    "dosage": "Take approximately one hour before sexual activity; follow physician's direction.",
+    "sideEffects": ["Headache", "Dizziness", "Indigestion", "Vomiting", "Difficulties in ejaculation", "Muscle pain", "Blurred vision"],
+    "storageInstructions": "Store in a cool and dry place, protected from direct sunlight, moisture and heat."
+  },
+  {
+    "name": "CONTIFLO ICON 0.4 1*10TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/047516/contiflo-icon-04mg-strip-of-10-tablets-front-2-1756894302-non-watermarked.jpg",
+    "description": "Treatment for benign prostatic hyperplasia (BPH) symptoms including frequent urination, pain during urination, and incomplete bladder emptying.",
+    "composition": ["Tamsulosin 0.4mg"],
+    "uses": ["Enlarged prostate (BPH) symptom relief", "Pain/difficulty during urination", "Frequent nighttime urination", "Urinary urgency"],
+    "dosage": "0.4mg once daily taken after meals, preferably at consistent times.",
+    "sideEffects": ["Dizziness", "Ejaculation difficulties"],
+    "storageInstructions": "Store in a cool and dry place, protected from direct sunlight, moisture and heat."
+  },
+  {
+    "name": "COREX DX 100ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/047885/corex-dx-bottle-of-100ml-syrup-front-2-1756894302-non-watermarked.jpg",
+    "description": "Combination medication used to relieve cold symptoms, including cough, sneezing, and a runny nose.",
+    "composition": ["Dextromethorphan 10mg", "Chlorpheniramine 4mg"],
+    "uses": ["Temporary relief from cough due to throat irritation", "Sneezing relief", "Runny nose symptoms", "Cold and respiratory allergy symptoms"],
+    "dosage": "Take as directed by the doctor with a maximum of four doses in 24 hours. Shake well before use.",
+    "sideEffects": ["Drowsiness", "Dizziness", "Upset stomach", "Headache", "Nausea", "Vomiting"],
+    "storageInstructions": "Store below 25°C in a clean and dry place."
+  },
+  {
+    "name": "CORTIROWA OD 9MG 1",
+    "description": "A steroid-based anti-inflammatory medicine that helps reduce swelling, redness, and irritation, used for inflammatory bowel disease and related conditions.",
+    "composition": ["Budesonide 9mg"],
+    "uses": ["Asthma", "Allergic conditions", "Ulcerative colitis", "Inflammatory bowel conditions"],
+    "dosage": "Individual dosing determined by doctor. Swallow whole with water — do not cut, open, or chew.",
+    "sideEffects": ["Indigestion", "Heartburn", "Muscle pain or cramps", "Palpitations", "Skin rash or itching", "Insomnia"],
+    "storageInstructions": "Store at room temperature, protected from moisture and heat."
+  },
+  {
+    "name": "COSCORIL DROPS 1*10ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/196472/coscoril-bottle-of-15ml-oral-drops-combo-3-1756903154-non-watermarked.jpg",
+    "description": "Oral drop formulation used as a cough cold preparation.",
+    "composition": ["Ambroxol 7.5mg per dose"],
+    "uses": ["Cough and cold relief", "Respiratory symptom management"]
+  },
+  {
+    "name": "CRINA-NCR 15 MG 1*5TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/263052/crina-ncr-15mg-strip-of-5-tablets-box-front-1-1756099914-non-watermarked.jpg",
+    "description": "Hormonal medicine containing norethisterone, used to treat menstrual and gynaecological problems mainly due to hormonal imbalance.",
+    "composition": ["Norethisterone 15mg"],
+    "uses": ["Menstrual disorders", "Gynaecological problems", "Hormonal imbalance treatment"],
+    "dosage": "Take as directed by doctor; swallow whole with water at a fixed time daily.",
+    "sideEffects": ["Headaches", "Migraines", "Fatigue", "Mood changes", "Irregular menses", "Breast discomfort"],
+    "storageInstructions": "Store below 25°C, protected from light and moisture."
+  },
+  {
+    "name": "DALACIN C 300 CAP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/051846/dalacin-c-300mg-strip-of-10-capsules-front-2-1763181935-non-watermark.jpg",
+    "description": "An antibiotic medication used for treating serious bacterial infections by inhibiting bacterial protein synthesis and growth.",
+    "composition": ["Clindamycin 300mg"],
+    "uses": ["Serious bacterial infections of joints", "Lung infections", "Skin and soft tissue infections", "Bone infections"],
+    "dosage": "Take as directed by your doctor with or without food; do not cut, break, or chew the capsule.",
+    "sideEffects": ["Diarrhoea", "Stomach pain", "Skin rash", "Nausea", "Vomiting"],
+    "storageInstructions": "Store below 30°C in a clean and dry place."
+  }
+]

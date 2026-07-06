@@ -1,0 +1,79 @@
+[
+  {
+    "name": "CANDID B CREAM 20GM 1*20GM",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/032589/candid-b-tube-of-20gm-cream-box-front-1-1756894207-non-watermarked.jpg",
+    "description": "Prescription medicine used to treat fungal infections including ringworm and athlete's foot.",
+    "composition": ["Beclomethasone 0.025%", "Clotrimazole 1%"],
+    "uses": ["Fungal skin infections (ringworm, athlete's foot)", "Infections on toes, inner thighs, limbs", "General dermatophyte infections"],
+    "dosage": "Apply thinly and evenly to affected areas as prescribed. Clean and dry the area first. External use only.",
+    "sideEffects": ["Itching and skin irritation", "Burning or stinging sensation", "Allergic reactions and dryness"],
+    "storageInstructions": "Store in a cool and dry place. Do not freeze."
+  },
+  {
+    "name": "CANDID POWDER 1*120GM",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/Y63373/candid-dusting-powder-120-gm-6.1-1725338632.jpg",
+    "description": "An antifungal dusting powder that treats fungal infections and relieves summer heat-related skin irritation.",
+    "composition": ["Clotrimazole", "Talc I.P. base"],
+    "uses": ["Treats fungal infections", "Relieves itching in intimate areas", "Stops irritation in waistline, underarms, inner thighs, and feet"],
+    "dosage": "Dust the powder on the affected region and gently pat. Apply once or twice daily.",
+    "sideEffects": ["Itching and dryness", "Burning sensation", "Redness"],
+    "storageInstructions": "Keep away from direct sunlight. Store in a dry and cool place."
+  },
+  {
+    "name": "CCM 40TAB 1*40TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/C75179/ccm-bottle-of-40-tablets-front-2-1756956140-non-watermarked.jpg",
+    "description": "A nutritional supplement that helps treat and prevent calcium and vitamin D deficiency.",
+    "composition": ["Calcium Citrate Maleate 250mg", "Vitamin D3 100 IU", "Folic Acid 50mcg"],
+    "uses": ["Treating vitamin D and calcium deficiency", "Managing osteoporosis and bone-related problems", "Maintaining bone and joint health"],
+    "dosage": "Take exactly as recommended by the doctor, swallowed whole with water.",
+    "sideEffects": ["Constipation", "Nausea, vomiting, upset stomach", "Abdominal pain or bloating", "Diarrhea"],
+    "storageInstructions": "Store in a cool, dry place away from direct sunlight."
+  },
+  {
+    "name": "CEFAKIND 250MG 1*10TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/035595/cefakind-250mg-strip-of-10-tablets-front-2-1756894225-non-watermarked.jpg",
+    "description": "An antibiotic medicine used to treat a variety of bacterial infections affecting the tonsils, throat, sinuses, ears, respiratory tract, urinary tract, skin, and soft tissues.",
+    "composition": ["Cefuroxime 250mg"],
+    "uses": ["Respiratory tract infections", "Urinary tract infections", "Skin and soft tissue infections", "Throat and tonsil infections", "Sinus infections", "Ear infections"],
+    "sideEffects": ["Headache", "Dizziness", "Diarrhea", "Nausea", "Stomach pain"],
+    "storageInstructions": "Store in a cool and dry place & protect from sunlight."
+  },
+  {
+    "name": "CEFOLAC 100 SYP 1*60ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/036496/cefolac-100mg-bottle-of-30ml-suspension-box-front-1-1756894234-non-watermarked.jpg",
+    "description": "A cephalosporin antibiotic suspension containing Cefixime used to treat various bacterial infections.",
+    "composition": ["Cefixime 100mg/5ml"],
+    "uses": ["Ear infections", "Sinus/nasal infections", "Urinary tract infections", "Throat infections", "Chest and lung infections"],
+    "sideEffects": ["Severe/watery diarrhea", "Nausea and vomiting", "Stomach pain", "Skin rash/itching", "Headache"],
+    "storageInstructions": "Store below 25°C. Protect from direct sunlight."
+  },
+  {
+    "name": "CETZINE SYRUP 1*60ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/038405/cetzine-bottle-of-60ml-syrup-box-front-1-1756894252-non-watermarked.jpg",
+    "description": "An anti-allergic medication used to treat symptoms associated with allergies such as itching, sneezing, watery eyes, running nose, and rashes.",
+    "composition": ["Cetirizine 5mg/5ml"],
+    "uses": ["Allergic rhinitis", "Dust or pet allergies", "Sneezing, itchy, runny and blocked nose", "Red and watery eyes", "Insect bite and hives"],
+    "dosage": "Take as directed by the doctor and in doses and duration as prescribed.",
+    "sideEffects": ["Tiredness", "Headache", "Sleepiness", "Drowsiness", "Nausea", "Dizziness", "Dry mouth"],
+    "storageInstructions": "Store at a cool and dry place. Keep out of reach of children and pets."
+  },
+  {
+    "name": "CHESTON COLD",
+    "description": "A combination medicine used to improve symptoms of common cold and allergy such as sneezing and runny nose.",
+    "composition": ["Phenylephrine 5mg", "Caffeine 30mg", "Diphenhydramine 25mg", "Paracetamol 500mg"],
+    "uses": ["Relieves blocked nose, fever, chills, breathing difficulty from sinus inflammation", "Alleviates allergic symptoms including runny nose, watery eyes, and sneezing"],
+    "dosage": "Take as directed by your doctor. Swallow whole with a glass of water.",
+    "sideEffects": ["Nausea", "Vomiting", "Drowsiness", "Dizziness", "Headache", "Dry mouth"],
+    "storageInstructions": "Store in a clean and dry place, protected from moisture, sunlight and heat."
+  },
+  {
+    "name": "CILADUO 5MG 1*10TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/241131/ciladuo-5mg-strip-of-10-tablets-front-2-1756099763-non-watermarked.jpg",
+    "description": "A blood pressure-lowering medication containing cilnidipine that works by relaxing blood vessels to reduce hypertension.",
+    "composition": ["Cilnidipine 5mg"],
+    "uses": ["Treatment of high blood pressure (hypertension)"],
+    "dosage": "Swallow whole with water at a fixed time daily.",
+    "sideEffects": ["Dizziness", "Flushing", "Headache", "Low blood pressure", "Swelling"],
+    "storageInstructions": "Store in a cool and dry place, protected from direct sunlight, moisture and heat."
+  }
+]

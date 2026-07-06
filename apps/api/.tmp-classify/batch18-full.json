@@ -1,0 +1,110 @@
+[
+  {
+    "name": "FOLVITE TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/247992/folvite-5mg-strip-of-45-tablets-front-2-1756893883-non-watermarked.jpg",
+    "description": "Dietary supplement containing folic acid used to treat and prevent folic acid deficiency anemia, supporting red blood cell formation and fetal development during pregnancy.",
+    "composition": ["Folic Acid 5mg"],
+    "uses": ["Treatment and prevention of folic acid deficiency anemia", "Nutritional supplementation during pregnancy", "Support during breastfeeding and post-surgery recovery", "Prevention of neural tube birth defects"],
+    "dosage": "As directed by physician; preferably taken one hour before meals; typically once daily.",
+    "storageInstructions": "Store in a cool and dry place. Keep out of reach of children and pets."
+  },
+  {
+    "name": "FOLVITE ACTIVE 1*15TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/247992/folvite-5mg-strip-of-45-tablets-front-2-1756893883-non-watermarked.jpg",
+    "description": "Dietary supplement containing folic acid used to treat and prevent folic acid deficiency anemia, supporting red blood cell formation and fetal development during pregnancy.",
+    "composition": ["Folic Acid 5mg"],
+    "uses": ["Treatment and prevention of folic acid deficiency anemia", "Nutritional supplementation during pregnancy", "Support during breastfeeding and post-surgery recovery", "Prevention of neural tube birth defects"],
+    "dosage": "As directed by physician; preferably taken one hour before meals; typically once daily.",
+    "storageInstructions": "Store in a cool and dry place. Keep out of reach of children and pets."
+  },
+  {
+    "name": "FEFORON ZXT 1*10",
+    "description": "Hematinics supplement containing ferrous ascorbate, zinc sulphate, vitamin B12, and folic acid for blood health support.",
+    "composition": ["Ferrous Ascorbate 100mg", "Zinc Sulphate 61.8mg", "Vitamin B12 15mcg", "Folic Acid 1.5mg"],
+    "uses": ["Blood health support", "Iron supplementation", "Nutritional deficiency management"]
+  },
+  {
+    "name": "OROFER XT DROP 1*15ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/194097/orofer-xt-drops-15ml-box-front-1-1756826519-non-watermarked.jpg",
+    "description": "Iron supplement used for the prevention and treatment of iron deficiency anaemia in children and adults.",
+    "composition": ["Iron 10mg per dose"],
+    "uses": ["Prevention of iron deficiency anaemia", "Treatment of iron deficiency anaemia", "Haemoglobin production support"],
+    "dosage": "Take as directed by your doctor.",
+    "storageInstructions": "Store in a cool and dry place. Protect from light. Keep out of reach of children."
+  },
+  {
+    "name": "DEXORANGE  CAP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/193762/dexorange-orange-flavour-bottle-of-200ml-syrup-box-front-1-1747058273-non-watermark.jpg",
+    "description": "A hematinic supplement used to prevent and treat anaemia caused by deficiencies of iron, folic acid, and vitamin B12.",
+    "composition": ["Ferric Ammonium Citrate 160mg/15ml", "Vitamin B12 7.5mcg/15ml", "Folic Acid 0.5mg/15ml"],
+    "uses": ["Iron-deficiency anaemia treatment and prevention", "Recovery following surgery", "Nutritional supplementation during pregnancy and breastfeeding", "Appetite improvement and fatigue reduction"],
+    "dosage": "Take as advised by your doctor using a dropper, spoon, or measuring cup.",
+    "sideEffects": ["Mild constipation", "Nausea", "Stomach discomfort"],
+    "storageInstructions": "Store at room temperature away from direct light. Keep out of reach of children and pets."
+  },
+  {
+    "name": "DEXORANGE SYP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/193762/dexorange-orange-flavour-bottle-of-200ml-syrup-box-front-1-1747058273-non-watermark.jpg",
+    "description": "A hematinic supplement used to prevent and treat anaemia caused by deficiencies of iron, folic acid, and vitamin B12.",
+    "composition": ["Ferric Ammonium Citrate 160mg/15ml", "Vitamin B12 7.5mcg/15ml", "Folic Acid 0.5mg/15ml"],
+    "uses": ["Iron-deficiency anaemia treatment and prevention", "Recovery following surgery", "Nutritional supplementation during pregnancy and breastfeeding", "Appetite improvement and fatigue reduction"],
+    "dosage": "Take as advised by your doctor using a dropper, spoon, or measuring cup.",
+    "sideEffects": ["Mild constipation", "Nausea", "Stomach discomfort"],
+    "storageInstructions": "Store at room temperature away from direct light. Keep out of reach of children and pets."
+  },
+  {
+    "name": "FOLDIVIT 5MG TAB",
+    "description": "Dietary supplement containing folic acid used to treat and prevent folic acid deficiency.",
+    "composition": ["Folic Acid 5mg"],
+    "uses": ["Treatment and prevention of folic acid deficiency", "Nutritional supplementation during pregnancy"],
+    "dosage": "As directed by physician, typically once daily."
+  },
+  {
+    "name": "NUROKIND PLUS CAP.",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I09557/nurokind-plus-rf-strip-of-10-capsules-box-front-1-1755111882-non-watermarked.jpg",
+    "description": "A supplement often prescribed to treat nerve-related problems such as diabetic nerve pain and alcohol-related nerve damage. Contains B vitamins and alpha-lipoic acid for nerve health support.",
+    "composition": ["Folic Acid 1.5mg", "Vitamin B12 1500mcg", "Alpha Lipoic Acid 100mg", "Vitamin B6 3mg"],
+    "uses": ["Diabetic neuropathy", "Nerve damage and pain management", "Nutritional deficiencies related to nerves"],
+    "dosage": "As directed by doctor; take orally with water at fixed times.",
+    "sideEffects": ["Stomach upset", "Nausea and vomiting", "Heartburn", "Rashes and itching"],
+    "storageInstructions": "Store below 25°C in a clean and dry place, protected from direct sunlight, moisture and heat."
+  },
+  {
+    "name": "MEGANEURON-OD 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/112340/meganeuron-od-plus-strip-of-10-capsules-front-2-1756100025-non-watermarked.jpg",
+    "description": "A nutritional supplement containing mecobalamin, alpha-lipoic acid, benfotiamine, pyridoxine, biotin and folic acid used to address diabetic nerve damage complications.",
+    "composition": ["Vitamin B12 1500mcg", "Alpha Lipoic Acid 200mg", "Benfotiamine 50mg", "Pyridoxine 5mg", "Biotin 5mg", "Folic Acid 5mg"],
+    "uses": ["Diabetic neuropathy treatment"],
+    "dosage": "Take as directed by your doctor, preferably at a fixed time."
+  },
+  {
+    "name": "MEGANEURON PG 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/254693/meganeuron-pg-strip-of-10-capsules-box-front-1-1756459746-non-watermarked.jpg",
+    "description": "Used to treat diabetic neuropathy and nerve pain from various causes including alcohol-induced neuropathy and vitamin deficiency.",
+    "composition": ["Pregabalin 75mg", "Methylcobalamin 750mcg", "Benfotiamine 7.5mg", "Pyridoxine 1.5mg", "Folic Acid 0.75mg"],
+    "uses": ["Diabetic neuropathy management", "Alcohol-induced neuropathy treatment", "Vitamin B deficiency-related neuropathy"],
+    "dosage": "Take as a whole with sufficient water, exactly as prescribed by your doctor.",
+    "sideEffects": ["Dizziness", "Sleepiness", "Headache", "Blurred vision", "Increased appetite", "Constipation", "Stomach discomfort"],
+    "storageInstructions": "Store in a cool and dry place away from direct sunlight."
+  },
+  {
+    "name": "FERIUM XT TAB 1*15",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/P62438/ferium-xt-strip-of-15-tablets-front-2-1756991609-non-watermarked.jpg",
+    "description": "A nutritional supplement containing iron and folic acid for treating iron and folic acid deficiency and anaemia.",
+    "composition": ["Ferrous Ascorbate 100mg", "Folic Acid 1.5mg"],
+    "uses": ["Iron and folic acid deficiency treatment", "Anaemia management", "Nutritional supplement during pregnancy and breastfeeding"],
+    "dosage": "Take as advised by your doctor, preferably one hour before meals; avoid tea or coffee with intake.",
+    "sideEffects": ["Skin rashes", "Stomach discomfort", "Diarrhea", "Black-colored stools", "Constipation"],
+    "storageInstructions": "Store in a cool and dry place, keep out of reach of children and pets."
+  },
+  {
+    "name": "FEFOL Z CAP",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/074475/fefol-z-strip-of-15-capsules-front-2-1756894496-non-watermarked.jpg",
+    "description": "Nutritional supplement containing folic acid, iron and zinc that treats anaemia caused by iron and folic acid deficiency.",
+    "composition": ["Iron 50mg", "Zinc 22.5mg", "Folic Acid 0.5mg"],
+    "uses": ["Iron deficiency anemia treatment", "Prevention of iron, folic acid, and zinc deficiencies during pregnancy and breastfeeding", "Post-surgical nutritional support"],
+    "dosage": "Take as directed by doctor; consume whole with water.",
+    "sideEffects": ["Skin rashes", "Loss of appetite", "Stomach discomfort", "Diarrhea", "Vomiting"],
+    "storageInstructions": "Store in a cool and dry place. Keep away from children."
+  }
+]

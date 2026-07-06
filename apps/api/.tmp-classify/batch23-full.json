@@ -1,0 +1,75 @@
+[
+  {
+    "name": "DISPOVAN 10ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/C50754/dispovan-syringe-10-ml-6.1-1775911554.jpg",
+    "description": "Medical syringe device for precise fluid administration or measurement.",
+    "uses": ["Medical injection and fluid administration"]
+  },
+  {
+    "name": "DISPRIN 325MG 1*10TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I39112/disprin-regular-325mg-strip-of-10-effervescent-tablets-front-2-1754464861-non-watermark.jpg",
+    "description": "Pain relief medicine used to treat various types of pain, including toothache, headache, sore throat, muscle pain, and migraine. Dissolves in water for rapid absorption.",
+    "composition": ["Aspirin 325mg"],
+    "uses": ["Headaches and migraines", "Toothaches", "Menstrual cramps", "Rheumatic and arthritic pain", "Fever reduction", "Sore throat relief"],
+    "dosage": "Do not take more than 12 tablets in 24 hours. Wait at least 4 hours between doses. Not recommended for children under 16 years.",
+    "sideEffects": ["Nausea", "Rash"],
+    "storageInstructions": "Store below 30°C. Keep away from children and pets."
+  },
+  {
+    "name": "DOXINATE PLUS 1*30TAB",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/060472/doxinate-plus-strip-of-30-tablets-front-2-1756894397-non-watermarked.jpg",
+    "description": "Combination medicine containing doxylamine, pyridoxine and folic acid used to prevent nausea and vomiting during pregnancy (morning sickness).",
+    "composition": ["Doxylamine 10mg", "Vitamin B6 10mg", "Folic Acid 2.5mg"],
+    "uses": ["Prevention of nausea and vomiting during pregnancy", "Morning sickness relief", "Pregnancy care support"],
+    "dosage": "Take as directed by doctor; take on empty stomach for optimal results.",
+    "sideEffects": ["Excess sleepiness", "Vertigo", "Constipation", "Diarrhea", "Stomach pain", "Rashes", "Blurred vision"],
+    "storageInstructions": "Store below 25°C in a clean and dry place, protected from moisture, sunlight and heat."
+  },
+  {
+    "name": "DROGYNA 10*8",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/V92445/drogyna-strip-of-10-tablets-box-front-1-1756985687-non-watermarked.jpg",
+    "description": "Hormonal pill used in the treatment of menstrual problems containing synthetic progesterone.",
+    "composition": ["Dydrogesterone 10mg"],
+    "uses": ["Irregular menstrual bleeding", "Amenorrhoea", "Heavy menstrual bleeding", "Infertility", "Endometriosis"],
+    "dosage": "As prescribed by doctor; take orally with water without breaking the tablet.",
+    "sideEffects": ["Headache", "Migraine", "Nausea", "Breast pain", "Heavy or irregular bleeding"],
+    "storageInstructions": "Store in a dry place, protected from light."
+  },
+  {
+    "name": "DR.ORTHO OIL",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/products_otc/I06462/dr-ortho-an-ayurvedic-medicine-oil-bottle-of-120-ml-3-1749791088.jpg",
+    "description": "A blend of 8 ayurvedic herb extracts effective in relieving pains in muscles, back, legs, shoulders or joints.",
+    "composition": ["Eucalyptus Oil 0.5%", "Turpentine Oil 1%", "Camphor 6%", "Methyl Salicylate 15%", "Menthol 10%", "Clove Oil 1%"],
+    "uses": ["Body aches and muscle pains", "Joint pain relief", "Painful swellings", "Muscle stiffness", "Back, neck, and shoulder pain"],
+    "dosage": "Apply 5-10ml by gently massaging over affected areas. Use twice daily or as directed."
+  },
+  {
+    "name": "DUO 02 3ML",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/I44935/duo-2-bottle-of-5ml-eye-drops-side-6.1-1773205577-non-watermark.jpg",
+    "description": "Combines Brinzolamide and Brimonidine to lower elevated pressure in the eyes.",
+    "composition": ["Brinzolamide 10mg/5ml", "Brimonidine 2mg/5ml"],
+    "uses": ["Treatment of increased eye pressure", "Open-angle glaucoma management", "Ocular hypertension relief"],
+    "dosage": "Use as directed by physician; use the exact number of drops recommended.",
+    "sideEffects": ["Irritation or burning in eyes", "Altered taste sensation", "Discomfort in eyes", "Headache"],
+    "storageInstructions": "Store in a cool and dry place."
+  },
+  {
+    "name": "DYDROBOON TAB 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/G23257/dydroboon-strip-of-10-tablets-box-front-1-1756956272-non-watermarked.jpg",
+    "description": "Synthetic progesterone tablet used to treat gynaecological and menstrual problems caused by low progesterone levels.",
+    "composition": ["Dydrogesterone 10mg"],
+    "uses": ["Irregular menstrual bleeding", "Amenorrhoea", "Heavy menstrual bleeding", "Female infertility", "Endometriosis"],
+    "dosage": "As prescribed by doctor; swallow whole with water; same time daily.",
+    "sideEffects": ["Headache", "Migraine", "Nausea", "Breast pain", "Heavy/irregular bleeding"],
+    "storageInstructions": "Store in a dry place, protected from light."
+  },
+  {
+    "name": "EASIBREATH CAP 1*10",
+    "imageUrl": "https://cdn01.pharmeasy.in/dam/productsnowatermark/205859/easibreathe-strip-of-10-inhalation-capsules-front-2-1756826254-non-watermarked.jpg",
+    "description": "Nasal decongestant used to relieve blockage in nasal passages caused by cold and respiratory tract infections.",
+    "composition": ["Menthol 55mg", "Eucalyptus Globulus 125mg", "Terpin 120mg", "Camphor 25mg", "Chlorothymol 5mg"],
+    "uses": ["Nasal congestion relief", "Stuffy nose clearing", "Respiratory tract infection symptom management"],
+    "dosage": "Inhalation only — tear capsule and pour contents into warm water to inhale vapors. Not for children under 3 months.",
+    "storageInstructions": "Store in a cool and dry place."
+  }
+]
