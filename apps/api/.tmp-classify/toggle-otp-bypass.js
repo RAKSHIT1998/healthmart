@@ -6,13 +6,16 @@ const mongoose = require('mongoose');
 async function main() {
   await mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 15000, dbName: 'test' });
   const db = mongoose.connection.db;
-  const medicines = db.collection('medicines');
-  const total = await medicines.countDocuments();
-  const withImages = await medicines.countDocuments({ images: { $exists: true, $ne: [] } });
-  const noImages = await medicines.find({ $or: [{ images: { $exists: false } }, { images: [] }] }, { projection: { name: 1 } }).toArray();
-  console.log(`With images: ${withImages}/${total}`);
-  console.log(`Missing (${noImages.length}):`);
-  noImages.slice(0, 30).forEach(m => console.log(' -', m.name));
+  const settings = db.collection('systemsettings');
+  const before = await settings.findOne({ key: 'global' });
+  console.log('Before:', JSON.stringify(before));
+  const res = await settings.updateOne(
+    { key: 'global' },
+    { $set: { otpBypassEnabled: false, otpBypassUpdatedAt: new Date() } },
+    { upsert: true }
+  );
+  const after = await settings.findOne({ key: 'global' });
+  console.log('After:', JSON.stringify(after));
   await mongoose.disconnect();
 }
 main().catch(e => { console.error(e); process.exit(1); });
