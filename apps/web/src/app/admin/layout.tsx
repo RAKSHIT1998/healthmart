@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Sidebar } from '@/components/admin/sidebar';
 import { Topbar } from '@/components/admin/topbar';
 import { useAuthStore } from '@/store/admin-auth-store';
+import { useAdminNotifications } from '@/hooks/admin/use-admin-notifications';
 import './admin.css';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -18,6 +19,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     if (hasHydrated && !accessToken && !isLoginPage) router.push('/admin/login');
   }, [hasHydrated, accessToken, router, isLoginPage]);
+
+  useAdminNotifications();
 
   // Login page renders without the admin shell
   if (isLoginPage) return <>{children}</>;

@@ -45,6 +45,11 @@ export function initSocketServer(httpServer: HttpServer): Server {
     const authSocket = socket as AuthenticatedSocket;
     logger.debug({ userId: authSocket.data.userId }, 'Socket connected');
 
+    // Staff (excluding delivery boys, who use the order-room flow) get live new-order alerts.
+    if (![Role.CUSTOMER, Role.DELIVERY_BOY].includes(authSocket.data.role)) {
+      socket.join('admin:notifications');
+    }
+
     socket.on('order:subscribe', async (orderId: string) => {
       try {
         const order = await orderRepository.findById(orderId);
@@ -84,4 +89,15 @@ export function emitOrderStatus(orderId: string, status: string): void {
 
 export function emitDriverAssigned(orderId: string, driver: { name: string; phone?: string; vehicleNumber?: string }): void {
   io?.to(`order:${orderId}`).emit('order:driver-assigned', { orderId, driver, timestamp: new Date().toISOString() });
+}
+
+/** Broadcasts a new-order alert to all connected staff (admin/manager/pharmacist/inventory manager) so they can start preparing it. */
+export function emitNewOrderAlert(order: { id: string; orderNumber: string; totalAmount: number; branchId?: string }): void {
+  io?.to('admin:notifications').emit('order:new', {
+    orderId: order.id,
+    orderNumber: order.orderNumber,
+    totalAmount: order.totalAmount,
+    branchId: order.branchId,
+    timestamp: new Date().toISOString(),
+  });
 }

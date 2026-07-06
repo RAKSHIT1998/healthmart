@@ -32,7 +32,7 @@ import { notifyUser } from './notification.service';
 import { generateInvoiceForOrder } from './invoice.service';
 import { rewardReferralOnFirstDelivery } from './promotions.service';
 import { checkServiceability } from './serviceability.service';
-import { emitDriverAssigned, emitOrderStatus } from '../realtime/socket';
+import { emitDriverAssigned, emitNewOrderAlert, emitOrderStatus } from '../realtime/socket';
 import { createCashfreeOrder, initiateCashfreeRefund } from '../integrations/cashfree';
 import { getMargAdapter } from '../integrations/marg/margAdapterFactory';
 import { getDrivingDistance } from '../integrations/googleMaps';
@@ -218,6 +218,13 @@ export async function confirmOrderPlacement(orderId: string): Promise<IOrder> {
     title: 'Order placed successfully',
     message: `Your order ${order.orderNumber} has been placed and will be delivered soon.`,
     channels: [NotificationChannel.IN_APP, NotificationChannel.SMS, NotificationChannel.PUSH, NotificationChannel.WHATSAPP],
+  });
+
+  emitNewOrderAlert({
+    id: String(order._id),
+    orderNumber: order.orderNumber,
+    totalAmount: order.totalAmount,
+    branchId: order.branchId ? String(order.branchId) : undefined,
   });
 
   return order;
