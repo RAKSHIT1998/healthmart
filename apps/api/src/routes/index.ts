@@ -26,6 +26,7 @@ import telehealthRoutes from './telehealth.routes';
 import returnRoutes from './return.routes';
 import serviceabilityRoutes from './serviceability.routes';
 import contactRoutes from './contact.routes';
+import systemSettingRoutes from './systemSetting.routes';
 
 const router = Router();
 
@@ -56,5 +57,6 @@ router.use('/telehealth', telehealthRoutes);
 router.use('/returns', returnRoutes);
 router.use('/serviceability', serviceabilityRoutes);
 router.use('/contact', contactRoutes);
+router.use('/admin/settings', systemSettingRoutes);
 
 export default router;

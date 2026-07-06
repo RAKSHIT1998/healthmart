@@ -16,6 +16,7 @@ import {
   RefreshCw,
   RotateCcw,
   ScrollText,
+  Settings,
   Stethoscope,
   Truck,
   Users,
@@ -60,6 +61,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/admin/users', label: 'Users', icon: Users, roles: [Role.ADMIN, Role.MANAGER], section: 'Administration' },
   { href: '/admin/permissions', label: 'Permissions', icon: ScrollText, roles: [Role.ADMIN], section: 'Administration' },
   { href: '/admin/audit-logs', label: 'Audit Logs', icon: ScrollText, roles: [Role.ADMIN], section: 'Administration' },
+  { href: '/admin/settings', label: 'Settings', icon: Settings, roles: [Role.ADMIN], section: 'Administration' },
 ];
 
 export function Sidebar() {

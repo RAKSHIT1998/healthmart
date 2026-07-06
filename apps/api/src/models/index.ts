@@ -34,3 +34,4 @@ export * from './doctor.model';
 export * from './appointment.model';
 export * from './returnRequest.model';
 export * from './serviceablePincode.model';
+export * from './systemSetting.model';

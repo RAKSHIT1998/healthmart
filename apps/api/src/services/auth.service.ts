@@ -8,6 +8,7 @@ import { generateOtp, otpExpiryDate } from '../utils/otp';
 import { hashToken, generateTokenId, signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt';
 import { sendOtpSms } from '../integrations/msg91';
 import { sendOtpEmail } from '../integrations/resend';
+import { getOtpBypassEnabled } from './systemSetting.service';
 import { OTP_CONFIG } from '@buymedicines/shared';
 
 export interface TokenPair {
@@ -83,7 +84,11 @@ export async function verifyOtpAndAuthenticate(
   if (otpRecord.attempts >= OTP_CONFIG.MAX_ATTEMPTS) {
     throw ApiError.badRequest('Maximum OTP attempts exceeded, please request a new one');
   }
-  if (otpRecord.otpHash !== hashOtp(input.otp)) {
+
+  // Admin-toggleable escape hatch for when SMS/email delivery isn't configured yet —
+  // accepts any correctly-formatted code instead of checking it against the real OTP.
+  const bypassActive = await getOtpBypassEnabled();
+  if (!bypassActive && otpRecord.otpHash !== hashOtp(input.otp)) {
     otpRecord.attempts += 1;
     await otpRecord.save();
     throw ApiError.badRequest('Invalid OTP');
