@@ -6,6 +6,11 @@ import { DoctorConsultBanner } from '@/components/home/doctor-consult-banner';
 import { Testimonials } from '@/components/home/testimonials';
 import { FaqSection } from '@/components/home/faq-section';
 
+// The API isn't running yet during the Docker build step, so a statically
+// prerendered homepage would freeze in with empty product/category sections
+// forever. Force this page to render per-request against the live API instead.
+export const dynamic = 'force-dynamic';
+
 export default function HomePage() {
   return (
     <>
