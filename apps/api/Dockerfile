@@ -32,9 +32,6 @@ ENV NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_OPTIONS=--max-old-space-size=2048
 
-# TEMP DEBUG — remove once Cashfree env mismatch is confirmed fixed.
-RUN echo "DEBUG BUILD: NEXT_PUBLIC_CASHFREE_ENV=$NEXT_PUBLIC_CASHFREE_ENV"
-
 # Build order matters: shared must be compiled before web/api import it
 RUN npm run build --workspace=packages/shared \
  && npm run build --workspace=apps/web \
