@@ -23,7 +23,7 @@ export default function ReferralsPage() {
 
   function shareCode() {
     if (!data?.code) return;
-    const shareText = `Use my code ${data.code} on ${APP_NAME} and get ₹${REFERRAL_CONFIG.REFEREE_REWARD} off your first order!`;
+    const shareText = `Use my code ${data.code} on ${APP_NAME} and get ${REFERRAL_CONFIG.REFEREE_REWARD_PERCENT}% wallet credit on your first order!`;
     if (navigator.share) {
       navigator.share({ text: shareText }).catch(() => {});
     } else {
@@ -40,8 +40,9 @@ export default function ReferralsPage() {
         <CardContent className="space-y-3 p-6">
           <Gift className="h-8 w-8" />
           <p className="text-sm opacity-90">
-            Share your code — you get ₹{REFERRAL_CONFIG.REFERRER_REWARD} and your friend gets ₹{REFERRAL_CONFIG.REFEREE_REWARD} in
-            wallet credit after their first delivered order.
+            Share your code — you get {REFERRAL_CONFIG.REFERRER_REWARD_PERCENT}% and your friend gets{' '}
+            {REFERRAL_CONFIG.REFEREE_REWARD_PERCENT}% of their first order value as wallet credit after their first
+            delivered order.
           </p>
           {isLoading ? (
             <p className="text-sm">Loading your code...</p>

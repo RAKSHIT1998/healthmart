@@ -43,10 +43,10 @@ export const EXPIRY_ALERT_WINDOW_DAYS = 90;
 export const RETURN_WINDOW_DAYS = 7;
 
 export const REFERRAL_CONFIG = {
-  /** Wallet credit (₹) for the existing customer whose code was used. */
-  REFERRER_REWARD: 100,
-  /** Wallet credit (₹) for the new customer who applied a referral code. */
-  REFEREE_REWARD: 50,
+  /** Wallet credit for the existing customer whose code was used — 2% of the referee's first delivered order value. */
+  REFERRER_REWARD_PERCENT: 2,
+  /** Wallet credit for the new customer who applied a referral code — 2% of their own first delivered order value. */
+  REFEREE_REWARD_PERCENT: 2,
 } as const;
 
 export const APP_NAME = 'BuyMedicines.store';

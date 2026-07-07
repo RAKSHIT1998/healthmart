@@ -71,26 +71,31 @@ export async function rewardReferralOnFirstDelivery(userId: string, orderId: str
   const deliveredOrderCount = await OrderModel.countDocuments({ userId, status: OrderStatus.DELIVERED });
   if (deliveredOrderCount !== 1) return;
 
+  const order = await OrderModel.findById(orderId);
+  if (!order) return;
+
   const referrerId = String(user.referredBy);
+  const referrerReward = Math.round(order.totalAmount * (REFERRAL_CONFIG.REFERRER_REWARD_PERCENT / 100) * 100) / 100;
+  const refereeReward = Math.round(order.totalAmount * (REFERRAL_CONFIG.REFEREE_REWARD_PERCENT / 100) * 100) / 100;
 
   await Promise.all([
-    creditWallet(referrerId, REFERRAL_CONFIG.REFERRER_REWARD, WalletTransactionReason.REFERRAL, orderId, 'Referral reward'),
-    creditWallet(userId, REFERRAL_CONFIG.REFEREE_REWARD, WalletTransactionReason.REFERRAL, orderId, 'Referral welcome bonus'),
+    creditWallet(referrerId, referrerReward, WalletTransactionReason.REFERRAL, orderId, 'Referral reward'),
+    creditWallet(userId, refereeReward, WalletTransactionReason.REFERRAL, orderId, 'Referral welcome bonus'),
   ]);
 
   await referralRewardRepository.create({
     referrerId,
     refereeId: userId,
     orderId,
-    referrerReward: REFERRAL_CONFIG.REFERRER_REWARD,
-    refereeReward: REFERRAL_CONFIG.REFEREE_REWARD,
+    referrerReward,
+    refereeReward,
   } as never);
 
   await notifyUser({
     userId: referrerId,
     type: NotificationType.WALLET,
     title: 'Referral reward credited!',
-    message: `You earned ₹${REFERRAL_CONFIG.REFERRER_REWARD} because a friend you referred placed their first order.`,
+    message: `You earned ₹${referrerReward} (${REFERRAL_CONFIG.REFERRER_REWARD_PERCENT}%) because a friend you referred placed their first order.`,
     channels: [NotificationChannel.IN_APP, NotificationChannel.PUSH],
   });
 }
