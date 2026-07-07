@@ -28,6 +28,8 @@ export async function launchCashfreeCheckout(paymentSessionId: string): Promise<
   if (!window.Cashfree) throw new Error('Cashfree SDK unavailable');
 
   const mode = process.env.NEXT_PUBLIC_CASHFREE_ENV === 'PRODUCTION' ? 'production' : 'sandbox';
+  // TEMP DEBUG — remove once Cashfree env mismatch is confirmed fixed.
+  console.log('[DEBUG] NEXT_PUBLIC_CASHFREE_ENV =', process.env.NEXT_PUBLIC_CASHFREE_ENV, '| resolved mode =', mode);
   const cashfree = window.Cashfree({ mode });
   await cashfree.checkout({ paymentSessionId, redirectTarget: '_self' });
 }
