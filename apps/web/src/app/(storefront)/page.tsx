@@ -1,3 +1,4 @@
+import { HeroSlider } from '@/components/home/hero-slider';
 import { HeroSection } from '@/components/home/hero-section';
 import { FlashSaleBanner } from '@/components/home/flash-sale-banner';
 import { CategoryGrid } from '@/components/home/category-grid';
@@ -14,6 +15,7 @@ export const dynamic = 'force-dynamic';
 export default function HomePage() {
   return (
     <>
+      <HeroSlider />
       <HeroSection />
       <FlashSaleBanner />
       <CategoryGrid />
