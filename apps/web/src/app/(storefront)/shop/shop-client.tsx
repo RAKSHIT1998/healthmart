@@ -8,6 +8,7 @@ import { ShopFilters } from '@/components/product/shop-filters';
 import { SortDropdown } from '@/components/product/sort-dropdown';
 import { ProductCard } from '@/components/product/product-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { MedicineRequestForm } from '@/components/product/medicine-request-form';
 
 export function ShopClient() {
   const router = useRouter();
@@ -83,9 +84,15 @@ export function ShopClient() {
               ))}
             </div>
           ) : items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center">
-              <p className="text-lg font-medium">No medicines found</p>
-              <p className="text-sm text-muted-foreground">Try adjusting your filters or search term.</p>
+            <div className="flex flex-col items-center justify-center gap-6 py-24 text-center">
+              <div>
+                <p className="text-lg font-medium">No medicines found</p>
+                <p className="text-sm text-muted-foreground">Try adjusting your filters or search term.</p>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-sm text-muted-foreground">Can&apos;t find what you&apos;re looking for?</p>
+                <MedicineRequestForm initialQuery={filters.q} />
+              </div>
             </div>
           ) : (
             <>
