@@ -65,6 +65,13 @@ export enum MargSyncStatus {
   RUNNING = 'running',
 }
 
+export enum MedicineRequestStatus {
+  PENDING = 'pending',
+  SOURCING = 'sourcing',
+  ADDED = 'added',
+  DECLINED = 'declined',
+}
+
 export enum InventoryMovementType {
   PURCHASE = 'purchase',
   SALE = 'sale',

@@ -21,3 +21,4 @@ export * from './return.dto';
 export * from './serviceability.dto';
 export * from './contact.dto';
 export * from './bulk-update.dto';
+export * from './medicineRequest.dto';

@@ -22,3 +22,4 @@ export * from './promotions.repository';
 export * from './telehealth.repository';
 export * from './returnRequest.repository';
 export * from './serviceablePincode.repository';
+export * from './medicineRequest.repository';
