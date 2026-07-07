@@ -1,4 +1,4 @@
-import { invoiceRepository } from '../repositories';
+import { invoiceRepository, orderRepository } from '../repositories';
 import { BranchModel, type IOrder } from '../models';
 import { generateInvoicePdf } from '../integrations/pdf/invoicePdf';
 import { uploadToCloudinary } from '../integrations/cloudinary';
@@ -14,30 +14,34 @@ function currentFinancialYearLabel(): string {
 
 export async function generateInvoiceForOrder(order: IOrder) {
   const existing = await invoiceRepository.findByOrderId(String(order._id));
-  if (existing) return existing;
+  if (existing?.pdfUrl) return existing;
 
   const branch = await BranchModel.findById(order.branchId);
   if (!branch) throw ApiError.internal('Branch not found for order');
 
-  const totalGstAmount = Math.round(order.gstAmount * 100) / 100;
-  const taxableAmount = Math.round((order.subtotal - order.discount - totalGstAmount) * 100) / 100;
-  const isInterState = branch.state.toLowerCase().trim() !== order.addressSnapshot.state.toLowerCase().trim();
+  const invoice =
+    existing ??
+    (await (async () => {
+      const totalGstAmount = Math.round(order.gstAmount * 100) / 100;
+      const taxableAmount = Math.round((order.subtotal - order.discount - totalGstAmount) * 100) / 100;
+      const isInterState = branch.state.toLowerCase().trim() !== order.addressSnapshot.state.toLowerCase().trim();
 
-  const fyLabel = currentFinancialYearLabel();
-  const sequence = (await invoiceRepository.countForFinancialYear(fyLabel)) + 1;
+      const fyLabel = currentFinancialYearLabel();
+      const sequence = (await invoiceRepository.countForFinancialYear(fyLabel)) + 1;
 
-  const invoice = await invoiceRepository.create({
-    orderId: order._id,
-    branchId: branch._id,
-    invoiceNumber: `INV/${fyLabel}/${String(sequence).padStart(6, '0')}`,
-    cgstAmount: isInterState ? 0 : Math.round((totalGstAmount / 2) * 100) / 100,
-    sgstAmount: isInterState ? 0 : Math.round((totalGstAmount / 2) * 100) / 100,
-    igstAmount: isInterState ? totalGstAmount : 0,
-    totalGstAmount,
-    taxableAmount,
-    totalAmount: order.totalAmount,
-    isInterState,
-  } as never);
+      return invoiceRepository.create({
+        orderId: order._id,
+        branchId: branch._id,
+        invoiceNumber: `INV/${fyLabel}/${String(sequence).padStart(6, '0')}`,
+        cgstAmount: isInterState ? 0 : Math.round((totalGstAmount / 2) * 100) / 100,
+        sgstAmount: isInterState ? 0 : Math.round((totalGstAmount / 2) * 100) / 100,
+        igstAmount: isInterState ? totalGstAmount : 0,
+        totalGstAmount,
+        taxableAmount,
+        totalAmount: order.totalAmount,
+        isInterState,
+      } as never);
+    })());
 
   try {
     const pdfBuffer = await generateInvoicePdf(order, invoice, branch);
@@ -54,5 +58,11 @@ export async function generateInvoiceForOrder(order: IOrder) {
 export async function getInvoiceForOrder(orderId: string) {
   const invoice = await invoiceRepository.findByOrderId(orderId);
   if (!invoice) throw ApiError.notFound('Invoice not found for this order');
+
+  if (!invoice.pdfUrl) {
+    const order = await orderRepository.findById(orderId);
+    if (order) return generateInvoiceForOrder(order);
+  }
+
   return invoice;
 }
