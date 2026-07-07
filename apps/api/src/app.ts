@@ -31,6 +31,12 @@ export function createApp(nextHandleRef?: NextHandleRef): Express {
     res.json({ status: 'ok', timestamp: new Date().toISOString(), env: env.NODE_ENV });
   });
 
+  // TEMP DEBUG — reports this container's outbound IP, for whitelisting with Cashfree. Remove once confirmed.
+  app.get('/debug/egress-ip', async (_req, res) => {
+    const ip = await fetch('https://ifconfig.me').then((r) => r.text()).catch((e) => `error: ${e.message}`);
+    res.json({ egressIp: ip.trim() });
+  });
+
   // Disable helmet's default CSP — it sets `script-src 'self'` which blocks
   // Next.js's inline <script> tags (__NEXT_DATA__, RSC payload, hydration bootstrap).
   app.use(helmet({ contentSecurityPolicy: false }));
