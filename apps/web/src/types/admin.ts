@@ -156,6 +156,7 @@ export interface AdminOrder {
   paymentStatus: string;
   totalAmount: number;
   items: Array<{ name: string; quantity: number; sellingPrice: number; prescriptionRequired: boolean }>;
+  requiresPrescriptionVerificationAtDelivery?: boolean;
   driverId?: string;
   addressSnapshot?: AddressSnapshot;
   createdAt: string;

@@ -42,12 +42,10 @@ import { MargSyncStatus } from '@buymedicines/shared';
 import { DriverModel, MargSyncLogModel } from '../models';
 import { sendOtpSms } from '../integrations/msg91';
 
-async function assertNoPrescriptionGate(prescriptionIds: string[], requiresPrescription: boolean): Promise<void> {
-  if (!requiresPrescription) return;
-  if (prescriptionIds.length === 0) {
-    throw ApiError.badRequest('This order contains prescription-only medicines. Please upload a valid prescription.');
-  }
-}
+// Prescription-only medicines don't have to be pre-uploaded at checkout — the delivery
+// agent verifies a physical prescription at the doorstep instead, and the order cannot be
+// marked DELIVERED until that verification is recorded (see verifyDeliveryOtp below).
+// This only relaxes *when* verification happens, not whether it happens.
 
 export async function initiateCheckout(userId: string, input: CheckoutInput, returnUrl: string) {
   const [cart, address, branch] = await Promise.all([
@@ -70,7 +68,7 @@ export async function initiateCheckout(userId: string, input: CheckoutInput, ret
   if (totals.items.length === 0) throw ApiError.badRequest('Your cart has no purchasable items');
 
   const requiresPrescription = totals.items.some((item) => item.prescriptionRequired);
-  await assertNoPrescriptionGate(input.prescriptionIds, requiresPrescription);
+  const requiresPrescriptionVerificationAtDelivery = requiresPrescription && input.prescriptionIds.length === 0;
 
   if (input.prescriptionIds.length > 0) {
     const prescriptions = await Promise.all(
@@ -149,6 +147,7 @@ export async function initiateCheckout(userId: string, input: CheckoutInput, ret
       totalAmount: totals.totalAmount,
       walletAmountUsed,
       prescriptionIds: input.prescriptionIds,
+      requiresPrescriptionVerificationAtDelivery,
       deliveryOtpHash: hashToken(deliveryOtp),
       notes: input.notes,
       reservationExpiresAt: new Date(Date.now() + CHECKOUT_CONFIG.RESERVATION_HOLD_MINUTES * 60 * 1000),
@@ -436,6 +435,7 @@ export async function assignDriver(orderId: string, driverId: string): Promise<I
 interface VerifyDeliveryOtpOptions {
   proofOfDeliveryUrl?: string;
   customerSignatureUrl?: string;
+  prescriptionVerified?: boolean;
 }
 
 export async function verifyDeliveryOtp(
@@ -451,9 +451,18 @@ export async function verifyDeliveryOtp(
     throw ApiError.badRequest('Invalid delivery OTP');
   }
 
+  if (order.requiresPrescriptionVerificationAtDelivery && !order.prescriptionVerifiedAtDelivery) {
+    if (!proofOptions.prescriptionVerified) {
+      throw ApiError.badRequest(
+        'This order contains prescription-only medicines. Confirm you have checked a valid physical prescription before completing delivery.',
+      );
+    }
+    order.prescriptionVerifiedAtDelivery = true;
+  }
+
   if (proofOptions.proofOfDeliveryUrl) order.proofOfDeliveryUrl = proofOptions.proofOfDeliveryUrl;
   if (proofOptions.customerSignatureUrl) order.customerSignatureUrl = proofOptions.customerSignatureUrl;
-  if (proofOptions.proofOfDeliveryUrl || proofOptions.customerSignatureUrl) await order.save();
+  await order.save();
 
   return updateOrderStatus(orderId, OrderStatus.DELIVERED, String(order.driverId ?? ''));
 }

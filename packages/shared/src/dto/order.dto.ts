@@ -28,6 +28,7 @@ export const deliveryOtpVerifySchema = z.object({
   otp: z.string().length(6),
   proofOfDeliveryUrl: z.string().url().optional(),
   customerSignatureUrl: z.string().url().optional(),
+  prescriptionVerified: z.boolean().optional(),
 });
 
 export type UpdateOrderStatusInput = z.infer<typeof updateOrderStatusSchema>;

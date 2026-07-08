@@ -67,8 +67,12 @@ export const assignDriver = asyncHandler(async (req: AuthenticatedRequest, res: 
 // ---- Delivery boy ----
 
 export const verifyDeliveryOtp = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const { otp, proofOfDeliveryUrl, customerSignatureUrl } = req.body;
-  const order = await orderService.verifyDeliveryOtp(req.params.id as string, otp, { proofOfDeliveryUrl, customerSignatureUrl });
+  const { otp, proofOfDeliveryUrl, customerSignatureUrl, prescriptionVerified } = req.body;
+  const order = await orderService.verifyDeliveryOtp(req.params.id as string, otp, {
+    proofOfDeliveryUrl,
+    customerSignatureUrl,
+    prescriptionVerified,
+  });
   sendSuccess(res, order, 'Delivery confirmed');
 });
 

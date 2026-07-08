@@ -68,6 +68,8 @@ export interface IOrder extends Document {
   totalAmount: number;
   walletAmountUsed: number;
   prescriptionIds: Types.ObjectId[];
+  requiresPrescriptionVerificationAtDelivery: boolean;
+  prescriptionVerifiedAtDelivery: boolean;
   driverId?: Types.ObjectId;
   deliveryOtpHash?: string;
   proofOfDeliveryUrl?: string;
@@ -175,6 +177,8 @@ const orderSchema = new Schema<IOrder>(
     totalAmount: { type: Number, required: true, min: 0 },
     walletAmountUsed: { type: Number, default: 0, min: 0 },
     prescriptionIds: [{ type: Schema.Types.ObjectId, ref: 'Prescription' }],
+    requiresPrescriptionVerificationAtDelivery: { type: Boolean, default: false },
+    prescriptionVerifiedAtDelivery: { type: Boolean, default: false },
     driverId: { type: Schema.Types.ObjectId, ref: 'Driver', index: true },
     deliveryOtpHash: { type: String, select: false },
     proofOfDeliveryUrl: { type: String },

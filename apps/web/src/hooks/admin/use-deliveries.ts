@@ -34,13 +34,14 @@ export interface VerifyDeliveryOtpInput {
   otp: string;
   proofOfDeliveryUrl?: string;
   customerSignatureUrl?: string;
+  prescriptionVerified?: boolean;
 }
 
 export function useVerifyDeliveryOtp() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ orderId, otp, proofOfDeliveryUrl, customerSignatureUrl }: VerifyDeliveryOtpInput) =>
-      api.post(`/orders/${orderId}/delivery-otp/verify`, { otp, proofOfDeliveryUrl, customerSignatureUrl }),
+    mutationFn: ({ orderId, otp, proofOfDeliveryUrl, customerSignatureUrl, prescriptionVerified }: VerifyDeliveryOtpInput) =>
+      api.post(`/orders/${orderId}/delivery-otp/verify`, { otp, proofOfDeliveryUrl, customerSignatureUrl, prescriptionVerified }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-deliveries'] });
       toast.success('Delivery confirmed!');
