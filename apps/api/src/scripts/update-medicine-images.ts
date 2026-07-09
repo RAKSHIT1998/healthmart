@@ -1,268 +1,217 @@
-import { connectDatabase, disconnectDatabase } from '../config/db';
-import { logger } from '../config/logger';
-import { MedicineModel } from '../models';
 import axios from 'axios';
 import cheerio from 'cheerio';
+import { connectDatabase, disconnectDatabase } from '../config/db';
+import { env } from '../config/env';
+import { logger } from '../config/logger';
+import { MedicineModel } from '../models';
+import { uploadToCloudinary } from '../integrations/cloudinary';
 
-const BATCH_SIZE = 10;
-const DELAY_BETWEEN_REQUESTS = 2000; // 2 seconds between requests to be respectful
+const DELAY_BETWEEN_REQUESTS_MS = 2000;
+const DEFAULT_LIMIT = 50;
+const PLACEHOLDER_HOST_PATTERNS = ['images.unsplash.com', 'example.com'];
 
-async function delay(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+interface SearchResult {
+  name: string;
+  imageUrl: string;
+  source: 'pharmeasy' | 'netmeds';
 }
 
-/**
- * Extract price from text like "₹ 450" or "Rs. 450" or "450"
- */
-function extractPrice(text: string): number {
-  const match = text.match(/[\d,]+(?:\.\d+)?/);
-  if (!match) return 0;
-  return parseFloat(match[0].replace(/,/g, ''));
+interface CliOptions {
+  dryRun: boolean;
+  limit: number;
+  replacePlaceholders: boolean;
 }
 
-/**
- * Search for medicine on PharmEasy and return the first result with image
- */
-async function searchPharmeasy(medicineName: string) {
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function parseOptions(argv: string[]): CliOptions {
+  const limitArg = argv.find((arg) => arg.startsWith('--limit='));
+  const parsedLimit = limitArg ? Number(limitArg.split('=')[1]) : DEFAULT_LIMIT;
+
+  return {
+    dryRun: argv.includes('--dry-run'),
+    limit: Number.isFinite(parsedLimit) && parsedLimit > 0 ? parsedLimit : DEFAULT_LIMIT,
+    replacePlaceholders: argv.includes('--replace-placeholders'),
+  };
+}
+
+function isPlaceholderImage(url?: string): boolean {
+  if (!url) return true;
+
   try {
-    const searchUrl = `https://pharmeasy.in/search/all?name=${encodeURIComponent(medicineName)}`;
-    const { data } = await axios.get(searchUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-      }
-    });
-
-    const $ = cheerio.load(data);
-
-    // Try multiple selectors for product cards
-    const selectors = [
-      '.product-card',
-      '.medicine-card',
-      '[data-test-id="product-card"]',
-      '.product-list-item',
-      '.card',
-      'div[class*="product"]'
-    ];
-
-    for (const selector of selectors) {
-      const elements = $(selector);
-      if (elements.length > 0) {
-        // Check first few elements for a valid product
-        for (let i = 0; i < Math.min(3, elements.length); i++) {
-          const element = $(elements[i]);
-
-          // Extract image
-          const img = element.find('img').first();
-          let imageUrl = '';
-          if (img.length) {
-            imageUrl = img.attr('src') ||
-                      img.attr('data-src') ||
-                      img.attr('data-original') ||
-                      '';
-          }
-
-          // Extract name
-          let name = '';
-          const nameSelectors = ['.product-name', '.medicine-name', 'h3', 'h4', '.title', '[class*="name"]'];
-          for (const sel of nameSelectors) {
-            const nameElem = element.find(sel).first();
-            if (nameElem.length) {
-              name = nameElem.text().trim();
-              if (name) break;
-            }
-          }
-
-          // If we couldn't find a specific name element, use the first significant text
-          if (!name) {
-            const text = element.text().trim();
-            // Take first line that looks like a medicine name
-            const lines = text.split('\n');
-            for (const line of lines) {
-              const trimmed = line.trim();
-              if (trimmed.length > 5 && trimmed.length < 100 &&
-                  !/^\d+$/.test(trimmed) &&
-                  !/^\s*[₹$€£]\s*\d/.test(trimmed) &&
-                  !/^\s*\(?\d+[mgmcg]?\)?\s*$/i.test(trimmed)) {
-                name = trimmed;
-                break;
-              }
-            }
-          }
-
-          // Validate that we got something reasonable
-          if (name && imageUrl) {
-            return {
-              name,
-              imageUrl,
-              source: 'pharmeasy'
-            };
-          }
-        }
-      }
-    }
-
-    return null;
-  } catch (error) {
-    logger.warn(`Error searching PharmEasy for ${medicineName}:`, error.message);
-    return null;
+    const hostname = new URL(url).hostname;
+    return PLACEHOLDER_HOST_PATTERNS.some((pattern) => hostname.includes(pattern));
+  } catch {
+    return true;
   }
 }
 
-/**
- * Search for medicine on Netmeds and return the first result with image
- */
-async function searchNetmeds(medicineName: string) {
+function needsImageRefresh(images: string[], replacePlaceholders: boolean): boolean {
+  if (images.length === 0) return true;
+  if (!replacePlaceholders) return false;
+  return images.every((image) => isPlaceholderImage(image));
+}
+
+function normaliseImageUrl(imageUrl: string): string {
+  if (imageUrl.startsWith('//')) return `https:${imageUrl}`;
+  return imageUrl;
+}
+
+async function fetchHtml(url: string): Promise<string> {
+  const { data } = await axios.get(url, {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+    },
+    timeout: 20000,
+  });
+
+  return data as string;
+}
+
+async function searchPharmeasy(medicineName: string): Promise<SearchResult | null> {
   try {
-    const searchUrl = `https://www.netmeds.com/catalogsearch/result/${encodeURIComponent(medicineName)}/all`;
-    const { data } = await axios.get(searchUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-      }
-    });
-
-    const $ = cheerio.load(data);
-
-    // Try multiple selectors for product cards
-    const selectors = [
-      '.product-card',
-      '.product-list-item',
-      '.catgItem',
-      '.product-item',
-      'div[class*="product"]'
-    ];
+    const $ = cheerio.load(await fetchHtml(`https://pharmeasy.in/search/all?name=${encodeURIComponent(medicineName)}`));
+    const selectors = ['.product-card', '.medicine-card', '[data-test-id="product-card"]', '.product-list-item', '.card', 'div[class*="product"]'];
 
     for (const selector of selectors) {
       const elements = $(selector);
-      if (elements.length > 0) {
-        // Check first few elements for a valid product
-        for (let i = 0; i < Math.min(3, elements.length); i++) {
-          const element = $(elements[i]);
+      if (elements.length === 0) continue;
 
-          // Extract image
-          const img = element.find('img').first();
-          let imageUrl = '';
-          if (img.length) {
-            imageUrl = img.attr('src') ||
-                      img.attr('data-src') ||
-                      img.attr('data-original') ||
-                      img.attr('data-lazy') ||
-                      '';
-          }
+      for (let i = 0; i < Math.min(3, elements.length); i++) {
+        const element = $(elements[i]);
+        const img = element.find('img').first();
+        const imageUrl = normaliseImageUrl(img.attr('src') || img.attr('data-src') || img.attr('data-original') || '');
+        const name = element.find('.product-name, .medicine-name, h3, h4, .title, [class*="name"]').first().text().trim();
 
-          // Extract name
-          let name = '';
-          const nameSelectors = ['.product-title', '.product-name', 'h3', 'h4', '.title', '[class*="name"]'];
-          for (const sel of nameSelectors) {
-            const nameElem = element.find(sel).first();
-            if (nameElem.length) {
-              name = nameElem.text().trim();
-              if (name) break;
-            }
-          }
-
-          // If we couldn't find a specific name element, use the first significant text
-          if (!name) {
-            const text = element.text().trim();
-            // Take first line that looks like a medicine name
-            const lines = text.split('\n');
-            for (const line of lines) {
-              const trimmed = line.trim();
-              if (trimmed.length > 5 && trimmed.length < 100 &&
-                  !/^\d+$/.test(trimmed) &&
-                  !/^\s*[₹$€£]\s*\d/.test(trimmed) &&
-                  !/^\s*\(?\d+[mgmcg]?\)?\s*$/i.test(trimmed)) {
-                name = trimmed;
-                break;
-              }
-            }
-          }
-
-          // Validate that we got something reasonable
-          if (name && imageUrl) {
-            return {
-              name,
-              imageUrl,
-              source: 'netmeds'
-            };
-          }
-        }
+        if (name && imageUrl) return { name, imageUrl, source: 'pharmeasy' };
       }
     }
-
-    return null;
   } catch (error) {
-    logger.warn(`Error searching Netmeds for ${medicineName}:`, error.message);
-    return null;
+    logger.warn({ err: error, medicineName }, 'Error searching PharmEasy');
   }
+
+  return null;
 }
 
-/**
- * Update medicine with better image from pharmacy sites
- */
-async function updateMedicineImages() {
+async function searchNetmeds(medicineName: string): Promise<SearchResult | null> {
+  try {
+    const $ = cheerio.load(await fetchHtml(`https://www.netmeds.com/catalogsearch/result/${encodeURIComponent(medicineName)}/all`));
+    const selectors = ['.product-card', '.product-list-item', '.catgItem', '.product-item', 'div[class*="product"]'];
+
+    for (const selector of selectors) {
+      const elements = $(selector);
+      if (elements.length === 0) continue;
+
+      for (let i = 0; i < Math.min(3, elements.length); i++) {
+        const element = $(elements[i]);
+        const img = element.find('img').first();
+        const imageUrl = normaliseImageUrl(
+          img.attr('src') || img.attr('data-src') || img.attr('data-original') || img.attr('data-lazy') || '',
+        );
+        const name = element.find('.product-title, .product-name, h3, h4, .title, [class*="name"]').first().text().trim();
+
+        if (name && imageUrl) return { name, imageUrl, source: 'netmeds' };
+      }
+    }
+  } catch (error) {
+    logger.warn({ err: error, medicineName }, 'Error searching Netmeds');
+  }
+
+  return null;
+}
+
+async function persistImage(imageUrl: string, medicineName: string, dryRun: boolean): Promise<string> {
+  if (dryRun) return imageUrl;
+  if (!env.CLOUDINARY_CLOUD_NAME) return imageUrl;
+
+  const response = await axios.get<ArrayBuffer>(imageUrl, {
+    responseType: 'arraybuffer',
+    timeout: 20000,
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+    },
+  });
+
+  const mimeType = response.headers['content-type'] || 'image/jpeg';
+  const uploaded = await uploadToCloudinary(Buffer.from(response.data), 'medicines', mimeType);
+
+  logger.info({ medicineName, sourceUrl: imageUrl, uploadedUrl: uploaded.url }, 'Uploaded scraped image to Cloudinary');
+  return uploaded.url;
+}
+
+async function updateMedicineImages(options: CliOptions) {
   await connectDatabase();
-  logger.info('Connected to database');
+  logger.info({ options }, 'Connected to database for medicine image update');
 
   try {
-    // Get medicines that have no images or empty image arrays
     const medicines = await MedicineModel.find({
       $or: [
         { images: { $size: 0 } },
-        { images: { $exists: false } }
-      ]
-    }).limit(50); // Limit to 50 for testing
+        { images: { $exists: false } },
+        ...(options.replacePlaceholders
+          ? [{ images: { $elemMatch: { $regex: PLACEHOLDER_HOST_PATTERNS.map((p) => p.replace('.', '\\.')).join('|'), $options: 'i' } } }]
+          : []),
+      ],
+    }).limit(options.limit);
 
-    logger.info(`Found ${medicines.length} medicines without images`);
+    logger.info({ count: medicines.length }, 'Found medicines eligible for image refresh');
 
     let updatedCount = 0;
     let skippedCount = 0;
 
     for (const medicine of medicines) {
-      try {
-        logger.info(`Processing: ${medicine.name}`);
-
-        // Try to get image from PharmEasy first
-        let result = await searchPharmeasy(medicine.name);
-
-        // If PharmEasy fails or returns nothing, try Netmeds
-        if (!result) {
-          await delay(DELAY_BETWEEN_REQUESTS); // Delay between requests
-          result = await searchNetmeds(medicine.name);
-        }
-
-        if (result && result.imageUrl) {
-          // Update the medicine with the new image
-          medicine.images = [result.imageUrl];
-          await medicine.save();
-          updatedCount++;
-          logger.info(`✅ Updated ${medicine.name} with image from ${result.source}`);
-        } else {
-          skippedCount++;
-          logger.warn(`⚠️  No image found for ${medicine.name}`);
-        }
-
-        // Delay between processing medicines to be respectful to the servers
-        await delay(DELAY_Between_REQUESTS);
-
-      } catch (error) {
-        logger.error(`❌ Error processing ${medicine.name}:`, error.message);
+      if (!needsImageRefresh(medicine.images ?? [], options.replacePlaceholders)) {
         skippedCount++;
         continue;
       }
+
+      try {
+        logger.info({ medicine: medicine.name }, 'Looking up medicine image');
+
+        let result = await searchPharmeasy(medicine.name);
+        if (!result) {
+          await delay(DELAY_BETWEEN_REQUESTS_MS);
+          result = await searchNetmeds(medicine.name);
+        }
+
+        if (!result?.imageUrl) {
+          skippedCount++;
+          logger.warn({ medicine: medicine.name }, 'No image found');
+          await delay(DELAY_BETWEEN_REQUESTS_MS);
+          continue;
+        }
+
+        const finalImageUrl = await persistImage(result.imageUrl, medicine.name, options.dryRun);
+        if (!options.dryRun) {
+          medicine.images = [finalImageUrl];
+          await medicine.save();
+        }
+
+        updatedCount++;
+        logger.info(
+          { medicine: medicine.name, source: result.source, imageUrl: finalImageUrl, dryRun: options.dryRun },
+          'Medicine image refreshed',
+        );
+      } catch (error) {
+        skippedCount++;
+        logger.error({ err: error, medicine: medicine.name }, 'Failed to refresh medicine image');
+      }
+
+      await delay(DELAY_BETWEEN_REQUESTS_MS);
     }
 
-    logger.info(`✅ Update complete. Updated: ${updatedCount}, Skipped: ${skippedCount}`);
-
-  } catch (error) {
-    logger.error('Error in updateMedicineImages:', error);
+    logger.info({ updatedCount, skippedCount, dryRun: options.dryRun }, 'Medicine image update complete');
   } finally {
     await disconnectDatabase();
     logger.info('Disconnected from database');
   }
 }
 
-// Run the update
-updateMedicineImages().catch(err => {
-  logger.error('Fatal error in updateMedicineImages:', err);
+const options = parseOptions(process.argv.slice(2));
+
+updateMedicineImages(options).catch((err) => {
+  logger.error({ err }, 'Fatal error in updateMedicineImages');
   process.exit(1);
 });

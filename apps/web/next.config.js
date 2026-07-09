@@ -11,6 +11,10 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'pharmeasy.in' },
+      { protocol: 'https', hostname: 'cdn01.pharmeasy.in' },
+      { protocol: 'https', hostname: 'www.netmeds.com' },
+      { protocol: 'https', hostname: 'cdn.netmeds.com' },
     ],
   },
 };
