@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -37,18 +36,14 @@ function emptyStock() {
   return { branchId: '', batchNumber: defaultBatchNumber(), expiryDate: defaultExpiryDate(), quantity: '', costPrice: '' };
 }
 
-export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFormDialogProps) {
-  const { data: categories } = useCategories();
-  const { data: manufacturers } = useManufacturers();
-  const { data: branches } = useBranches();
-  const createMedicine = useCreateMedicine();
-  const updateMedicine = useUpdateMedicine();
-  const receivePurchase = useReceivePurchase();
-
-  const [form, setForm] = useState({
+function emptyForm() {
+  return {
     name: '',
+    shortDescription: '',
     description: '',
     composition: '',
+    uses: '',
+    dosage: '',
     manufacturerId: '',
     categoryId: '',
     categoryGroup: 'medicine',
@@ -62,15 +57,29 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
     hsnCode: '3004',
     packSize: '',
     images: [] as string[],
-  });
+  };
+}
+
+export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFormDialogProps) {
+  const { data: categories } = useCategories();
+  const { data: manufacturers } = useManufacturers();
+  const { data: branches } = useBranches();
+  const createMedicine = useCreateMedicine();
+  const updateMedicine = useUpdateMedicine();
+  const receivePurchase = useReceivePurchase();
+
+  const [form, setForm] = useState(emptyForm());
   const [stock, setStock] = useState(emptyStock());
 
   useEffect(() => {
     if (medicine) {
       setForm({
         name: medicine.name,
+        shortDescription: medicine.shortDescription ?? '',
         description: medicine.description,
         composition: medicine.composition.join(', '),
+        uses: medicine.uses.join('\n'),
+        dosage: medicine.dosage ?? '',
         manufacturerId: typeof medicine.manufacturerId === 'object' ? medicine.manufacturerId.id : medicine.manufacturerId,
         categoryId: typeof medicine.categoryId === 'object' ? medicine.categoryId.id : medicine.categoryId,
         categoryGroup: medicine.categoryGroup,
@@ -86,24 +95,27 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
         images: medicine.images,
       });
     } else {
-      setForm((f) => ({ ...f, name: '', description: '', composition: '', mrp: '', sellingPrice: '', images: [] }));
-      // Pre-fill branch when there's just one — the common single-pharmacy case — so a quick
-      // add only needs a quantity typed in, not a branch lookup.
+      setForm(emptyForm());
       setStock({ ...emptyStock(), branchId: branches?.length === 1 ? branches[0]!.id : '' });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [medicine, open]);
+  }, [medicine, open, branches]);
 
   async function handleSubmit() {
     if (!form.name.trim()) return;
+
     const mrpNum = Number(form.mrp);
     const payload = {
-      name: form.name,
-      description: form.description.trim() || `${form.name} — quality assured, ready to ship.`,
+      name: form.name.trim(),
+      shortDescription: form.shortDescription.trim() || undefined,
+      description: form.description.trim() || `${form.name} - quality assured, ready to ship.`,
       composition: form.composition.trim()
         ? form.composition.split(',').map((s) => s.trim()).filter(Boolean)
-        : [form.name],
-      uses: [],
+        : [form.name.trim()],
+      uses: form.uses
+        .split(/\r?\n|,/)
+        .map((s) => s.trim())
+        .filter(Boolean),
+      dosage: form.dosage.trim() || undefined,
       sideEffects: [],
       manufacturerId: form.manufacturerId,
       categoryId: form.categoryId,
@@ -139,7 +151,7 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
       }
       onOpenChange(false);
     } catch {
-      // Error toast already shown by the createMedicine/receivePurchase mutation hooks.
+      // Mutation hooks already show errors.
     }
   }
 
@@ -151,11 +163,11 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
         <DialogHeader>
           <DialogTitle>{medicine ? 'Edit Medicine' : 'Add Product'}</DialogTitle>
         </DialogHeader>
-        {isNewProduct && (
+        {isNewProduct ? (
           <p className="-mt-2 text-xs text-muted-foreground">
-            Only the starred fields are required — everything else has a sensible default and can be refined later.
+            Only the starred fields are required - everything else can be refined later.
           </p>
-        )}
+        ) : null}
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="sm:col-span-2">
@@ -164,17 +176,23 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
           </div>
 
           <div className="sm:col-span-2">
-            <Label>Photos <span className="text-muted-foreground font-normal">(optional)</span></Label>
+            <Label>
+              Photos <span className="font-normal text-muted-foreground">(optional)</span>
+            </Label>
             <ImageUpload images={form.images} onChange={(images) => setForm({ ...form, images })} />
           </div>
 
           <div>
             <Label>Manufacturer *</Label>
             <Select value={form.manufacturerId} onValueChange={(v) => setForm({ ...form, manufacturerId: v })}>
-              <SelectTrigger><SelectValue placeholder="Select manufacturer" /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue placeholder="Select manufacturer" />
+              </SelectTrigger>
               <SelectContent>
                 {manufacturers?.map((m) => (
-                  <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                  <SelectItem key={m.id} value={m.id}>
+                    {m.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -182,21 +200,27 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
           <div>
             <Label>Category *</Label>
             <Select value={form.categoryId} onValueChange={(v) => setForm({ ...form, categoryId: v })}>
-              <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
               <SelectContent>
                 {categories?.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                  <SelectItem key={c.id} value={c.id}>
+                    {c.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <Label>MRP (₹) *</Label>
+            <Label>MRP (Rs.) *</Label>
             <Input type="number" value={form.mrp} onChange={(e) => setForm({ ...form, mrp: e.target.value })} />
           </div>
           <div>
-            <Label>Selling Price (₹) <span className="text-muted-foreground font-normal">(defaults to MRP)</span></Label>
+            <Label>
+              Selling Price (Rs.) <span className="font-normal text-muted-foreground">(defaults to MRP)</span>
+            </Label>
             <Input
               type="number"
               value={form.sellingPrice}
@@ -233,10 +257,14 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
               <div>
                 <Label>Category Group</Label>
                 <Select value={form.categoryGroup} onValueChange={(v) => setForm({ ...form, categoryGroup: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     {CATEGORY_GROUPS.map((g) => (
-                      <SelectItem key={g} value={g}>{g.replace(/_/g, ' ')}</SelectItem>
+                      <SelectItem key={g} value={g}>
+                        {g.replace(/_/g, ' ')}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -244,10 +272,14 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
               <div>
                 <Label>Medicine Type</Label>
                 <Select value={form.medicineType} onValueChange={(v) => setForm({ ...form, medicineType: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     {MEDICINE_TYPES.map((t) => (
-                      <SelectItem key={t} value={t}>{t}</SelectItem>
+                      <SelectItem key={t} value={t}>
+                        {t}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -255,10 +287,14 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
               <div>
                 <Label>Schedule Class</Label>
                 <Select value={form.scheduleClass} onValueChange={(v) => setForm({ ...form, scheduleClass: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     {SCHEDULE_CLASSES.map((s) => (
-                      <SelectItem key={s} value={s}>{s.replace(/_/g, ' ')}</SelectItem>
+                      <SelectItem key={s} value={s}>
+                        {s.replace(/_/g, ' ')}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -272,6 +308,14 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
                 <Input value={form.hsnCode} onChange={(e) => setForm({ ...form, hsnCode: e.target.value })} />
               </div>
               <div className="sm:col-span-2">
+                <Label>Short Description</Label>
+                <Input
+                  value={form.shortDescription}
+                  onChange={(e) => setForm({ ...form, shortDescription: e.target.value })}
+                  placeholder="One-line summary for listings and search results"
+                />
+              </div>
+              <div className="sm:col-span-2">
                 <Label>Composition (comma separated)</Label>
                 <Input
                   value={form.composition}
@@ -283,31 +327,55 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
                 <Label>Description</Label>
                 <textarea
                   className="w-full rounded-lg border border-input bg-background p-2 text-sm"
-                  rows={2}
+                  rows={3}
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   placeholder="Auto-generated if left blank"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <Label>Usage</Label>
+                <textarea
+                  className="w-full rounded-lg border border-input bg-background p-2 text-sm"
+                  rows={3}
+                  value={form.uses}
+                  onChange={(e) => setForm({ ...form, uses: e.target.value })}
+                  placeholder="One use per line, or separate with commas"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <Label>Dosage</Label>
+                <textarea
+                  className="w-full rounded-lg border border-input bg-background p-2 text-sm"
+                  rows={3}
+                  value={form.dosage}
+                  onChange={(e) => setForm({ ...form, dosage: e.target.value })}
+                  placeholder="Example: Take 1 tablet twice daily after meals"
                 />
               </div>
             </div>
           </details>
         </div>
 
-        {isNewProduct && (
+        {isNewProduct ? (
           <div className="mt-4 rounded-lg border border-dashed border-border/60 p-3">
             <p className="mb-2 text-sm font-medium">Initial Stock (optional)</p>
             <p className="mb-3 text-xs text-muted-foreground">
-              Add opening stock now so this product is sellable immediately — or leave blank and use{' '}
-              <span className="font-medium">Receive Purchase</span> on the Inventory page later.
+              Add opening stock now so this product is sellable immediately, or leave it blank and use
+              {' '}<span className="font-medium">Receive Purchase</span> on the Inventory page later.
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <Label>Branch</Label>
                 <Select value={stock.branchId} onValueChange={(v) => setStock({ ...stock, branchId: v })}>
-                  <SelectTrigger><SelectValue placeholder="Select branch" /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select branch" />
+                  </SelectTrigger>
                   <SelectContent>
                     {branches?.map((b) => (
-                      <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
+                      <SelectItem key={b.id} value={b.id}>
+                        {b.name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -325,12 +393,12 @@ export function MedicineFormDialog({ open, onOpenChange, medicine }: MedicineFor
                 <Input type="date" value={stock.expiryDate} onChange={(e) => setStock({ ...stock, expiryDate: e.target.value })} />
               </div>
               <div>
-                <Label>Cost Price (₹)</Label>
+                <Label>Cost Price (Rs.)</Label>
                 <Input type="number" value={stock.costPrice} onChange={(e) => setStock({ ...stock, costPrice: e.target.value })} />
               </div>
             </div>
           </div>
-        )}
+        ) : null}
 
         <Button
           className="mt-4 w-full"

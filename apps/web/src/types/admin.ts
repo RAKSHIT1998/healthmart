@@ -21,8 +21,13 @@ export interface Medicine {
   id: string;
   name: string;
   slug: string;
+  shortDescription?: string;
   description: string;
   composition: string[];
+  uses: string[];
+  dosage?: string;
+  sideEffects?: string[];
+  storageInstructions?: string;
   manufacturerId: { id: string; name: string } | string;
   categoryId: { id: string; name: string } | string;
   categoryGroup: string;
