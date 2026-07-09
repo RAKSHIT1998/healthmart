@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { io, type Socket } from 'socket.io-client';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/admin-auth-store';
@@ -16,7 +17,6 @@ interface NewOrderAlert {
 
 const SOCKET_URL = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api/v1').replace(/\/api\/v1\/?$/, '');
 
-/** Two-note chime synthesized via Web Audio API — no audio file to host/load. */
 function playNewOrderChime() {
   try {
     const AudioContextClass = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
@@ -40,14 +40,14 @@ function playNewOrderChime() {
 
     setTimeout(() => ctx.close(), 700);
   } catch {
-    // Audio unsupported/blocked — the toast still shows, so this is non-critical.
+    // Audio can be blocked by the browser; the toast and unread badge still update.
   }
 }
 
-/** Live-alerts staff the moment a new order is placed, so it can be picked up for preparation immediately. */
 export function useAdminNotifications(onNewOrder?: (order: NewOrderAlert) => void) {
   const accessToken = useAuthStore((s) => s.accessToken);
   const socketRef = useRef<Socket | null>(null);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!accessToken) return;
@@ -60,9 +60,11 @@ export function useAdminNotifications(onNewOrder?: (order: NewOrderAlert) => voi
     socketRef.current = socket;
 
     socket.on('order:new', (payload: NewOrderAlert) => {
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
       playNewOrderChime();
       toast.success(`New order ${payload.orderNumber}`, {
-        description: `${formatCurrency(payload.totalAmount)} — ready for preparation`,
+        description: `${formatCurrency(payload.totalAmount)} is ready for preparation`,
       });
       onNewOrder?.(payload);
     });
@@ -71,6 +73,5 @@ export function useAdminNotifications(onNewOrder?: (order: NewOrderAlert) => voi
       socket.disconnect();
       socketRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken]);
+  }, [accessToken, onNewOrder, queryClient]);
 }

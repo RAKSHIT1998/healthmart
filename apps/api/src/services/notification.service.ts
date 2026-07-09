@@ -1,4 +1,4 @@
-import { NotificationChannel, NotificationType } from '@buymedicines/shared';
+import { NotificationChannel, NotificationType, Role } from '@buymedicines/shared';
 import { notificationRepository } from '../repositories';
 import { UserModel } from '../models';
 import { sendTransactionalSms, sendWhatsAppMessage } from '../integrations/msg91';
@@ -13,6 +13,13 @@ interface NotifyParams {
   message: string;
   channels?: NotificationChannel[];
   data?: Record<string, unknown>;
+}
+
+interface NotifyStaffNewOrderParams {
+  orderId: string;
+  orderNumber: string;
+  totalAmount: number;
+  branchId?: string;
 }
 
 /**
@@ -65,4 +72,34 @@ export async function notifyUser({
       logger.error({ err, channel, userId }, 'Notification dispatch failed');
     }
   }
+}
+
+export async function notifyStaffNewOrder({
+  orderId,
+  orderNumber,
+  totalAmount,
+  branchId,
+}: NotifyStaffNewOrderParams): Promise<void> {
+  const staffUsers = await UserModel.find({
+    isActive: true,
+    role: { $in: [Role.ADMIN, Role.MANAGER, Role.PHARMACIST, Role.INVENTORY_MANAGER] },
+  }).select('_id');
+
+  if (staffUsers.length === 0) return;
+
+  const title = `New order ${orderNumber}`;
+  const message = `A customer placed a new order worth Rs. ${Math.round(totalAmount)}.`;
+
+  await Promise.all(
+    staffUsers.map((staffUser) =>
+      notificationRepository.create({
+        userId: String(staffUser._id),
+        channel: NotificationChannel.IN_APP,
+        type: NotificationType.ORDER_UPDATE,
+        title,
+        message,
+        data: { orderId, orderNumber, totalAmount, branchId },
+      } as never),
+    ),
+  );
 }

@@ -228,3 +228,18 @@ export interface AuditLogEntry {
   entityId?: string;
   createdAt: string;
 }
+
+export interface AdminNotification {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  isRead: boolean;
+  createdAt: string;
+  data?: {
+    orderId?: string;
+    orderNumber?: string;
+    totalAmount?: number;
+    branchId?: string;
+  };
+}

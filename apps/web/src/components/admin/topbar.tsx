@@ -2,6 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import { LogOut, Moon, Sun } from 'lucide-react';
+import { AdminNotificationCenter } from '@/components/admin/notification-center';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/admin-auth-store';
 import { useLogout } from '@/hooks/admin/use-auth';
@@ -28,6 +29,7 @@ export function Topbar() {
         <p className="text-xs capitalize text-muted-foreground">{user?.role?.replace(/_/g, ' ')}</p>
       </div>
       <div className="flex items-center gap-3">
+        <AdminNotificationCenter />
         <Button
           variant="ghost"
           size="icon"

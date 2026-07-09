@@ -28,7 +28,7 @@ import { computeCartTotals } from './cart.service';
 import * as inventoryService from './inventory.service';
 import { recordCouponRedemption } from './coupon.service';
 import { creditWallet, debitWallet, getWallet } from './wallet.service';
-import { notifyUser } from './notification.service';
+import { notifyStaffNewOrder, notifyUser } from './notification.service';
 import { generateInvoiceForOrder } from './invoice.service';
 import { rewardReferralOnFirstDelivery } from './promotions.service';
 import { checkServiceability } from './serviceability.service';
@@ -217,6 +217,13 @@ export async function confirmOrderPlacement(orderId: string): Promise<IOrder> {
     title: 'Order placed successfully',
     message: `Your order ${order.orderNumber} has been placed and will be delivered soon.`,
     channels: [NotificationChannel.IN_APP, NotificationChannel.SMS, NotificationChannel.PUSH, NotificationChannel.WHATSAPP],
+  });
+
+  await notifyStaffNewOrder({
+    orderId: String(order._id),
+    orderNumber: order.orderNumber,
+    totalAmount: order.totalAmount,
+    branchId: order.branchId ? String(order.branchId) : undefined,
   });
 
   emitNewOrderAlert({
