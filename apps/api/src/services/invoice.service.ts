@@ -4,8 +4,13 @@ import { generateInvoicePdf } from '../integrations/pdf/invoicePdf';
 import { uploadToCloudinary } from '../integrations/cloudinary';
 import { ApiError } from '../utils/ApiError';
 import { logger } from '../config/logger';
-import { notifyUser } from './notification.service';
-import { NotificationType, NotificationChannel } from '@buymedicines/shared';
+import { env } from '../config/env';
+
+export interface InvoiceAccessPayload {
+  invoiceNumber: string;
+  pdfUrl?: string;
+  pdfBase64?: string;
+}
 
 function currentFinancialYearLabel(): string {
   const date = new Date();
@@ -57,14 +62,33 @@ export async function generateInvoiceForOrder(order: IOrder) {
   return invoice;
 }
 
-export async function getInvoiceForOrder(orderId: string) {
-  const invoice = await invoiceRepository.findByOrderId(orderId);
-  if (!invoice) throw ApiError.notFound('Invoice not found for this order');
+export async function getInvoiceForOrder(orderId: string): Promise<InvoiceAccessPayload> {
+  const order = await orderRepository.findById(orderId);
+  if (!order) throw ApiError.notFound('Order not found');
 
-  if (!invoice.pdfUrl) {
-    const order = await orderRepository.findById(orderId);
-    if (order) return generateInvoiceForOrder(order);
+  const invoice = await generateInvoiceForOrder(order);
+  if (invoice.pdfUrl) {
+    return { invoiceNumber: invoice.invoiceNumber, pdfUrl: invoice.pdfUrl };
   }
 
-  return invoice;
+  const branch = await BranchModel.findById(order.branchId);
+  if (!branch) throw ApiError.internal('Branch not found for order');
+
+  const pdfBuffer = await generateInvoicePdf(order, invoice, branch);
+
+  if (env.CLOUDINARY_CLOUD_NAME) {
+    try {
+      const upload = await uploadToCloudinary(pdfBuffer, 'invoices', 'application/pdf', 'raw');
+      invoice.pdfUrl = upload.url;
+      await invoice.save();
+      return { invoiceNumber: invoice.invoiceNumber, pdfUrl: invoice.pdfUrl };
+    } catch (err) {
+      logger.error({ err, orderId: order._id }, 'Invoice PDF upload retry failed during customer fetch');
+    }
+  }
+
+  return {
+    invoiceNumber: invoice.invoiceNumber,
+    pdfBase64: pdfBuffer.toString('base64'),
+  };
 }

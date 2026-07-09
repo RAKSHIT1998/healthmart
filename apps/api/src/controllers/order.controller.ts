@@ -82,6 +82,8 @@ export const resendDeliveryOtp = asyncHandler(async (req: AuthenticatedRequest, 
 });
 
 export const getInvoice = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const invoice = await getInvoiceForOrder(req.params.id as string);
+  const order = await orderRepository.findOne({ _id: req.params.id, userId: req.user!.id });
+  if (!order) throw ApiError.notFound('Order not found');
+  const invoice = await getInvoiceForOrder(String(order._id));
   sendSuccess(res, invoice);
 });
