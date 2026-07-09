@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
+import { Role } from '@buymedicines/shared';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { formatDate } from '@/lib/utils';
 import { useBranches } from '@/hooks/admin/use-catalog';
 import { useCreateStaff, useCustomerList, useStaffList, useToggleUserActive } from '@/hooks/admin/use-users';
+import { useAuthStore } from '@/store/admin-auth-store';
 
 export default function UsersPage() {
   const { data: staff, isLoading: loadingStaff } = useStaffList(1);
@@ -20,6 +22,7 @@ export default function UsersPage() {
   const { data: branches } = useBranches();
   const toggleActive = useToggleUserActive();
   const createStaff = useCreateStaff();
+  const currentRole = useAuthStore((s) => s.user?.role);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     name: '',
@@ -31,16 +34,39 @@ export default function UsersPage() {
   });
 
   function handleSubmit() {
-    createStaff.mutate(form as never, { onSuccess: () => setOpen(false) });
+    const payload = {
+      name: form.name.trim(),
+      email: form.email.trim().toLowerCase(),
+      phone: form.phone.trim(),
+      password: form.password.trim(),
+      role: form.role,
+      ...(form.branchId ? { branchId: form.branchId } : {}),
+    };
+
+    createStaff.mutate(payload as never, {
+      onSuccess: () => {
+        setOpen(false);
+        setForm({
+          name: '',
+          email: '',
+          phone: '',
+          password: '',
+          role: 'pharmacist',
+          branchId: '',
+        });
+      },
+    });
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Users</h1>
-        <Button onClick={() => setOpen(true)}>
-          <Plus className="h-4 w-4" /> Add Staff
-        </Button>
+        {currentRole === Role.ADMIN ? (
+          <Button onClick={() => setOpen(true)}>
+            <Plus className="h-4 w-4" /> Add Staff
+          </Button>
+        ) : null}
       </div>
 
       <Tabs defaultValue="staff">
@@ -111,7 +137,7 @@ export default function UsersPage() {
         </TabsContent>
       </Tabs>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open && currentRole === Role.ADMIN} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add Staff Member</DialogTitle>
@@ -131,7 +157,7 @@ export default function UsersPage() {
             </div>
             <div>
               <Label>Temporary Password</Label>
-              <Input type="text" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+              <Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
             </div>
             <div>
               <Label>Role</Label>
@@ -157,7 +183,18 @@ export default function UsersPage() {
                 </SelectContent>
               </Select>
             </div>
-            <Button onClick={handleSubmit} disabled={createStaff.isPending}>Create Account</Button>
+            <Button
+              onClick={handleSubmit}
+              disabled={
+                createStaff.isPending ||
+                !form.name.trim() ||
+                !form.email.trim() ||
+                !form.phone.trim() ||
+                !form.password.trim()
+              }
+            >
+              Create Account
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
