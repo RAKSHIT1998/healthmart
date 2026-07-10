@@ -26,9 +26,21 @@ export default function DriversPage() {
 
   function handleSubmit() {
     if (!branchId) return;
+    const payload = {
+      name: form.name.trim(),
+      phone: form.phone.trim(),
+      vehicleType: form.vehicleType,
+      branchId,
+      ...(form.vehicleNumber.trim() ? { vehicleNumber: form.vehicleNumber.trim().toUpperCase() } : {}),
+    };
     createDriver.mutate(
-      { ...form, branchId },
-      { onSuccess: () => setOpen(false) },
+      payload,
+      {
+        onSuccess: () => {
+          setOpen(false);
+          setForm({ name: '', phone: '', vehicleType: 'bike', vehicleNumber: '' });
+        },
+      },
     );
   }
 
@@ -126,7 +138,12 @@ export default function DriversPage() {
               <Label>Vehicle Number</Label>
               <Input value={form.vehicleNumber} onChange={(e) => setForm({ ...form, vehicleNumber: e.target.value })} />
             </div>
-            <Button onClick={handleSubmit} disabled={createDriver.isPending || !branchId}>Register</Button>
+            <Button
+              onClick={handleSubmit}
+              disabled={createDriver.isPending || !branchId || !form.name.trim() || !form.phone.trim()}
+            >
+              Register
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
