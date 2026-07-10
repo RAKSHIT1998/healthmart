@@ -60,17 +60,17 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold">Users</h1>
         {currentRole === Role.ADMIN ? (
-          <Button onClick={() => setOpen(true)}>
+          <Button className="w-full sm:w-auto" onClick={() => setOpen(true)}>
             <Plus className="h-4 w-4" /> Add Staff
           </Button>
         ) : null}
       </div>
 
       <Tabs defaultValue="staff">
-        <TabsList>
+        <TabsList className="w-full sm:w-auto">
           <TabsTrigger value="staff">Staff</TabsTrigger>
           <TabsTrigger value="customers">Customers</TabsTrigger>
         </TabsList>
@@ -78,32 +78,58 @@ export default function UsersPage() {
         <TabsContent value="staff">
           <Card>
             <CardContent className="p-0">
-              <table className="w-full text-sm">
-                <thead className="border-b border-border/60 text-left text-xs uppercase text-muted-foreground">
-                  <tr>
-                    <th className="p-3">Name</th><th className="p-3">Email</th><th className="p-3">Role</th><th className="p-3">Status</th><th className="p-3"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loadingStaff ? (
-                    <tr><td className="p-4 text-muted-foreground" colSpan={5}>Loading...</td></tr>
-                  ) : (
-                    staff?.items.map((member) => (
-                      <tr key={member.id} className="border-b border-border/40">
-                        <td className="p-3 font-medium">{member.name}</td>
-                        <td className="p-3">{member.email}</td>
-                        <td className="p-3 capitalize">{member.role.replace(/_/g, ' ')}</td>
-                        <td className="p-3"><Badge variant={member.isActive ? 'success' : 'destructive'}>{member.isActive ? 'Active' : 'Inactive'}</Badge></td>
-                        <td className="p-3 text-right">
-                          <Button size="sm" variant="outline" onClick={() => toggleActive.mutate({ id: member.id, activate: !member.isActive })}>
-                            {member.isActive ? 'Deactivate' : 'Activate'}
-                          </Button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+              <div className="hidden md:block">
+                <table className="w-full text-sm">
+                  <thead className="border-b border-border/60 text-left text-xs uppercase text-muted-foreground">
+                    <tr>
+                      <th className="p-3">Name</th><th className="p-3">Email</th><th className="p-3">Role</th><th className="p-3">Status</th><th className="p-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loadingStaff ? (
+                      <tr><td className="p-4 text-muted-foreground" colSpan={5}>Loading...</td></tr>
+                    ) : (
+                      staff?.items.map((member) => (
+                        <tr key={member.id} className="border-b border-border/40">
+                          <td className="p-3 font-medium">{member.name}</td>
+                          <td className="p-3">{member.email}</td>
+                          <td className="p-3 capitalize">{member.role.replace(/_/g, ' ')}</td>
+                          <td className="p-3"><Badge variant={member.isActive ? 'success' : 'destructive'}>{member.isActive ? 'Active' : 'Inactive'}</Badge></td>
+                          <td className="p-3 text-right">
+                            <Button size="sm" variant="outline" onClick={() => toggleActive.mutate({ id: member.id, activate: !member.isActive })}>
+                              {member.isActive ? 'Deactivate' : 'Activate'}
+                            </Button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="divide-y divide-border/60 md:hidden">
+                {loadingStaff ? (
+                  <p className="p-4 text-sm text-muted-foreground">Loading...</p>
+                ) : (
+                  staff?.items.map((member) => (
+                    <div key={member.id} className="space-y-3 p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-medium">{member.name}</p>
+                          <p className="text-sm text-muted-foreground">{member.email}</p>
+                        </div>
+                        <Badge variant={member.isActive ? 'success' : 'destructive'}>
+                          {member.isActive ? 'Active' : 'Inactive'}
+                        </Badge>
+                      </div>
+                      <p className="text-sm capitalize text-muted-foreground">{member.role.replace(/_/g, ' ')}</p>
+                      <Button size="sm" variant="outline" onClick={() => toggleActive.mutate({ id: member.id, activate: !member.isActive })}>
+                        {member.isActive ? 'Deactivate' : 'Activate'}
+                      </Button>
+                    </div>
+                  ))
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -111,27 +137,50 @@ export default function UsersPage() {
         <TabsContent value="customers">
           <Card>
             <CardContent className="p-0">
-              <table className="w-full text-sm">
-                <thead className="border-b border-border/60 text-left text-xs uppercase text-muted-foreground">
-                  <tr>
-                    <th className="p-3">Name</th><th className="p-3">Phone</th><th className="p-3">Joined</th><th className="p-3">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loadingCustomers ? (
-                    <tr><td className="p-4 text-muted-foreground" colSpan={4}>Loading...</td></tr>
-                  ) : (
-                    customers?.items.map((customer) => (
-                      <tr key={customer.id} className="border-b border-border/40">
-                        <td className="p-3 font-medium">{customer.name}</td>
-                        <td className="p-3">{customer.phone}</td>
-                        <td className="p-3 text-xs text-muted-foreground">{formatDate(customer.createdAt)}</td>
-                        <td className="p-3"><Badge variant={customer.isActive ? 'success' : 'destructive'}>{customer.isActive ? 'Active' : 'Inactive'}</Badge></td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+              <div className="hidden md:block">
+                <table className="w-full text-sm">
+                  <thead className="border-b border-border/60 text-left text-xs uppercase text-muted-foreground">
+                    <tr>
+                      <th className="p-3">Name</th><th className="p-3">Phone</th><th className="p-3">Joined</th><th className="p-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loadingCustomers ? (
+                      <tr><td className="p-4 text-muted-foreground" colSpan={4}>Loading...</td></tr>
+                    ) : (
+                      customers?.items.map((customer) => (
+                        <tr key={customer.id} className="border-b border-border/40">
+                          <td className="p-3 font-medium">{customer.name}</td>
+                          <td className="p-3">{customer.phone}</td>
+                          <td className="p-3 text-xs text-muted-foreground">{formatDate(customer.createdAt)}</td>
+                          <td className="p-3"><Badge variant={customer.isActive ? 'success' : 'destructive'}>{customer.isActive ? 'Active' : 'Inactive'}</Badge></td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="divide-y divide-border/60 md:hidden">
+                {loadingCustomers ? (
+                  <p className="p-4 text-sm text-muted-foreground">Loading...</p>
+                ) : (
+                  customers?.items.map((customer) => (
+                    <div key={customer.id} className="space-y-2 p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-medium">{customer.name}</p>
+                          <p className="text-sm text-muted-foreground">{customer.phone}</p>
+                        </div>
+                        <Badge variant={customer.isActive ? 'success' : 'destructive'}>
+                          {customer.isActive ? 'Active' : 'Inactive'}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Joined {formatDate(customer.createdAt)}</p>
+                    </div>
+                  ))
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Sidebar } from '@/components/admin/sidebar';
 import { Topbar } from '@/components/admin/topbar';
@@ -13,12 +13,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const hasHydrated = useAuthStore((s) => s.hasHydrated);
   const router = useRouter();
   const pathname = usePathname();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const isLoginPage = pathname === '/admin/login';
 
   useEffect(() => {
     if (hasHydrated && !accessToken && !isLoginPage) router.push('/admin/login');
   }, [hasHydrated, accessToken, router, isLoginPage]);
+
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [pathname]);
 
   useAdminNotifications();
 
@@ -29,10 +34,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div data-admin className="flex min-h-screen bg-background text-foreground">
-      <Sidebar />
+      <Sidebar mobileOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
       <div className="flex-1">
-        <Topbar />
-        <main className="p-6">{children}</main>
+        <Topbar onMenuOpen={() => setMobileNavOpen(true)} />
+        <main className="p-4 sm:p-6">{children}</main>
       </div>
     </div>
   );

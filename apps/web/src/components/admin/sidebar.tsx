@@ -22,10 +22,12 @@ import {
   Truck,
   Users,
   Zap,
+  X,
 } from 'lucide-react';
 import { Role } from '@buymedicines/shared';
 import { useAuthStore } from '@/store/admin-auth-store';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 export interface NavItem {
   href: string;
@@ -66,7 +68,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/admin/settings', label: 'Settings', icon: Settings, roles: [Role.ADMIN], section: 'Administration' },
 ];
 
-export function Sidebar() {
+export function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => void }) {
   const pathname = usePathname();
   const role = useAuthStore((s) => s.user?.role);
   const items = NAV_ITEMS.filter((item) => role && item.roles.includes(role as Role));
@@ -78,16 +80,21 @@ export function Sidebar() {
     return acc;
   }, []);
 
-  return (
-    <aside className="hidden h-screen w-64 flex-col border-r border-border/60 bg-card md:flex">
-      <div className="flex h-16 items-center gap-2.5 border-b border-border/60 px-5">
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-lg font-bold text-primary-foreground shadow-sm shadow-primary/30">
-          M
-        </span>
-        <div className="leading-tight">
-          <p className="text-sm font-bold">BuyMedicines.store Admin</p>
-          <p className="text-[11px] text-muted-foreground">Control Panel</p>
+  const content = (
+    <>
+      <div className="flex h-16 items-center justify-between gap-2.5 border-b border-border/60 px-5">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-lg font-bold text-primary-foreground shadow-sm shadow-primary/30">
+            M
+          </span>
+          <div className="leading-tight">
+            <p className="text-sm font-bold">BuyMedicines.store Admin</p>
+            <p className="text-[11px] text-muted-foreground">Control Panel</p>
+          </div>
         </div>
+        <Button variant="ghost" size="icon" className="rounded-full md:hidden" onClick={onClose} title="Close menu">
+          <X className="h-4 w-4" />
+        </Button>
       </div>
       <nav className="flex-1 space-y-5 overflow-y-auto p-3 pt-4">
         {sections.map((group) => (
@@ -103,6 +110,7 @@ export function Sidebar() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={onClose}
                     className={cn(
                       'group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                       active ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
@@ -118,6 +126,28 @@ export function Sidebar() {
           </div>
         ))}
       </nav>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      <aside className="hidden h-screen w-64 flex-col border-r border-border/60 bg-card md:flex">
+        {content}
+      </aside>
+
+      {mobileOpen ? (
+        <div className="fixed inset-0 z-40 md:hidden">
+          <button
+            type="button"
+            aria-label="Close menu"
+            className="absolute inset-0 bg-black/45"
+            onClick={onClose}
+          />
+          <aside className="relative z-10 flex h-full w-[84vw] max-w-72 flex-col border-r border-border/60 bg-card shadow-xl">
+            {content}
+          </aside>
+        </div>
+      ) : null}
+    </>
   );
 }

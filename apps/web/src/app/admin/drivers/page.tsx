@@ -58,9 +58,10 @@ export default function DriversPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold">Delivery Drivers</h1>
         <Button
+          className="w-full sm:w-auto"
           onClick={() => {
             setForm((current) => ({
               ...current,
@@ -74,7 +75,7 @@ export default function DriversPage() {
       </div>
 
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="max-w-xs">
+        <div className="w-full max-w-xs">
           <Label>Branch</Label>
           <Select value={branchId} onValueChange={setBranchId}>
             <SelectTrigger><SelectValue placeholder="Select branch to view drivers" /></SelectTrigger>
@@ -85,7 +86,7 @@ export default function DriversPage() {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex gap-2 rounded-lg border border-border/60 p-1">
+        <div className="flex w-full flex-col gap-2 rounded-lg border border-border/60 p-1 sm:w-auto sm:flex-row">
           <Button size="sm" variant={view === 'available' ? 'default' : 'ghost'} onClick={() => setView('available')}>
             Available Now
           </Button>
@@ -108,7 +109,7 @@ export default function DriversPage() {
           {drivers?.map((driver, index) => (
             <Card key={driver.id}>
               <CardContent className="p-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-3">
                   <span className="flex items-center gap-2 font-medium">
                     {view === 'all' && <span className="text-xs text-muted-foreground">#{index + 1}</span>}
                     {typeof driver.userId === 'object' ? driver.userId.name : 'Driver'}
@@ -116,11 +117,11 @@ export default function DriversPage() {
                   <Badge variant={driver.isAvailable ? 'success' : 'secondary'}>{driver.isAvailable ? 'Available' : 'Unavailable'}</Badge>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {typeof driver.userId === 'object' ? driver.userId.phone : ''} · {driver.vehicleType} {driver.vehicleNumber}
+                  {typeof driver.userId === 'object' ? driver.userId.phone : ''} / {driver.vehicleType} {driver.vehicleNumber}
                 </p>
                 <div className="mt-2 flex items-center gap-1 text-sm">
                   <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" /> {driver.rating.toFixed(1)}
-                  <span className="text-muted-foreground">· {driver.totalDeliveries} deliveries</span>
+                  <span className="text-muted-foreground">/ {driver.totalDeliveries} deliveries</span>
                 </div>
               </CardContent>
             </Card>

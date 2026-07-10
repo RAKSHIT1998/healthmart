@@ -49,8 +49,6 @@ export default function ServiceAreasPage() {
     );
   }
 
-  // "Add by City" — look up every pincode for a city via India Post, let the admin review/deselect,
-  // then bulk-add the selected ones in one go instead of typing each pincode by hand.
   const lookupCity = useLookupCityPincodes();
   const bulkCreate = useBulkCreateServiceablePincodes();
   const [cityOpen, setCityOpen] = useState(false);
@@ -98,18 +96,18 @@ export default function ServiceAreasPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">Service Areas</h1>
           <p className="text-sm text-muted-foreground">
             Pincodes you currently deliver to, and the delivery time estimate customers see for each.
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={openCityDialog}>
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+          <Button className="w-full sm:w-auto" variant="outline" onClick={openCityDialog}>
             <Building2 className="h-4 w-4" /> Add by City
           </Button>
-          <Button onClick={openCreate}>
+          <Button className="w-full sm:w-auto" onClick={openCreate}>
             <Plus className="h-4 w-4" /> Add Pincode
           </Button>
         </div>
@@ -117,65 +115,109 @@ export default function ServiceAreasPage() {
 
       <Card>
         <CardContent className="p-0">
-          <table className="w-full text-sm">
-            <thead className="border-b border-border/60 text-left text-xs uppercase text-muted-foreground">
-              <tr>
-                <th className="p-3">Pincode</th>
-                <th className="p-3">Branch</th>
-                <th className="p-3">Est. Delivery</th>
-                <th className="p-3">Active</th>
-                <th className="p-3"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading ? (
-                <tr><td className="p-4 text-muted-foreground" colSpan={5}>Loading...</td></tr>
-              ) : data && data.items.length > 0 ? (
-                data.items.map((entry) => {
-                  const branch = typeof entry.branchId === 'object' ? entry.branchId : null;
-                  return (
-                    <tr key={entry.id} className="border-b border-border/40">
-                      <td className="p-3 font-medium">{entry.pincode}</td>
-                      <td className="p-3">{branch?.name ?? String(entry.branchId)}</td>
-                      <td className="p-3">
-                        <Badge variant="secondary">
-                          {entry.estimatedDeliveryMinutes < 60
-                            ? `${entry.estimatedDeliveryMinutes} mins`
-                            : `${(entry.estimatedDeliveryMinutes / 60).toFixed(1)} hrs`}
-                        </Badge>
-                      </td>
-                      <td className="p-3">
-                        <Switch
-                          checked={entry.isActive}
-                          onCheckedChange={(v) => updatePincode.mutate({ id: entry.id, isActive: v })}
-                        />
-                      </td>
-                      <td className="p-3 text-right">
-                        <button
-                          onClick={() => deletePincode.mutate(entry.id)}
-                          className="text-muted-foreground hover:text-destructive"
-                        >
-                          Remove
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
+          <div className="hidden md:block">
+            <table className="w-full text-sm">
+              <thead className="border-b border-border/60 text-left text-xs uppercase text-muted-foreground">
                 <tr>
-                  <td className="p-8 text-center text-muted-foreground" colSpan={5}>
-                    <MapPinOff className="mx-auto mb-2 h-6 w-6" />
-                    No pincodes added yet — customers outside this list will see &quot;not deliverable yet&quot; at checkout.
-                  </td>
+                  <th className="p-3">Pincode</th>
+                  <th className="p-3">Branch</th>
+                  <th className="p-3">Est. Delivery</th>
+                  <th className="p-3">Active</th>
+                  <th className="p-3"></th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {isLoading ? (
+                  <tr><td className="p-4 text-muted-foreground" colSpan={5}>Loading...</td></tr>
+                ) : data && data.items.length > 0 ? (
+                  data.items.map((entry) => {
+                    const branch = typeof entry.branchId === 'object' ? entry.branchId : null;
+                    return (
+                      <tr key={entry.id} className="border-b border-border/40">
+                        <td className="p-3 font-medium">{entry.pincode}</td>
+                        <td className="p-3">{branch?.name ?? String(entry.branchId)}</td>
+                        <td className="p-3">
+                          <Badge variant="secondary">
+                            {entry.estimatedDeliveryMinutes < 60
+                              ? `${entry.estimatedDeliveryMinutes} mins`
+                              : `${(entry.estimatedDeliveryMinutes / 60).toFixed(1)} hrs`}
+                          </Badge>
+                        </td>
+                        <td className="p-3">
+                          <Switch
+                            checked={entry.isActive}
+                            onCheckedChange={(v) => updatePincode.mutate({ id: entry.id, isActive: v })}
+                          />
+                        </td>
+                        <td className="p-3 text-right">
+                          <button
+                            onClick={() => deletePincode.mutate(entry.id)}
+                            className="text-muted-foreground hover:text-destructive"
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td className="p-8 text-center text-muted-foreground" colSpan={5}>
+                      <MapPinOff className="mx-auto mb-2 h-6 w-6" />
+                      No pincodes added yet. Customers outside this list will see "not deliverable yet" at checkout.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="divide-y divide-border/60 md:hidden">
+            {isLoading ? (
+              <p className="p-4 text-sm text-muted-foreground">Loading...</p>
+            ) : data && data.items.length > 0 ? (
+              data.items.map((entry) => {
+                const branch = typeof entry.branchId === 'object' ? entry.branchId : null;
+                return (
+                  <div key={entry.id} className="space-y-3 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-medium">{entry.pincode}</p>
+                        <p className="text-sm text-muted-foreground">{branch?.name ?? String(entry.branchId)}</p>
+                      </div>
+                      <Switch
+                        checked={entry.isActive}
+                        onCheckedChange={(v) => updatePincode.mutate({ id: entry.id, isActive: v })}
+                      />
+                    </div>
+                    <Badge variant="secondary">
+                      {entry.estimatedDeliveryMinutes < 60
+                        ? `${entry.estimatedDeliveryMinutes} mins`
+                        : `${(entry.estimatedDeliveryMinutes / 60).toFixed(1)} hrs`}
+                    </Badge>
+                    <div>
+                      <button
+                        onClick={() => deletePincode.mutate(entry.id)}
+                        className="text-sm text-muted-foreground hover:text-destructive"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="p-8 text-center text-muted-foreground">
+                <MapPinOff className="mx-auto mb-2 h-6 w-6" />
+                No pincodes added yet. Customers outside this list will see "not deliverable yet" at checkout.
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 
       {data?.meta.pagination && (
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <div className="flex flex-col gap-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <span>
             Page {data.meta.pagination.page} of {data.meta.pagination.totalPages} ({data.meta.pagination.total} pincodes)
           </span>
@@ -238,7 +280,7 @@ export default function ServiceAreasPage() {
             <DialogTitle>Add Pincodes by City</DialogTitle>
           </DialogHeader>
           <div className="grid gap-3">
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <div className="flex-1">
                 <Label>City</Label>
                 <Input
@@ -248,7 +290,7 @@ export default function ServiceAreasPage() {
                   placeholder="Jammu"
                 />
               </div>
-              <Button className="self-end" onClick={handleCitySearch} disabled={lookupCity.isPending}>
+              <Button className="sm:self-end" onClick={handleCitySearch} disabled={lookupCity.isPending}>
                 Search
               </Button>
             </div>
@@ -277,9 +319,9 @@ export default function ServiceAreasPage() {
                 </div>
 
                 <div>
-                  <div className="mb-1 flex items-center justify-between">
+                  <div className="mb-1 flex items-center justify-between gap-3">
                     <Label>
-                      Found {cityResults.length} pincode(s) — {selectedPincodes.size} selected
+                      Found {cityResults.length} pincode(s) / {selectedPincodes.size} selected
                     </Label>
                     <button
                       type="button"
@@ -315,8 +357,8 @@ export default function ServiceAreasPage() {
                     ))}
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Pincodes flagged with a district/state badge didn&apos;t match &quot;{cityForm.city}&quot; as a district —
-                    double-check those before including them.
+                    Pincodes flagged with a district/state badge did not match "{cityForm.city}" as a district. Double-check
+                    those before including them.
                   </p>
                 </div>
 
