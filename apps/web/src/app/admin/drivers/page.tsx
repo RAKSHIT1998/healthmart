@@ -22,15 +22,21 @@ export default function DriversPage() {
   const isLoading = view === 'available' ? loadingAvailable : loadingAll;
   const createDriver = useCreateDriver();
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ name: '', phone: '', vehicleType: 'bike' as const, vehicleNumber: '' });
+  const [form, setForm] = useState({
+    name: '',
+    phone: '',
+    vehicleType: 'bike' as const,
+    vehicleNumber: '',
+    branchId: '',
+  });
 
   function handleSubmit() {
-    if (!branchId) return;
+    if (!form.branchId) return;
     const payload = {
       name: form.name.trim(),
       phone: form.phone.trim(),
       vehicleType: form.vehicleType,
-      branchId,
+      branchId: form.branchId,
       ...(form.vehicleNumber.trim() ? { vehicleNumber: form.vehicleNumber.trim().toUpperCase() } : {}),
     };
     createDriver.mutate(
@@ -38,7 +44,13 @@ export default function DriversPage() {
       {
         onSuccess: () => {
           setOpen(false);
-          setForm({ name: '', phone: '', vehicleType: 'bike', vehicleNumber: '' });
+          setForm({
+            name: '',
+            phone: '',
+            vehicleType: 'bike',
+            vehicleNumber: '',
+            branchId,
+          });
         },
       },
     );
@@ -48,7 +60,15 @@ export default function DriversPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Delivery Drivers</h1>
-        <Button onClick={() => setOpen(true)}>
+        <Button
+          onClick={() => {
+            setForm((current) => ({
+              ...current,
+              branchId: current.branchId || branchId,
+            }));
+            setOpen(true);
+          }}
+        >
           <Plus className="h-4 w-4" /> Register Driver
         </Button>
       </div>
@@ -115,6 +135,17 @@ export default function DriversPage() {
           </DialogHeader>
           <div className="grid gap-3">
             <div>
+              <Label>Branch</Label>
+              <Select value={form.branchId} onValueChange={(v) => setForm({ ...form, branchId: v })}>
+                <SelectTrigger><SelectValue placeholder="Select branch" /></SelectTrigger>
+                <SelectContent>
+                  {branches?.map((b) => (
+                    <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
               <Label>Name</Label>
               <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             </div>
@@ -140,7 +171,7 @@ export default function DriversPage() {
             </div>
             <Button
               onClick={handleSubmit}
-              disabled={createDriver.isPending || !branchId || !form.name.trim() || !form.phone.trim()}
+              disabled={createDriver.isPending || !form.branchId || !form.name.trim() || !form.phone.trim()}
             >
               Register
             </Button>
