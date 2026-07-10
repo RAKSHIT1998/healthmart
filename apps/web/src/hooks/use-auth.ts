@@ -5,36 +5,49 @@ import { toast } from 'sonner';
 import { api, ApiClientError } from '@/lib/api';
 import { useAuthStore, type AuthUser } from '@/store/auth-store';
 
-interface VerifyOtpResponse {
+interface AuthResponse {
   user: AuthUser;
   tokens: { accessToken: string; refreshToken: string };
-  isNewUser: boolean;
 }
 
-export function useRequestOtp() {
+export interface CustomerSignupInput {
+  name: string;
+  phone?: string;
+  email?: string;
+  password: string;
+}
+
+export interface CustomerLoginInput {
+  phone?: string;
+  email?: string;
+  password: string;
+}
+
+function useSessionSetter() {
+  return useAuthStore((s) => s.setSession);
+}
+
+export function useCustomerSignup() {
+  const setSession = useSessionSetter();
+
   return useMutation({
-    mutationFn: (identifier: { phone: string } | { email: string }) =>
-      api.post('/auth/otp/request', { ...identifier, purpose: 'login' }, { auth: false }),
-    onSuccess: (_data, identifier) =>
-      toast.success('phone' in identifier ? 'OTP sent to your phone' : 'OTP sent to your email'),
+    mutationFn: (input: CustomerSignupInput) => api.post<AuthResponse>('/auth/signup', input, { auth: false }),
+    onSuccess: (data) => {
+      setSession({ accessToken: data.tokens.accessToken, refreshToken: data.tokens.refreshToken, user: data.user });
+      toast.success(`Welcome${data.user.name ? `, ${data.user.name}` : ''}!`);
+    },
     onError: (err: ApiClientError) => toast.error(err.message),
   });
 }
 
-interface VerifyOtpInput {
-  phone?: string;
-  email?: string;
-  otp: string;
-  name?: string;
-}
+export function useCustomerLogin() {
+  const setSession = useSessionSetter();
 
-export function useVerifyOtp() {
-  const setSession = useAuthStore((s) => s.setSession);
   return useMutation({
-    mutationFn: (input: VerifyOtpInput) => api.post<VerifyOtpResponse>('/auth/otp/verify', input, { auth: false }),
+    mutationFn: (input: CustomerLoginInput) => api.post<AuthResponse>('/auth/login', input, { auth: false }),
     onSuccess: (data) => {
       setSession({ accessToken: data.tokens.accessToken, refreshToken: data.tokens.refreshToken, user: data.user });
-      toast.success(`Welcome${data.user.name ? `, ${data.user.name}` : ''}!`);
+      toast.success(`Welcome back${data.user.name ? `, ${data.user.name}` : ''}!`);
     },
     onError: (err: ApiClientError) => toast.error(err.message),
   });

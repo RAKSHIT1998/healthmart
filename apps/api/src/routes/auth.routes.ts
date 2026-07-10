@@ -1,5 +1,13 @@
 import { Router } from 'express';
-import { createStaffUserSchema, refreshTokenSchema, sendOtpSchema, staffLoginSchema, verifyOtpSchema } from '@buymedicines/shared';
+import {
+  createStaffUserSchema,
+  customerLoginSchema,
+  customerSignupSchema,
+  refreshTokenSchema,
+  sendOtpSchema,
+  staffLoginSchema,
+  verifyOtpSchema,
+} from '@buymedicines/shared';
 import * as authController from '../controllers/auth.controller';
 import { validate } from '../middlewares/validate.middleware';
 import { authenticate } from '../middlewares/auth.middleware';
@@ -12,6 +20,8 @@ import * as userService from '../services/user.service';
 
 const router = Router();
 
+router.post('/signup', authRateLimiter, validate({ body: customerSignupSchema }), authController.signup);
+router.post('/login', authRateLimiter, validate({ body: customerLoginSchema }), authController.login);
 router.post('/otp/request', otpRateLimiter, validate({ body: sendOtpSchema }), authController.requestOtp);
 router.post('/otp/verify', authRateLimiter, validate({ body: verifyOtpSchema }), authController.verifyOtp);
 router.post('/staff/login', authRateLimiter, validate({ body: staffLoginSchema }), authController.staffLogin);

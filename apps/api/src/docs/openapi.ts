@@ -61,8 +61,8 @@ function buildPaths() {
   const paths: Record<string, Record<string, unknown>> = {};
 
   // Auth
-  path(paths, '/auth/otp/request', 'post', 'Auth', { summary: 'Request a login/signup OTP', body: true });
-  path(paths, '/auth/otp/verify', 'post', 'Auth', { summary: 'Verify OTP and obtain tokens', body: true });
+  path(paths, '/auth/signup', 'post', 'Auth', { summary: 'Create a customer account with mobile/email and password', body: true });
+  path(paths, '/auth/login', 'post', 'Auth', { summary: 'Customer login with mobile/email and password', body: true });
   path(paths, '/auth/staff/login', 'post', 'Auth', { summary: 'Staff email/password login', body: true });
   path(paths, '/auth/refresh', 'post', 'Auth', { summary: 'Rotate access/refresh tokens', body: true });
   path(paths, '/auth/logout', 'post', 'Auth', { summary: 'Revoke a single refresh token', body: true });

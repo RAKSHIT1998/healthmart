@@ -16,7 +16,7 @@ const SECTIONS = [
   },
   {
     title: '3. Account Responsibility',
-    body: 'You are responsible for maintaining the confidentiality of your account and OTP. BuyMedicines.store is not liable for unauthorized access resulting from your failure to safeguard your login credentials.',
+    body: 'You are responsible for maintaining the confidentiality of your account credentials. BuyMedicines.store is not liable for unauthorized access resulting from your failure to safeguard your login details.',
   },
   {
     title: '4. Pricing & Availability',

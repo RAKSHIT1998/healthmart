@@ -5,6 +5,16 @@ import { ApiError } from '../utils/ApiError';
 import * as authService from '../services/auth.service';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
 
+export const signup = asyncHandler(async (req: Request, res: Response) => {
+  const { user, tokens } = await authService.signupCustomer(req.body, req);
+  sendSuccess(res, { user, tokens }, 'Account created successfully', 201);
+});
+
+export const login = asyncHandler(async (req: Request, res: Response) => {
+  const { user, tokens } = await authService.loginCustomer(req.body, req);
+  sendSuccess(res, { user, tokens }, 'Logged in successfully');
+});
+
 export const requestOtp = asyncHandler(async (req: Request, res: Response) => {
   await authService.requestOtp(req.body);
   sendSuccess(res, null, 'OTP sent successfully');

@@ -1,9 +1,17 @@
 import type { Request } from 'express';
-import { Role, TOKEN_CONFIG, type SendOtpInput, type StaffLoginInput, type VerifyOtpInput } from '@buymedicines/shared';
+import {
+  Role,
+  TOKEN_CONFIG,
+  type CustomerLoginInput,
+  type CustomerSignupInput,
+  type SendOtpInput,
+  type StaffLoginInput,
+  type VerifyOtpInput,
+} from '@buymedicines/shared';
 import { OtpModel, RefreshTokenModel, UserModel, type IUser } from '../models';
 import { userRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
-import { comparePassword } from '../utils/hash';
+import { comparePassword, hashPassword } from '../utils/hash';
 import { generateOtp, otpExpiryDate } from '../utils/otp';
 import { hashToken, generateTokenId, signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt';
 import { sendOtpSms } from '../integrations/msg91';
@@ -66,6 +74,63 @@ async function issueTokenPair(user: IUser, req: Request, family?: string): Promi
   });
 
   return { accessToken, refreshToken, expiresIn: TOKEN_CONFIG.ACCESS_TOKEN_EXPIRY };
+}
+
+function buildAuthResponse(user: IUser, tokens: TokenPair) {
+  return { user, tokens };
+}
+
+export async function signupCustomer(input: CustomerSignupInput, req: Request): Promise<{ user: IUser; tokens: TokenPair }> {
+  const normalizedEmail = input.email?.toLowerCase();
+  const normalizedPhone = input.phone?.replace(/^\+91/, '');
+
+  const existing = await UserModel.findOne({
+    $or: [{ ...(normalizedEmail ? { email: normalizedEmail } : {}) }, { ...(normalizedPhone ? { phone: normalizedPhone } : {}) }].filter(
+      (candidate) => Object.keys(candidate).length > 0,
+    ),
+  });
+
+  if (existing) {
+    throw ApiError.conflict('An account with this mobile number or email already exists');
+  }
+
+  const user = await UserModel.create({
+    name: input.name.trim(),
+    phone: normalizedPhone,
+    email: normalizedEmail,
+    passwordHash: await hashPassword(input.password),
+    role: Role.CUSTOMER,
+    isPhoneVerified: Boolean(normalizedPhone),
+    isEmailVerified: Boolean(normalizedEmail),
+    lastLoginAt: new Date(),
+  });
+
+  const tokens = await issueTokenPair(user, req);
+  return buildAuthResponse(user, tokens);
+}
+
+export async function loginCustomer(input: CustomerLoginInput, req: Request): Promise<{ user: IUser; tokens: TokenPair }> {
+  const user = input.phone
+    ? await userRepository.findByPhone(input.phone.replace(/^\+91/, ''))
+    : await userRepository.findByEmail(input.email!);
+
+  if (!user || !user.passwordHash || user.role !== Role.CUSTOMER) {
+    throw ApiError.unauthorized('Invalid mobile number/email or password');
+  }
+  if (!user.isActive) {
+    throw ApiError.forbidden('Your account has been deactivated. Contact support.');
+  }
+
+  const isValid = await comparePassword(input.password, user.passwordHash);
+  if (!isValid) {
+    throw ApiError.unauthorized('Invalid mobile number/email or password');
+  }
+
+  user.lastLoginAt = new Date();
+  await user.save();
+
+  const tokens = await issueTokenPair(user, req);
+  return buildAuthResponse(user, tokens);
 }
 
 export async function verifyOtpAndAuthenticate(

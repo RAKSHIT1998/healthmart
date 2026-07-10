@@ -1,10 +1,11 @@
 import type { Request } from 'express';
 import { setupTestDB, teardownTestDB, clearDatabase } from './utils/db';
-import { OtpModel, RefreshTokenModel } from '../src/models';
-import { hashToken, generateTokenId, signRefreshToken } from '../src/utils/jwt';
-import { generateOtp, otpExpiryDate } from '../src/utils/otp';
+import { RefreshTokenModel, UserModel } from '../src/models';
+import { generateTokenId, signRefreshToken } from '../src/utils/jwt';
 import * as authService from '../src/services/auth.service';
 import { ApiError } from '../src/utils/ApiError';
+import { createCustomer } from './utils/fixtures';
+import { hashPassword } from '../src/utils/hash';
 
 const fakeRequest = { headers: {}, ip: '127.0.0.1' } as unknown as Request;
 
@@ -12,34 +13,19 @@ beforeAll(setupTestDB);
 afterAll(teardownTestDB);
 afterEach(clearDatabase);
 
-describe('OTP request', () => {
-  it('creates a pending OTP record for the phone number', async () => {
-    await authService.requestOtp({ phone: '9876543210', purpose: 'login' });
-    const otp = await OtpModel.findOne({ phone: '9876543210' });
-    expect(otp).not.toBeNull();
-    expect(otp!.verified).toBe(false);
-  });
+describe('Customer signup and login', () => {
+  it('creates a new customer account with password and issues tokens', async () => {
+    const result = await authService.signupCustomer(
+      {
+        name: 'New Customer',
+        phone: '9876543210',
+        password: 'SecurePass123',
+      },
+      fakeRequest,
+    );
 
-  it('throttles repeated OTP requests within the cooldown window', async () => {
-    await authService.requestOtp({ phone: '9876543211', purpose: 'login' });
-    await expect(authService.requestOtp({ phone: '9876543211', purpose: 'login' })).rejects.toThrow(ApiError);
-  });
-});
-
-describe('OTP verification and session issuance', () => {
-  async function seedOtp(phone: string, otp: string) {
-    await OtpModel.create({ phone, otpHash: hashToken(otp), purpose: 'login', expiresAt: otpExpiryDate() });
-  }
-
-  it('creates a new customer account and issues a token pair on first verification', async () => {
-    const phone = '9123456780';
-    const otp = generateOtp();
-    await seedOtp(phone, otp);
-
-    const result = await authService.verifyOtpAndAuthenticate({ phone, otp, name: 'New Customer' }, fakeRequest);
-
-    expect(result.isNewUser).toBe(true);
-    expect(result.user.phone).toBe(phone);
+    expect(result.user.phone).toBe('9876543210');
+    expect(result.user.role).toBe('customer');
     expect(result.tokens.accessToken).toBeTruthy();
     expect(result.tokens.refreshToken).toBeTruthy();
 
@@ -47,33 +33,95 @@ describe('OTP verification and session issuance', () => {
     expect(storedRefreshToken).not.toBeNull();
   });
 
-  it('rejects an incorrect OTP and increments the attempt counter', async () => {
-    const phone = '9123456781';
-    await seedOtp(phone, '111111');
+  it('rejects signup when the mobile number already exists', async () => {
+    await createCustomer({ phone: '9876543211', email: 'dup@example.com' });
 
-    await expect(authService.verifyOtpAndAuthenticate({ phone, otp: '000000' }, fakeRequest)).rejects.toThrow(ApiError);
+    await expect(
+      authService.signupCustomer(
+        {
+          name: 'Duplicate Customer',
+          phone: '9876543211',
+          password: 'SecurePass123',
+        },
+        fakeRequest,
+      ),
+    ).rejects.toThrow(ApiError);
+  });
 
-    const otpRecord = await OtpModel.findOne({ phone });
-    expect(otpRecord!.attempts).toBe(1);
+  it('logs in an existing customer by phone', async () => {
+    const customer = await createCustomer({
+      phone: '9876543212',
+      passwordHash: await hashPassword('SecurePass123'),
+    });
+
+    const result = await authService.loginCustomer(
+      {
+        phone: '9876543212',
+        password: 'SecurePass123',
+      },
+      fakeRequest,
+    );
+
+    expect(String(result.user._id)).toBe(String(customer._id));
+    expect(result.tokens.accessToken).toBeTruthy();
+  });
+
+  it('logs in an existing customer by email', async () => {
+    const customer = await createCustomer({
+      email: 'customer@example.com',
+      passwordHash: await hashPassword('SecurePass123'),
+    });
+
+    const result = await authService.loginCustomer(
+      {
+        email: 'customer@example.com',
+        password: 'SecurePass123',
+      },
+      fakeRequest,
+    );
+
+    expect(String(result.user._id)).toBe(String(customer._id));
+    expect(result.tokens.refreshToken).toBeTruthy();
+  });
+
+  it('rejects an incorrect customer password', async () => {
+    await createCustomer({
+      phone: '9876543213',
+      passwordHash: await hashPassword('SecurePass123'),
+    });
+
+    await expect(
+      authService.loginCustomer(
+        {
+          phone: '9876543213',
+          password: 'WrongPass123',
+        },
+        fakeRequest,
+      ),
+    ).rejects.toThrow(ApiError);
   });
 });
 
 describe('Refresh token rotation', () => {
   it('rotates the refresh token and revokes the previous one', async () => {
-    const phone = '9123456782';
-    const otp = generateOtp();
-    await OtpModel.create({ phone, otpHash: hashToken(otp), purpose: 'login', expiresAt: otpExpiryDate() });
-    const { tokens } = await authService.verifyOtpAndAuthenticate({ phone, otp }, fakeRequest);
+    const user = await UserModel.create({
+      name: 'Refresh Customer',
+      phone: '9876543220',
+      passwordHash: await hashPassword('SecurePass123'),
+      role: 'customer',
+      isPhoneVerified: true,
+      isActive: true,
+    });
+
+    const { tokens } = await authService.loginCustomer({ phone: '9876543220', password: 'SecurePass123' }, fakeRequest);
 
     const rotated = await authService.refreshAccessToken(tokens.refreshToken, fakeRequest);
     expect(rotated.accessToken).toBeTruthy();
     expect(rotated.refreshToken).not.toBe(tokens.refreshToken);
 
-    // Reusing the original (now-rotated-away) refresh token must fail and revoke the whole family.
     await expect(authService.refreshAccessToken(tokens.refreshToken, fakeRequest)).rejects.toThrow(ApiError);
-
-    // The freshly rotated token should now also be revoked as a consequence of the reuse-detection sweep.
     await expect(authService.refreshAccessToken(rotated.refreshToken, fakeRequest)).rejects.toThrow(ApiError);
+    expect(String(user._id)).toBeTruthy();
   });
 
   it('rejects a refresh token with a forged jti not present in the database', async () => {

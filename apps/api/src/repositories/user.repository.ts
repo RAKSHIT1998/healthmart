@@ -7,7 +7,7 @@ class UserRepository extends BaseRepository<IUser> {
   }
 
   async findByPhone(phone: string) {
-    return this.model.findOne({ phone });
+    return this.model.findOne({ phone }).select('+passwordHash');
   }
 
   async findByEmail(email: string) {
