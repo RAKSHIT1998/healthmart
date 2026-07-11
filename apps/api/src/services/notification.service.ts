@@ -1,10 +1,11 @@
 import { NotificationChannel, NotificationType, Role } from '@buymedicines/shared';
 import { notificationRepository } from '../repositories';
 import { UserModel } from '../models';
-import { sendTransactionalSms, sendWhatsAppMessage } from '../integrations/msg91';
+import { sendTransactionalSms } from '../integrations/msg91';
 import { sendEmail } from '../integrations/resend';
 import { sendPushNotification } from '../integrations/firebase';
 import { logger } from '../config/logger';
+import { sendWhatsAppText } from './whatsapp-provider.service';
 
 interface NotifyParams {
   userId: string;
@@ -66,7 +67,11 @@ export async function notifyUser({
       } else if (channel === NotificationChannel.PUSH && user.fcmTokens.length > 0) {
         await sendPushNotification({ tokens: user.fcmTokens, title, body: message, data: data as Record<string, string> });
       } else if (channel === NotificationChannel.WHATSAPP && user.phone) {
-        await sendWhatsAppMessage({ phone: user.phone, bodyParams: [title, message] });
+        await sendWhatsAppText({
+          phone: user.phone,
+          text: `${title}\n\n${message}`,
+          bodyParams: [title, message],
+        });
       }
     } catch (err) {
       logger.error({ err, channel, userId }, 'Notification dispatch failed');

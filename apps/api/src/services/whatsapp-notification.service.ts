@@ -1,7 +1,7 @@
 import { env } from '../config/env';
 import { logger } from '../config/logger';
 import type { IOrder } from '../models';
-import { sendWhatsAppMessage } from '../integrations/msg91';
+import { sendWhatsAppDocument, sendWhatsAppLocation, sendWhatsAppText } from './whatsapp-provider.service';
 
 function googleMapsPinUrl(lat: number, lng: number): string {
   return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
@@ -26,18 +26,29 @@ export async function sendInvoiceWhatsAppToCustomer(params: {
 
   const fallbackOrderUrl = `${env.SITE_URL.replace(/\/$/, '')}/orders/${order.id}`;
   const billLink = invoiceUrl ?? fallbackOrderUrl;
+  const filename = `${invoiceNumber.replace(/[^\w.-]+/g, '_')}.pdf`;
 
   try {
-    await sendWhatsAppMessage({
-      phone: customerPhone,
-      templateName: env.MSG91_WHATSAPP_INVOICE_TEMPLATE_ID,
-      bodyParams: [
-        customerName ?? order.addressSnapshot.contactName,
-        order.orderNumber,
-        invoiceNumber,
-        billLink,
-      ],
-    });
+    if (invoiceUrl && env.WHATSAPP_PROVIDER === 'openwa') {
+      await sendWhatsAppDocument({
+        phone: customerPhone,
+        url: invoiceUrl,
+        filename,
+        caption: `Invoice ${invoiceNumber} for order ${order.orderNumber}`,
+      });
+    } else {
+      await sendWhatsAppText({
+        phone: customerPhone,
+        templateName: env.MSG91_WHATSAPP_INVOICE_TEMPLATE_ID,
+        text: `Hi ${customerName ?? order.addressSnapshot.contactName}, invoice ${invoiceNumber} for order ${order.orderNumber}: ${billLink}`,
+        bodyParams: [
+          customerName ?? order.addressSnapshot.contactName,
+          order.orderNumber,
+          invoiceNumber,
+          billLink,
+        ],
+      });
+    }
   } catch (err) {
     logger.error({ err, orderId: order.id }, 'Customer invoice WhatsApp failed');
   }
@@ -64,9 +75,16 @@ export async function sendDriverAssignmentWhatsApp(params: {
     order.paymentMethod === 'cod' ? `Collect Rs. ${Math.round(order.totalAmount)} on delivery.` : 'Payment already completed online.';
 
   try {
-    await sendWhatsAppMessage({
+    await sendWhatsAppText({
       phone: driverPhone,
       templateName: env.MSG91_WHATSAPP_DRIVER_ASSIGN_TEMPLATE_ID,
+      text: [
+        `New delivery assigned: ${order.orderNumber}`,
+        `Customer: ${address.contactName} (${address.contactPhone})`,
+        `Address: ${addressLine}`,
+        `Map: ${mapsLink}`,
+        collectionNote,
+      ].join('\n'),
       bodyParams: [
         driverName ?? 'Driver',
         order.orderNumber,
@@ -77,6 +95,16 @@ export async function sendDriverAssignmentWhatsApp(params: {
         collectionNote,
       ],
     });
+
+    if (env.WHATSAPP_PROVIDER === 'openwa') {
+      await sendWhatsAppLocation({
+        phone: driverPhone,
+        latitude: address.lat,
+        longitude: address.lng,
+        description: `Delivery ${order.orderNumber}`,
+        address: addressLine,
+      });
+    }
   } catch (err) {
     logger.error({ err, orderId: order.id }, 'Driver assignment WhatsApp failed');
   }
@@ -97,9 +125,17 @@ export async function sendSalesTeamOrderAlertWhatsApp(params: {
   await Promise.all(
     recipients.map(async (phone) => {
       try {
-        await sendWhatsAppMessage({
+        await sendWhatsAppText({
           phone,
           templateName: env.MSG91_WHATSAPP_SALES_ALERT_TEMPLATE_ID,
+          text: [
+            `New order: ${order.orderNumber}`,
+            `Customer: ${customerName ?? address.contactName}`,
+            `Amount: Rs. ${Math.round(order.totalAmount)}`,
+            `Payment: ${order.paymentMethod.toUpperCase()}`,
+            `Location: ${shortAddress}`,
+            `Open: ${orderLink}`,
+          ].join('\n'),
           bodyParams: [
             order.orderNumber,
             customerName ?? address.contactName,

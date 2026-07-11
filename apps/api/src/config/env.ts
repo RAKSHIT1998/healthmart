@@ -34,6 +34,10 @@ const envSchema = z.object({
   MSG91_WHATSAPP_DRIVER_ASSIGN_TEMPLATE_ID: z.string().optional(),
   MSG91_WHATSAPP_SALES_ALERT_TEMPLATE_ID: z.string().optional(),
   SALES_TEAM_WHATSAPP_NUMBERS: z.string().optional(),
+  WHATSAPP_PROVIDER: z.enum(['msg91', 'openwa']).default('msg91'),
+  OPENWA_BASE_URL: z.string().url().optional(),
+  OPENWA_API_KEY: z.string().optional(),
+  OPENWA_SESSION_ID: z.string().optional(),
 
   // Resend (optional)
   RESEND_API_KEY: z.string().optional(),
