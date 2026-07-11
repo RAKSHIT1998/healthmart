@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Plus, Star, Trophy } from 'lucide-react';
+import { Role } from '@buymedicines/shared';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,9 +12,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useBranches } from '@/hooks/admin/use-catalog';
 import { useAllDrivers, useAvailableDrivers, useCreateDriver } from '@/hooks/admin/use-drivers';
+import { useAuthStore } from '@/store/admin-auth-store';
 
 export default function DriversPage() {
   const { data: branches } = useBranches();
+  const currentRole = useAuthStore((s) => s.user?.role);
+  const canRegisterDrivers = currentRole === Role.ADMIN || currentRole === Role.MANAGER;
   const [branchId, setBranchId] = useState('');
   const [view, setView] = useState<'available' | 'all'>('available');
   const { data: availableDrivers, isLoading: loadingAvailable } = useAvailableDrivers(branchId);
@@ -60,18 +64,20 @@ export default function DriversPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold">Delivery Drivers</h1>
-        <Button
-          className="w-full sm:w-auto"
-          onClick={() => {
-            setForm((current) => ({
-              ...current,
-              branchId: current.branchId || branchId,
-            }));
-            setOpen(true);
-          }}
-        >
-          <Plus className="h-4 w-4" /> Register Driver
-        </Button>
+        {canRegisterDrivers ? (
+          <Button
+            className="w-full sm:w-auto"
+            onClick={() => {
+              setForm((current) => ({
+                ...current,
+                branchId: current.branchId || branchId,
+              }));
+              setOpen(true);
+            }}
+          >
+            <Plus className="h-4 w-4" /> Register Driver
+          </Button>
+        ) : null}
       </div>
 
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -129,7 +135,7 @@ export default function DriversPage() {
         </div>
       )}
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open && canRegisterDrivers} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Register Driver</DialogTitle>

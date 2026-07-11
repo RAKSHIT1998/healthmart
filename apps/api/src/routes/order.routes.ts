@@ -42,7 +42,7 @@ router.patch(
 );
 router.patch(
   '/admin/:id/assign-driver',
-  requireRole(Role.ADMIN, Role.MANAGER),
+  requireRole(Role.ADMIN, Role.MANAGER, Role.PHARMACIST),
   validate({ params: z.object({ id: objectIdSchema }), body: assignDriverSchema }),
   orderController.assignDriver,
 );

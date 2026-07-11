@@ -52,7 +52,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/admin/orders', label: 'Orders', icon: ClipboardList, roles: [Role.ADMIN, Role.MANAGER, Role.PHARMACIST], section: 'Operations' },
   { href: '/admin/returns', label: 'Returns', icon: RotateCcw, roles: [Role.ADMIN, Role.MANAGER, Role.PHARMACIST], section: 'Operations' },
   { href: '/admin/prescriptions', label: 'Prescriptions', icon: FileText, roles: [Role.ADMIN, Role.MANAGER, Role.PHARMACIST], section: 'Operations' },
-  { href: '/admin/drivers', label: 'Drivers', icon: Truck, roles: [Role.ADMIN, Role.MANAGER], section: 'Operations' },
+  { href: '/admin/drivers', label: 'Drivers', icon: Truck, roles: [Role.ADMIN, Role.MANAGER, Role.PHARMACIST], section: 'Operations' },
   { href: '/admin/doctors', label: 'Doctors', icon: Stethoscope, roles: [Role.ADMIN], section: 'Operations' },
   { href: '/admin/deliveries', label: 'My Deliveries', icon: Truck, roles: [Role.DELIVERY_BOY], section: 'Operations' },
   { href: '/admin/my-appointments', label: 'My Appointments', icon: Stethoscope, roles: [Role.DOCTOR], section: 'Operations' },

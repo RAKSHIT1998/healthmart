@@ -6,11 +6,13 @@ import { Sidebar } from '@/components/admin/sidebar';
 import { Topbar } from '@/components/admin/topbar';
 import { useAuthStore } from '@/store/admin-auth-store';
 import { useAdminNotifications } from '@/hooks/admin/use-admin-notifications';
+import { NAV_ITEMS } from '@/components/admin/sidebar';
 import './admin.css';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const accessToken = useAuthStore((s) => s.accessToken);
   const hasHydrated = useAuthStore((s) => s.hasHydrated);
+  const role = useAuthStore((s) => s.user?.role);
   const router = useRouter();
   const pathname = usePathname();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -20,6 +22,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     if (hasHydrated && !accessToken && !isLoginPage) router.push('/admin/login');
   }, [hasHydrated, accessToken, router, isLoginPage]);
+
+  useEffect(() => {
+    if (!hasHydrated || !accessToken || !role || isLoginPage || pathname === '/admin') return;
+
+    const currentItem = NAV_ITEMS.find((item) => item.href === pathname);
+    if (currentItem && !currentItem.roles.includes(role)) {
+      const landing = NAV_ITEMS.find((item) => item.roles.includes(role))?.href ?? '/admin/login';
+      router.replace(landing);
+    }
+  }, [hasHydrated, accessToken, role, isLoginPage, pathname, router]);
 
   useEffect(() => {
     setMobileNavOpen(false);
