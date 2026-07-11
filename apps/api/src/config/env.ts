@@ -8,6 +8,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().default(5000),
   API_BASE_URL: z.string().url().default('http://localhost:5000'),
+  SITE_URL: z.string().url().default('https://buymedicine.store'),
   CORS_ORIGINS: z.string().default('http://localhost:3000'),
 
   // Required — validated at runtime in server.ts (not here), so missing values
@@ -29,6 +30,10 @@ const envSchema = z.object({
   MSG91_SENDER_ID: z.string().optional(),
   MSG91_OTP_TEMPLATE_ID: z.string().optional(),
   MSG91_WHATSAPP_TEMPLATE_ID: z.string().optional(),
+  MSG91_WHATSAPP_INVOICE_TEMPLATE_ID: z.string().optional(),
+  MSG91_WHATSAPP_DRIVER_ASSIGN_TEMPLATE_ID: z.string().optional(),
+  MSG91_WHATSAPP_SALES_ALERT_TEMPLATE_ID: z.string().optional(),
+  SALES_TEAM_WHATSAPP_NUMBERS: z.string().optional(),
 
   // Resend (optional)
   RESEND_API_KEY: z.string().optional(),

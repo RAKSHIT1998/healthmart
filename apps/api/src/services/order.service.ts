@@ -30,6 +30,11 @@ import { recordCouponRedemption } from './coupon.service';
 import { creditWallet, debitWallet, getWallet } from './wallet.service';
 import { notifyStaffNewOrder, notifyUser } from './notification.service';
 import { generateInvoiceForOrder } from './invoice.service';
+import {
+  sendDriverAssignmentWhatsApp,
+  sendInvoiceWhatsAppToCustomer,
+  sendSalesTeamOrderAlertWhatsApp,
+} from './whatsapp-notification.service';
 import { rewardReferralOnFirstDelivery } from './promotions.service';
 import { checkServiceability } from './serviceability.service';
 import { emitDriverAssigned, emitNewOrderAlert, emitOrderStatus } from '../realtime/socket';
@@ -225,6 +230,7 @@ export async function confirmOrderPlacement(orderId: string): Promise<IOrder> {
     totalAmount: order.totalAmount,
     branchId: order.branchId ? String(order.branchId) : undefined,
   });
+  void sendSalesTeamOrderAlertWhatsApp({ order });
 
   emitNewOrderAlert({
     id: String(order._id),
@@ -328,7 +334,14 @@ export async function updateOrderStatus(
     if (order.driverId) {
       await driverRepository.incrementDeliveries(String(order.driverId));
     }
-    await generateInvoiceForOrder(order);
+    const invoice = await generateInvoiceForOrder(order);
+    void sendInvoiceWhatsAppToCustomer({
+      order,
+      customerPhone: order.addressSnapshot.contactPhone,
+      customerName: order.addressSnapshot.contactName,
+      invoiceNumber: invoice.invoiceNumber,
+      invoiceUrl: invoice.pdfUrl,
+    });
     void pushSaleInvoiceToMarg(order);
   }
 
@@ -415,6 +428,11 @@ export async function assignDriver(orderId: string, driverId: string): Promise<I
       name: driver.userId.name,
       phone: driver.userId.phone,
       vehicleNumber: driver.vehicleNumber,
+    });
+    void sendDriverAssignmentWhatsApp({
+      order,
+      driverPhone: driver.userId.phone,
+      driverName: driver.userId.name,
     });
 
     // Best-effort ETA from the driver's last known position (or the branch, if they haven't

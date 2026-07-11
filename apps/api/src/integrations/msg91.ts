@@ -68,6 +68,8 @@ interface WhatsAppTemplateParams {
   phone: string;
   /** Positional {{1}}, {{2}}, ... body variables for the approved WhatsApp template. */
   bodyParams: string[];
+  /** Optional template name override for use-case-specific approved templates. */
+  templateName?: string;
 }
 
 /**
@@ -81,8 +83,10 @@ interface WhatsAppTemplateParams {
  * before going live. The integration point (this function's signature) is
  * stable; only the request body may need adjusting.
  */
-export async function sendWhatsAppMessage({ phone, bodyParams }: WhatsAppTemplateParams): Promise<void> {
-  if (!env.MSG91_AUTH_KEY || !env.MSG91_WHATSAPP_TEMPLATE_ID) {
+export async function sendWhatsAppMessage({ phone, bodyParams, templateName }: WhatsAppTemplateParams): Promise<void> {
+  const resolvedTemplateName = templateName ?? env.MSG91_WHATSAPP_TEMPLATE_ID;
+
+  if (!env.MSG91_AUTH_KEY || !resolvedTemplateName) {
     logger.warn(`[MSG91 WhatsApp not configured] Message to ${phone}: ${bodyParams.join(' | ')}`);
     return;
   }
@@ -99,7 +103,7 @@ export async function sendWhatsAppMessage({ phone, bodyParams }: WhatsAppTemplat
         messaging_product: 'whatsapp',
         type: 'template',
         template: {
-          name: env.MSG91_WHATSAPP_TEMPLATE_ID,
+          name: resolvedTemplateName,
           language: { code: 'en', policy: 'deterministic' },
           to_and_components: [
             {
