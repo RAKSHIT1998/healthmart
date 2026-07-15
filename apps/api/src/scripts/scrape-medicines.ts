@@ -475,7 +475,6 @@ async function main() {
         slug: 'unknown'
       });
       logger.info('Created default manufacturer');
-    Created default manufacturer');
     }
 
     // Define list of medicines to scrape (common medicines)

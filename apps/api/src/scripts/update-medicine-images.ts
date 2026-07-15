@@ -135,7 +135,7 @@ async function persistImage(imageUrl: string, medicineName: string, dryRun: bool
     },
   });
 
-  const mimeType = response.headers['content-type'] || 'image/jpeg';
+  const mimeType = typeof response.headers['content-type'] === 'string' ? response.headers['content-type'] : 'image/jpeg';
   const uploaded = await uploadToCloudinary(Buffer.from(response.data), 'medicines', mimeType);
 
   logger.info({ medicineName, sourceUrl: imageUrl, uploadedUrl: uploaded.url }, 'Uploaded scraped image to Cloudinary');

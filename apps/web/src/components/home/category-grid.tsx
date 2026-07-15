@@ -16,8 +16,8 @@ import {
   Droplet,
   SmilePlus,
   Eye,
-  Venus,
-  Mars,
+  Heart,
+  BadgePlus,
   ShoppingBasket,
   type LucideIcon,
 } from 'lucide-react';
@@ -44,8 +44,8 @@ const CATEGORY_ICONS: Record<string, LucideIcon> = {
   'Skin Care & Dermatology': Sparkles,
   'Oral & Dental Care': SmilePlus,
   'Eye & Ear Care': Eye,
-  "Women's Health": Venus,
-  "Men's Health": Mars,
+  "Women's Health": Heart,
+  "Men's Health": BadgePlus,
 };
 
 export async function CategoryGrid() {
