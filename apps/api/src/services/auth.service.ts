@@ -50,11 +50,15 @@ async function validateOtpRecord({
 }: {
   phone?: string;
   email?: string;
-  purpose: SendOtpInput['purpose'];
+  purpose?: SendOtpInput['purpose'];
   otp: string;
 }) {
   const identifier = phone ? { phone } : { email };
-  const otpRecord = await OtpModel.findOne({ ...identifier, purpose, verified: false }).sort({ createdAt: -1 });
+  const otpRecord = await OtpModel.findOne({
+    ...identifier,
+    ...(purpose ? { purpose } : { purpose: { $ne: 'password_reset' } }),
+    verified: false,
+  }).sort({ createdAt: -1 });
 
   if (!otpRecord) throw ApiError.badRequest('No pending OTP request found');
   if (otpRecord.expiresAt < new Date()) throw ApiError.badRequest('OTP has expired, please request a new one');
@@ -183,7 +187,7 @@ export async function verifyOtpAndAuthenticate(
   req: Request,
 ): Promise<{ user: IUser; tokens: TokenPair; isNewUser: boolean }> {
   const normalized = normalizeIdentifier(input);
-  await validateOtpRecord({ ...normalized, purpose: 'login', otp: input.otp });
+  await validateOtpRecord({ ...normalized, otp: input.otp });
 
   let user = normalized.phone ? await userRepository.findByPhone(normalized.phone) : await userRepository.findByEmail(normalized.email!);
   let isNewUser = false;
