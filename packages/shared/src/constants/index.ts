@@ -51,3 +51,5 @@ export const REFERRAL_CONFIG = {
 
 export const APP_NAME = 'BuyMedicines.store';
 export const APP_TAGLINE = 'Your trusted pharmacy delivered within minutes.';
+
+export * from './medicine-images';

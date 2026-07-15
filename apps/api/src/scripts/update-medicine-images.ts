@@ -3,6 +3,7 @@ import cheerio from 'cheerio';
 import { connectDatabase, disconnectDatabase } from '../config/db';
 import { env } from '../config/env';
 import { logger } from '../config/logger';
+import { getDefaultMedicineImage } from '@buymedicines/shared';
 import { MedicineModel } from '../models';
 import { uploadToCloudinary } from '../integrations/cloudinary';
 
@@ -176,14 +177,11 @@ async function updateMedicineImages(options: CliOptions) {
           result = await searchNetmeds(medicine.name);
         }
 
-        if (!result?.imageUrl) {
-          skippedCount++;
-          logger.warn({ medicine: medicine.name }, 'No image found');
-          await delay(DELAY_BETWEEN_REQUESTS_MS);
-          continue;
-        }
+        const fallbackImageUrl = getDefaultMedicineImage(medicine.medicineType, medicine.categoryGroup);
+        const finalImageUrl = result?.imageUrl
+          ? await persistImage(result.imageUrl, medicine.name, options.dryRun)
+          : fallbackImageUrl;
 
-        const finalImageUrl = await persistImage(result.imageUrl, medicine.name, options.dryRun);
         if (!options.dryRun) {
           medicine.images = [finalImageUrl];
           await medicine.save();
@@ -191,7 +189,12 @@ async function updateMedicineImages(options: CliOptions) {
 
         updatedCount++;
         logger.info(
-          { medicine: medicine.name, source: result.source, imageUrl: finalImageUrl, dryRun: options.dryRun },
+          {
+            medicine: medicine.name,
+            source: result?.source ?? 'fallback',
+            imageUrl: finalImageUrl,
+            dryRun: options.dryRun,
+          },
           'Medicine image refreshed',
         );
       } catch (error) {

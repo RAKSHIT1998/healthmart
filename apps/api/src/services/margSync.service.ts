@@ -2,6 +2,7 @@ import {
   MargIntegrationMode,
   MargSyncEntity,
   MargSyncStatus,
+  getDefaultMedicineImage,
   type MargMedicinePayload,
   type MargStockPayload,
   type MargSupplierPayload,
@@ -78,7 +79,7 @@ export async function applyMedicinePayloads(payloads: MargMedicinePayload[]): Pr
           gstPercentage: payload.gstPercentage,
           hsnCode: payload.hsnCode || '3004',
           packSize: payload.packSize || 'N/A',
-          images: [],
+          images: [getDefaultMedicineImage('tablet', 'medicine')],
           margItemCode: payload.margItemCode,
         } as never);
       }
