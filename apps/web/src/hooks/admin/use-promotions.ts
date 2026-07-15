@@ -29,6 +29,27 @@ export interface GiftCard {
   createdAt: string;
 }
 
+export interface EmailCampaign {
+  id: string;
+  name: string;
+  subject: string;
+  previewText?: string;
+  headline: string;
+  body: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
+  audience: 'all' | 'customers' | 'staff';
+  sendToSubscribedOnly: boolean;
+  testEmail?: string;
+  status: 'draft' | 'sent' | 'failed';
+  recipientsCount: number;
+  deliveredCount: number;
+  failedCount: number;
+  lastError?: string;
+  sentAt?: string;
+  createdAt: string;
+}
+
 export function useFlashSales() {
   return useQuery({ queryKey: ['admin-flash-sales'], queryFn: () => api.get<FlashSale[]>('/promotions/flash-sales') });
 }
@@ -76,6 +97,38 @@ export function useIssueGiftCard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['issued-gift-cards'] });
       toast.success('Gift card issued');
+    },
+    onError: (err: ApiClientError) => toast.error(err.message),
+  });
+}
+
+export interface SendEmailCampaignInput {
+  name: string;
+  subject: string;
+  previewText?: string;
+  headline: string;
+  body: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
+  audience: 'all' | 'customers' | 'staff';
+  sendToSubscribedOnly: boolean;
+  testEmail?: string;
+}
+
+export function useEmailCampaigns() {
+  return useQuery({
+    queryKey: ['email-campaigns'],
+    queryFn: () => api.get<EmailCampaign[]>('/promotions/email-campaigns'),
+  });
+}
+
+export function useSendEmailCampaign() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: SendEmailCampaignInput) => api.post<EmailCampaign>('/promotions/email-campaigns', input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['email-campaigns'] });
+      toast.success('Email campaign sent');
     },
     onError: (err: ApiClientError) => toast.error(err.message),
   });

@@ -8,15 +8,19 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { formatCurrency, formatDateTime } from '@/lib/utils';
 import { MedicineSearchSelect } from '@/components/admin/medicines/medicine-search-select';
 import {
+  useEmailCampaigns,
   useCreateFlashSale,
   useFlashSales,
   useIssueGiftCard,
   useIssuedGiftCards,
+  useSendEmailCampaign,
   useToggleFlashSale,
+  type EmailCampaign,
   type FlashSaleItem,
 } from '@/hooks/admin/use-promotions';
 import type { Medicine } from '@/types/admin';
@@ -254,6 +258,194 @@ function GiftCardsTab() {
   );
 }
 
+function EmailCampaignsTab() {
+  const { data: campaigns, isLoading } = useEmailCampaigns();
+  const sendCampaign = useSendEmailCampaign();
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState('');
+  const [subject, setSubject] = useState('');
+  const [previewText, setPreviewText] = useState('');
+  const [headline, setHeadline] = useState('');
+  const [body, setBody] = useState('');
+  const [ctaLabel, setCtaLabel] = useState('');
+  const [ctaUrl, setCtaUrl] = useState('');
+  const [audience, setAudience] = useState<EmailCampaign['audience']>('customers');
+  const [sendToSubscribedOnly, setSendToSubscribedOnly] = useState(true);
+  const [testEmail, setTestEmail] = useState('');
+
+  function resetForm() {
+    setName('');
+    setSubject('');
+    setPreviewText('');
+    setHeadline('');
+    setBody('');
+    setCtaLabel('');
+    setCtaUrl('');
+    setAudience('customers');
+    setSendToSubscribedOnly(true);
+    setTestEmail('');
+  }
+
+  function handleSubmit() {
+    sendCampaign.mutate(
+      {
+        name,
+        subject,
+        previewText: previewText || undefined,
+        headline,
+        body,
+        ctaLabel: ctaLabel || undefined,
+        ctaUrl: ctaUrl || undefined,
+        audience,
+        sendToSubscribedOnly,
+        testEmail: testEmail || undefined,
+      },
+      {
+        onSuccess: () => {
+          setOpen(false);
+          resetForm();
+        },
+      },
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button onClick={() => setOpen(true)}>
+          <Plus className="h-4 w-4" /> Send Campaign
+        </Button>
+      </div>
+
+      <Card>
+        <CardContent className="p-0">
+          <table className="w-full text-sm">
+            <thead className="border-b border-border/60 text-left text-xs uppercase text-muted-foreground">
+              <tr>
+                <th className="p-3">Campaign</th>
+                <th className="p-3">Audience</th>
+                <th className="p-3">Status</th>
+                <th className="p-3">Delivered</th>
+                <th className="p-3">Sent</th>
+              </tr>
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <tr><td className="p-4 text-muted-foreground" colSpan={5}>Loading...</td></tr>
+              ) : campaigns && campaigns.length > 0 ? (
+                campaigns.map((campaign) => (
+                  <tr key={campaign.id} className="border-b border-border/40">
+                    <td className="p-3">
+                      <div className="font-medium">{campaign.name}</div>
+                      <div className="text-xs text-muted-foreground">{campaign.subject}</div>
+                    </td>
+                    <td className="p-3 capitalize">{campaign.audience}</td>
+                    <td className="p-3">
+                      <Badge variant={campaign.status === 'sent' ? 'success' : campaign.status === 'failed' ? 'destructive' : 'secondary'}>
+                        {campaign.status}
+                      </Badge>
+                    </td>
+                    <td className="p-3">{campaign.deliveredCount}/{campaign.recipientsCount}</td>
+                    <td className="p-3 text-xs text-muted-foreground">{formatDateTime(campaign.sentAt || campaign.createdAt)}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr><td className="p-4 text-muted-foreground" colSpan={5}>No email campaigns sent yet.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </CardContent>
+      </Card>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Send Promotional Email</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Campaign Name</Label>
+                <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Monsoon Wellness Offer" />
+              </div>
+              <div>
+                <Label>Audience</Label>
+                <select
+                  value={audience}
+                  onChange={(e) => setAudience(e.target.value as EmailCampaign['audience'])}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="customers">Customers</option>
+                  <option value="staff">Staff</option>
+                  <option value="all">Everyone</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <Label>Subject</Label>
+              <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Flat 20% off on immunity essentials" />
+            </div>
+            <div>
+              <Label>Preview Text</Label>
+              <Input value={previewText} onChange={(e) => setPreviewText(e.target.value)} placeholder="A short line shown in the inbox preview" />
+            </div>
+            <div>
+              <Label>Headline</Label>
+              <Input value={headline} onChange={(e) => setHeadline(e.target.value)} placeholder="Stay stocked, stay well" />
+            </div>
+            <div>
+              <Label>Body</Label>
+              <Textarea
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                rows={8}
+                placeholder={'Mention the offer, validity, and key products.\n\nSeparate paragraphs with a blank line for cleaner formatting.'}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>CTA Label</Label>
+                <Input value={ctaLabel} onChange={(e) => setCtaLabel(e.target.value)} placeholder="Shop the offer" />
+              </div>
+              <div>
+                <Label>CTA URL</Label>
+                <Input value={ctaUrl} onChange={(e) => setCtaUrl(e.target.value)} placeholder="https://buymedicine.store/shop" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Test Email (optional)</Label>
+                <Input type="email" value={testEmail} onChange={(e) => setTestEmail(e.target.value)} placeholder="Send only to this address" />
+              </div>
+              <label className="flex items-center gap-2 self-end text-sm">
+                <input
+                  type="checkbox"
+                  checked={sendToSubscribedOnly}
+                  onChange={(e) => setSendToSubscribedOnly(e.target.checked)}
+                />
+                Send only to users with email notifications enabled
+              </label>
+            </div>
+            <Button
+              onClick={handleSubmit}
+              disabled={
+                sendCampaign.isPending ||
+                !name.trim() ||
+                !subject.trim() ||
+                !headline.trim() ||
+                !body.trim() ||
+                Boolean(ctaLabel.trim()) !== Boolean(ctaUrl.trim())
+              }
+            >
+              Send Campaign
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
 export default function PromotionsPage() {
   return (
     <div className="space-y-6">
@@ -262,12 +454,16 @@ export default function PromotionsPage() {
         <TabsList>
           <TabsTrigger value="flash-sales">Flash Sales</TabsTrigger>
           <TabsTrigger value="gift-cards">Gift Cards</TabsTrigger>
+          <TabsTrigger value="email-campaigns">Email Campaigns</TabsTrigger>
         </TabsList>
         <TabsContent value="flash-sales">
           <FlashSalesTab />
         </TabsContent>
         <TabsContent value="gift-cards">
           <GiftCardsTab />
+        </TabsContent>
+        <TabsContent value="email-campaigns">
+          <EmailCampaignsTab />
         </TabsContent>
       </Tabs>
     </div>
