@@ -42,6 +42,13 @@ const envSchema = z.object({
   // Resend (optional)
   RESEND_API_KEY: z.string().optional(),
   RESEND_FROM_EMAIL: z.string().default('BuyMedicines.store <orders@buymedicine.store>'),
+  MAIL_FROM_EMAIL: z.string().optional(),
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.coerce.number().optional(),
+  SMTP_SECURE: z.coerce.boolean().optional(),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  HOSTINGER_MAIL_API_KEY: z.string().optional(),
 
   // Cashfree (optional)
   CASHFREE_APP_ID: z.string().optional(),

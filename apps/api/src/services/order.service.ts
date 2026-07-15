@@ -29,7 +29,8 @@ import * as inventoryService from './inventory.service';
 import { recordCouponRedemption } from './coupon.service';
 import { creditWallet, debitWallet, getWallet } from './wallet.service';
 import { notifyStaffNewOrder, notifyUser } from './notification.service';
-import { generateInvoiceForOrder } from './invoice.service';
+import { emailInvoiceForOrder, generateInvoiceForOrder } from './invoice.service';
+import { sendOrderConfirmationEmail } from '../integrations/resend';
 import {
   sendDriverAssignmentWhatsApp,
   sendInvoiceWhatsAppToCustomer,
@@ -44,7 +45,7 @@ import { getDrivingDistance } from '../integrations/googleMaps';
 import { env } from '../config/env';
 import { logger } from '../config/logger';
 import { MargSyncStatus } from '@buymedicines/shared';
-import { DriverModel, MargSyncLogModel } from '../models';
+import { DriverModel, MargSyncLogModel, UserModel } from '../models';
 import { sendOtpSms } from '../integrations/msg91';
 
 // Prescription-only medicines don't have to be pre-uploaded at checkout — the delivery
@@ -239,6 +240,11 @@ export async function confirmOrderPlacement(orderId: string): Promise<IOrder> {
     branchId: order.branchId ? String(order.branchId) : undefined,
   });
 
+  const customer = await UserModel.findById(order.userId).select('email');
+  if (customer?.email) {
+    void sendOrderConfirmationEmail(customer.email, order.orderNumber, order.totalAmount);
+  }
+
   return order;
 }
 
@@ -342,6 +348,10 @@ export async function updateOrderStatus(
       invoiceNumber: invoice.invoiceNumber,
       invoiceUrl: invoice.pdfUrl,
     });
+    const customer = await UserModel.findById(order.userId).select('email name');
+    if (customer?.email) {
+      void emailInvoiceForOrder(order, customer.email, customer.name || order.addressSnapshot.contactName);
+    }
     void pushSaleInvoiceToMarg(order);
   }
 

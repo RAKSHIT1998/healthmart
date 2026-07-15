@@ -4,16 +4,19 @@ import {
   NotificationType,
   OrderStatus,
   REFERRAL_CONFIG,
+  Role,
   WalletTransactionReason,
   type CreateFlashSaleInput,
   type IssueGiftCardInput,
+  type SendEmailCampaignInput,
   type UpdateFlashSaleInput,
 } from '@buymedicines/shared';
-import { UserModel, OrderModel } from '../models';
+import { EmailCampaignModel, OrderModel, UserModel } from '../models';
 import { flashSaleRepository, giftCardRepository, referralRewardRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { creditWallet } from './wallet.service';
 import { notifyUser } from './notification.service';
+import { sendEmail, sendMarketingCampaignEmail } from '../integrations/resend';
 
 // ---------------------------------------------------------------------------
 // Referral program
@@ -109,7 +112,7 @@ function generateGiftCardCode(): string {
 }
 
 export async function issueGiftCard(issuedById: string, input: IssueGiftCardInput) {
-  return giftCardRepository.create({
+  const giftCard = await giftCardRepository.create({
     code: generateGiftCardCode(),
     initialValue: input.initialValue,
     balance: input.initialValue,
@@ -119,6 +122,23 @@ export async function issueGiftCard(issuedById: string, input: IssueGiftCardInpu
     expiresAt: input.expiresAt ? new Date(input.expiresAt) : undefined,
     notes: input.notes,
   } as never);
+
+  if (giftCard.issuedToEmail) {
+    await sendEmail({
+      to: giftCard.issuedToEmail,
+      subject: `Your BuyMedicines.store gift card: ${giftCard.code}`,
+      html: `
+        <div style="font-family:Arial,sans-serif;line-height:1.7;color:#334155;">
+          <h2 style="color:#0f766e;">You received a gift card</h2>
+          <p>Your gift card code is <strong>${giftCard.code}</strong>.</p>
+          <p>Initial value: <strong>Rs. ${giftCard.initialValue.toFixed(2)}</strong></p>
+          ${giftCard.expiresAt ? `<p>Expires on: ${giftCard.expiresAt.toDateString()}</p>` : ''}
+          <p>Use it at checkout or redeem it in your wallet area.</p>
+        </div>`,
+    });
+  }
+
+  return giftCard;
 }
 
 export async function listGiftCards(page: number, limit: number) {
@@ -194,4 +214,69 @@ export async function getActiveFlashPrice(medicineId: string): Promise<number | 
   if (!flashSale) return null;
   const item = flashSale.items.find((i) => String(i.medicineId) === medicineId);
   return item?.flashPrice ?? null;
+}
+
+function marketingAudienceFilter(audience: 'all' | 'customers' | 'staff') {
+  if (audience === 'customers') return { role: Role.CUSTOMER };
+  if (audience === 'staff') return { role: { $ne: Role.CUSTOMER } };
+  return {};
+}
+
+export async function sendEmailCampaign(createdBy: string, input: SendEmailCampaignInput) {
+  const campaign = await EmailCampaignModel.create({
+    ...input,
+    status: 'draft',
+    createdBy,
+  });
+
+  const query: Record<string, unknown> = {
+    isActive: true,
+    email: { $exists: true, $ne: null },
+    ...marketingAudienceFilter(input.audience),
+  };
+  if (input.sendToSubscribedOnly) {
+    query['notificationPreferences.email'] = { $ne: false };
+  }
+  if (input.testEmail) {
+    query.email = input.testEmail.toLowerCase();
+  }
+
+  const recipients = await UserModel.find(query).select('email');
+  campaign.recipientsCount = recipients.length;
+
+  let deliveredCount = 0;
+  let failedCount = 0;
+  let lastError = '';
+
+  for (const recipient of recipients) {
+    if (!recipient.email) continue;
+    try {
+      await sendMarketingCampaignEmail({
+        to: recipient.email,
+        subject: input.subject,
+        previewText: input.previewText,
+        headline: input.headline,
+        body: input.body,
+        ctaLabel: input.ctaLabel,
+        ctaUrl: input.ctaUrl,
+      });
+      deliveredCount += 1;
+    } catch (err) {
+      failedCount += 1;
+      lastError = err instanceof Error ? err.message : String(err);
+    }
+  }
+
+  campaign.deliveredCount = deliveredCount;
+  campaign.failedCount = failedCount;
+  campaign.lastError = lastError || undefined;
+  campaign.status = failedCount > 0 && deliveredCount === 0 ? 'failed' : 'sent';
+  campaign.sentAt = new Date();
+  await campaign.save();
+
+  return campaign;
+}
+
+export async function listEmailCampaigns() {
+  return EmailCampaignModel.find().sort({ createdAt: -1 }).populate('createdBy', 'name email');
 }

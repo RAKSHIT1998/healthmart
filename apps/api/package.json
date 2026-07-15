@@ -43,6 +43,7 @@
     "morgan": "^1.9.9",
     "multer": "^2.0.0",
     "node-cron": "^3.0.3",
+    "nodemailer": "^9.0.3",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.10.38",
     "pino": "^9.5.0",

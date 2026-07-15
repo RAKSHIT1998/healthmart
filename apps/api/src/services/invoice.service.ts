@@ -5,6 +5,7 @@ import { uploadToCloudinary } from '../integrations/cloudinary';
 import { ApiError } from '../utils/ApiError';
 import { logger } from '../config/logger';
 import { env } from '../config/env';
+import { sendInvoiceEmail } from '../integrations/resend';
 
 export interface InvoiceAccessPayload {
   invoiceNumber: string;
@@ -91,4 +92,16 @@ export async function getInvoiceForOrder(orderId: string): Promise<InvoiceAccess
     invoiceNumber: invoice.invoiceNumber,
     pdfBase64: pdfBuffer.toString('base64'),
   };
+}
+
+export async function emailInvoiceForOrder(order: IOrder, recipientEmail: string, customerName?: string): Promise<void> {
+  const invoice = await getInvoiceForOrder(String(order._id));
+  await sendInvoiceEmail({
+    to: recipientEmail,
+    customerName,
+    orderNumber: order.orderNumber,
+    invoiceNumber: invoice.invoiceNumber,
+    pdfUrl: invoice.pdfUrl,
+    pdfBase64: invoice.pdfBase64,
+  });
 }

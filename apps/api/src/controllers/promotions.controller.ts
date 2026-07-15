@@ -57,3 +57,13 @@ export const listFlashSales = asyncHandler(async (_req: Request, res: Response) 
 export const getActiveFlashSales = asyncHandler(async (_req: Request, res: Response) => {
   sendSuccess(res, await promotionsService.getActiveFlashSales());
 });
+
+export const sendEmailCampaign = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+  const campaign = await promotionsService.sendEmailCampaign(req.user!.id, req.body);
+  recordAudit({ req, action: AuditAction.CREATE, entityType: 'EmailCampaign', entityId: String(campaign._id) });
+  sendSuccess(res, campaign, 'Email campaign sent', 201);
+});
+
+export const listEmailCampaigns = asyncHandler(async (_req: Request, res: Response) => {
+  sendSuccess(res, await promotionsService.listEmailCampaigns());
+});

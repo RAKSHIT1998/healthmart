@@ -30,6 +30,7 @@ export * from './analyticsSnapshot.model';
 export * from './referralReward.model';
 export * from './giftCard.model';
 export * from './flashSale.model';
+export * from './emailCampaign.model';
 export * from './doctor.model';
 export * from './appointment.model';
 export * from './returnRequest.model';

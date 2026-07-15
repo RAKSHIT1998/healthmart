@@ -47,8 +47,27 @@ export const updateFlashSaleSchema = z.object({
   isActive: z.boolean(),
 }).partial();
 
+export const sendEmailCampaignSchema = z
+  .object({
+    name: z.string().min(2).max(120),
+    subject: z.string().min(3).max(160),
+    previewText: z.string().max(200).optional(),
+    headline: z.string().min(3).max(160),
+    body: z.string().min(10).max(5000),
+    ctaLabel: z.string().max(50).optional(),
+    ctaUrl: z.string().url().optional(),
+    audience: z.enum(['all', 'customers', 'staff']).default('customers'),
+    sendToSubscribedOnly: z.boolean().default(true),
+    testEmail: z.string().email().optional(),
+  })
+  .refine((data) => Boolean(data.ctaLabel) === Boolean(data.ctaUrl), {
+    message: 'ctaLabel and ctaUrl must be provided together',
+    path: ['ctaUrl'],
+  });
+
 export type ApplyReferralCodeInput = z.infer<typeof applyReferralCodeSchema>;
 export type IssueGiftCardInput = z.infer<typeof issueGiftCardSchema>;
 export type RedeemGiftCardInput = z.infer<typeof redeemGiftCardSchema>;
 export type CreateFlashSaleInput = z.infer<typeof createFlashSaleSchema>;
 export type UpdateFlashSaleInput = z.infer<typeof updateFlashSaleSchema>;
+export type SendEmailCampaignInput = z.infer<typeof sendEmailCampaignSchema>;

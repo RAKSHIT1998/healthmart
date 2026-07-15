@@ -7,6 +7,7 @@ import {
   objectIdSchema,
   paginationQuerySchema,
   redeemGiftCardSchema,
+  sendEmailCampaignSchema,
   updateFlashSaleSchema,
 } from '@buymedicines/shared';
 import { z } from 'zod';
@@ -54,6 +55,14 @@ router.patch(
   requireRole(Role.ADMIN, Role.MANAGER),
   validate({ params: z.object({ id: objectIdSchema }), body: updateFlashSaleSchema }),
   promotionsController.updateFlashSale,
+);
+router.get('/email-campaigns', authenticate, requireRole(Role.ADMIN, Role.MANAGER), promotionsController.listEmailCampaigns);
+router.post(
+  '/email-campaigns',
+  authenticate,
+  requireRole(Role.ADMIN, Role.MANAGER),
+  validate({ body: sendEmailCampaignSchema }),
+  promotionsController.sendEmailCampaign,
 );
 
 export default router;
