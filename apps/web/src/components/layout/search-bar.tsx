@@ -10,6 +10,7 @@ import { publicApiFetch } from '@/lib/api';
 import { useDebounce } from '@/hooks/use-debounce';
 import { Input } from '@/components/ui/input';
 import { formatCurrency } from '@/lib/utils';
+import { resolveMedicineImage } from '@/lib/medicine-image';
 import type { Medicine } from '@/types';
 
 const RECENT_SEARCHES_KEY = 'buymedicines-recent-searches';
@@ -97,9 +98,7 @@ export function SearchBar() {
                     onClick={() => submitSearch(medicine.name)}
                     className="flex items-center gap-3 rounded-lg p-2 hover:bg-secondary"
                   >
-                    {medicine.images[0] && (
-                      <Image src={medicine.images[0]} alt={medicine.name} width={36} height={36} className="rounded-md object-cover" />
-                    )}
+                    <Image src={resolveMedicineImage(medicine)} alt={medicine.name} width={36} height={36} className="rounded-md object-cover" />
                     <div className="flex-1 truncate">
                       <p className="truncate text-sm font-medium">{medicine.name}</p>
                       <p className="text-xs text-muted-foreground">{formatCurrency(medicine.sellingPrice)}</p>

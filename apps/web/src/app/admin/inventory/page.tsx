@@ -26,6 +26,7 @@ import { useBranches } from '@/hooks/admin/use-catalog';
 import { MedicineSearchSelect } from '@/components/admin/medicines/medicine-search-select';
 import { MedicineFormDialog } from '@/components/admin/medicines/medicine-form-dialog';
 import { BulkUpdateDialog } from '@/components/admin/inventory/bulk-update-dialog';
+import { resolveMedicineImage } from '@/lib/medicine-image';
 
 function defaultExpiryDate(): string {
   const d = new Date();
@@ -206,9 +207,9 @@ export default function InventoryPage() {
                       return (
                         <tr key={item.id} className="border-b border-border/40">
                           <td className="flex items-center gap-3 p-3">
-                            {medicine?.images?.[0] && (
+                            {medicine && (
                               <div className="relative h-9 w-9 overflow-hidden rounded-md bg-secondary">
-                                <Image src={medicine.images[0]} alt="" fill className="object-contain" />
+                                <Image src={resolveMedicineImage(medicine)} alt="" fill className="object-contain" />
                               </div>
                             )}
                             <span className="font-medium">{medicine?.name ?? String(item.medicineId)}</span>

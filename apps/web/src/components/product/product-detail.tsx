@@ -14,6 +14,7 @@ import { WishlistButton } from './wishlist-button';
 import { formatCurrency } from '@/lib/utils';
 import { useAddToCart } from '@/hooks/use-cart';
 import { useAuthStore } from '@/store/auth-store';
+import { resolveMedicineImage } from '@/lib/medicine-image';
 import type { MedicineDetailResponse } from '@/types';
 
 export function ProductDetail({ data }: { data: MedicineDetailResponse }) {
@@ -31,6 +32,7 @@ export function ProductDetail({ data }: { data: MedicineDetailResponse }) {
   const discount = mrp > 0 ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
   const inStock = availability.availableQuantity > 0;
   const manufacturerName = typeof medicine.manufacturerId === 'object' ? medicine.manufacturerId.name : undefined;
+  const galleryImages = medicine.images.length > 0 ? medicine.images : [resolveMedicineImage(medicine)];
 
   function handleAddToCart() {
     if (!accessToken) {
@@ -56,13 +58,11 @@ export function ProductDetail({ data }: { data: MedicineDetailResponse }) {
       <div className="grid gap-10 md:grid-cols-2">
         <div>
           <div className="relative aspect-square overflow-hidden rounded-2xl border border-border/60 bg-secondary/30">
-            {medicine.images[activeImage] && (
-              <Image src={medicine.images[activeImage]} alt={medicine.name} fill className="object-contain p-8" />
-            )}
+            <Image src={galleryImages[activeImage] ?? galleryImages[0]} alt={medicine.name} fill className="object-contain p-8" />
           </div>
-          {medicine.images.length > 1 && (
+          {galleryImages.length > 1 && (
             <div className="mt-3 flex gap-2">
-              {medicine.images.map((image, index) => (
+              {galleryImages.map((image, index) => (
                 <button
                   key={image}
                   onClick={() => setActiveImage(index)}

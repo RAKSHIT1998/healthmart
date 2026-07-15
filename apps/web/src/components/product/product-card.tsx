@@ -12,6 +12,7 @@ import { useActiveFlashSales } from '@/hooks/use-promotions';
 import { useAuthStore } from '@/store/auth-store';
 import { useRouter } from 'next/navigation';
 import { WishlistButton } from '@/components/product/wishlist-button';
+import { resolveMedicineImage } from '@/lib/medicine-image';
 import type { Medicine } from '@/types';
 
 export function ProductCard({ medicine }: { medicine: Medicine }) {
@@ -26,6 +27,7 @@ export function ProductCard({ medicine }: { medicine: Medicine }) {
 
   const effectivePrice = flashPrice ?? medicine.sellingPrice;
   const discount = Math.round(((medicine.mrp - effectivePrice) / medicine.mrp) * 100);
+  const imageSrc = resolveMedicineImage(medicine);
 
   function handleAdd(e: React.MouseEvent) {
     e.preventDefault();
@@ -39,17 +41,13 @@ export function ProductCard({ medicine }: { medicine: Medicine }) {
   return (
     <Card className="group relative flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
       <Link href={`/product/${medicine.slug}`} className="relative block aspect-square bg-secondary/40">
-        {medicine.images[0] ? (
-          <Image
-            src={medicine.images[0]}
-            alt={medicine.name}
-            fill
-            className="object-contain p-4 transition-transform group-hover:scale-105"
-            sizes="(max-width: 768px) 50vw, 25vw"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center text-xs text-muted-foreground">No image</div>
-        )}
+        <Image
+          src={imageSrc}
+          alt={medicine.name}
+          fill
+          className="object-contain p-4 transition-transform group-hover:scale-105"
+          sizes="(max-width: 768px) 50vw, 25vw"
+        />
         {flashPrice !== undefined ? (
           <Badge variant="destructive" className="absolute left-2 top-2 gap-1">
             <Zap className="h-3 w-3" /> FLASH SALE

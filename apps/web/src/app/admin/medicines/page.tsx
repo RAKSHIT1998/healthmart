@@ -11,6 +11,7 @@ import { formatCurrency } from '@/lib/utils';
 import { useAdminMedicines, useDeactivateMedicine } from '@/hooks/admin/use-medicines';
 import { MedicineFormDialog } from '@/components/admin/medicines/medicine-form-dialog';
 import { BulkUploadDialog } from '@/components/admin/medicines/bulk-upload-dialog';
+import { resolveMedicineImage } from '@/lib/medicine-image';
 import type { Medicine } from '@/types/admin';
 
 export default function MedicinesPage() {
@@ -74,11 +75,9 @@ export default function MedicinesPage() {
                   data?.items.map((medicine) => (
                     <tr key={medicine.id} className="border-b border-border/40">
                       <td className="flex items-center gap-3 p-3">
-                        {medicine.images[0] && (
-                          <div className="relative h-9 w-9 overflow-hidden rounded-md bg-secondary">
-                            <Image src={medicine.images[0]} alt="" fill className="object-contain" />
-                          </div>
-                        )}
+                        <div className="relative h-9 w-9 overflow-hidden rounded-md bg-secondary">
+                          <Image src={resolveMedicineImage(medicine)} alt="" fill className="object-contain" />
+                        </div>
                         <span className="font-medium">{medicine.name}</span>
                       </td>
                       <td className="p-3">{formatCurrency(medicine.sellingPrice)}</td>
@@ -116,11 +115,9 @@ export default function MedicinesPage() {
                 <div key={medicine.id} className="space-y-3 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-3">
-                      {medicine.images[0] && (
-                        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-secondary">
-                          <Image src={medicine.images[0]} alt="" fill className="object-contain" />
-                        </div>
-                      )}
+                      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-secondary">
+                        <Image src={resolveMedicineImage(medicine)} alt="" fill className="object-contain" />
+                      </div>
                       <div className="min-w-0">
                         <p className="truncate font-medium">{medicine.name}</p>
                         <p className="text-sm text-muted-foreground">{formatCurrency(medicine.sellingPrice)}</p>

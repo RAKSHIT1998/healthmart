@@ -21,9 +21,11 @@ const CATEGORY_IMAGE_MAP: Record<string, string> = {
 };
 
 export function getDefaultMedicineImage(medicineType?: string, categoryGroup?: string): string {
+  const fallbackImage = MEDICINE_IMAGE_MAP[MedicineType.OTHER] || 'https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=600';
+
   return (
     (medicineType ? MEDICINE_IMAGE_MAP[medicineType] : undefined) ??
     (categoryGroup ? CATEGORY_IMAGE_MAP[categoryGroup] : undefined) ??
-    MEDICINE_IMAGE_MAP[MedicineType.OTHER]
+    fallbackImage
   );
 }
