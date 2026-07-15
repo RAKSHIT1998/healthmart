@@ -8,7 +8,6 @@ import {
   WalletTransactionReason,
   type CreateFlashSaleInput,
   type IssueGiftCardInput,
-  type SendEmailCampaignInput,
   type UpdateFlashSaleInput,
 } from '@buymedicines/shared';
 import { EmailCampaignModel, OrderModel, UserModel } from '../models';
@@ -17,6 +16,19 @@ import { ApiError } from '../utils/ApiError';
 import { creditWallet } from './wallet.service';
 import { notifyUser } from './notification.service';
 import { sendEmail, sendMarketingCampaignEmail } from '../integrations/resend';
+
+interface SendEmailCampaignInput {
+  name: string;
+  subject: string;
+  previewText?: string;
+  headline: string;
+  body: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
+  audience: 'all' | 'customers' | 'staff';
+  sendToSubscribedOnly: boolean;
+  testEmail?: string;
+}
 
 // ---------------------------------------------------------------------------
 // Referral program

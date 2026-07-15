@@ -7,7 +7,6 @@ import {
   objectIdSchema,
   paginationQuerySchema,
   redeemGiftCardSchema,
-  sendEmailCampaignSchema,
   updateFlashSaleSchema,
 } from '@buymedicines/shared';
 import { z } from 'zod';
@@ -17,6 +16,23 @@ import { authenticate } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/rbac.middleware';
 
 const router = Router();
+const sendEmailCampaignSchema = z
+  .object({
+    name: z.string().min(2).max(120),
+    subject: z.string().min(3).max(160),
+    previewText: z.string().max(200).optional(),
+    headline: z.string().min(3).max(160),
+    body: z.string().min(10).max(5000),
+    ctaLabel: z.string().max(50).optional(),
+    ctaUrl: z.string().url().optional(),
+    audience: z.enum(['all', 'customers', 'staff']).default('customers'),
+    sendToSubscribedOnly: z.boolean().default(true),
+    testEmail: z.string().email().optional(),
+  })
+  .refine((data) => Boolean(data.ctaLabel) === Boolean(data.ctaUrl), {
+    message: 'ctaLabel and ctaUrl must be provided together',
+    path: ['ctaUrl'],
+  });
 
 // Public
 router.get('/flash-sales/active', promotionsController.getActiveFlashSales);

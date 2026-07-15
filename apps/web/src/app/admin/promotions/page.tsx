@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { formatCurrency, formatDateTime } from '@/lib/utils';
 import { MedicineSearchSelect } from '@/components/admin/medicines/medicine-search-select';
@@ -395,10 +394,11 @@ function EmailCampaignsTab() {
             </div>
             <div>
               <Label>Body</Label>
-              <Textarea
+              <textarea
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 rows={8}
+                className="flex min-h-[180px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 placeholder={'Mention the offer, validity, and key products.\n\nSeparate paragraphs with a blank line for cleaner formatting.'}
               />
             </div>
