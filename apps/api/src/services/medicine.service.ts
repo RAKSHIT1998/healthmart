@@ -71,7 +71,9 @@ export async function createMedicine(input: CreateMedicineInput) {
   const slug = input.slug ?? slugify(input.name);
   const exists = await medicineRepository.exists({ slug });
   if (exists) throw ApiError.conflict('A medicine with this slug already exists');
-  const medicine = await medicineRepository.create({ ...input, slug } as never);
+  // Ensure at least one image is present; use default if none provided
+  const images = input.images && input.images.length > 0 ? input.images : [process.env.DEFAULT_MEDICINE_IMAGE_URL ?? 'https://via.placeholder.com/300?text=Medicine+Image'];
+  const medicine = await medicineRepository.create({ ...input, slug, images } as never);
   await invalidateMedicineCaches();
   return medicine;
 }
@@ -192,6 +194,7 @@ async function bulkUploadFromMargText(buffer: Buffer): Promise<BulkUploadResult>
   const branch = (await branchRepository.findMainBranch()) ?? (await branchRepository.find({}))[0];
   const BATCH_REF = 'MARG-INITIAL';
   const expiryDate = new Date(Date.now() + 2 * 365 * 24 * 60 * 60 * 1000);
+const defaultImage = process.env.DEFAULT_MEDICINE_IMAGE_URL ?? 'https://via.placeholder.com/300?text=Medicine+Image';
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i]!;
@@ -224,7 +227,7 @@ async function bulkUploadFromMargText(buffer: Buffer): Promise<BulkUploadResult>
           gstPercentage: 12,
           hsnCode: '3004',
           packSize: row.unit,
-          images: [],
+          images: [defaultImage],
           margItemCode: row.itemCode,
           tags: [],
           variants: [],
@@ -284,6 +287,7 @@ export async function bulkUploadMedicines(buffer: Buffer, originalname: string):
   const result: BulkUploadResult = { processed: 0, skipped: 0, failed: 0, errors: [] };
 
   const defaultCategory = await getOrCreateGeneralCategory();
+  const defaultImage = process.env.DEFAULT_MEDICINE_IMAGE_URL ?? 'https://via.placeholder.com/300?text=Medicine+Image';
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i]!;
@@ -358,7 +362,7 @@ export async function bulkUploadMedicines(buffer: Buffer, originalname: string):
         gstPercentage: gst,
         hsnCode,
         packSize,
-        images: [],
+        images: [defaultImage],
         tags: [],
         variants: [],
         alternativeMedicineIds: [],
