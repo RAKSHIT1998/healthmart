@@ -1,5 +1,5 @@
 import axios from 'axios';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 import { connectDatabase, disconnectDatabase } from '../config/db';
 import { env } from '../config/env';
 import { logger } from '../config/logger';
