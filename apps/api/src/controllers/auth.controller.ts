@@ -25,6 +25,16 @@ export const verifyOtp = asyncHandler(async (req: Request, res: Response) => {
   sendSuccess(res, { user, tokens, isNewUser }, 'Authenticated successfully');
 });
 
+export const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
+  await authService.requestPasswordResetOtp(req.body);
+  sendSuccess(res, null, 'If an account exists, a reset OTP has been sent');
+});
+
+export const resetPassword = asyncHandler(async (req: Request, res: Response) => {
+  await authService.resetPasswordWithOtp(req.body);
+  sendSuccess(res, null, 'Password reset successfully');
+});
+
 export const staffLogin = asyncHandler(async (req: Request, res: Response) => {
   const { user, tokens } = await authService.staffLogin(req.body, req);
   sendSuccess(res, { user, tokens }, 'Logged in successfully');

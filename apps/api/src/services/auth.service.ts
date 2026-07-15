@@ -1,23 +1,25 @@
 import type { Request } from 'express';
 import {
+  OTP_CONFIG,
   Role,
   TOKEN_CONFIG,
   type CustomerLoginInput,
   type CustomerSignupInput,
+  type ForgotPasswordInput,
+  type ResetPasswordInput,
   type SendOtpInput,
   type StaffLoginInput,
   type VerifyOtpInput,
 } from '@buymedicines/shared';
+import { sendOtpSms } from '../integrations/msg91';
+import { sendOtpEmail } from '../integrations/resend';
 import { OtpModel, RefreshTokenModel, UserModel, type IUser } from '../models';
 import { userRepository } from '../repositories';
 import { ApiError } from '../utils/ApiError';
 import { comparePassword, hashPassword } from '../utils/hash';
-import { generateOtp, otpExpiryDate } from '../utils/otp';
 import { hashToken, generateTokenId, signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt';
-import { sendOtpSms } from '../integrations/msg91';
-import { sendOtpEmail } from '../integrations/resend';
+import { generateOtp, otpExpiryDate } from '../utils/otp';
 import { getOtpBypassEnabled } from './systemSetting.service';
-import { OTP_CONFIG } from '@buymedicines/shared';
 
 export interface TokenPair {
   accessToken: string;
@@ -29,9 +31,53 @@ function hashOtp(otp: string): string {
   return hashToken(otp);
 }
 
-export async function requestOtp({ phone, email, purpose }: SendOtpInput): Promise<void> {
+function normalizeIdentifier<T extends { phone?: string; email?: string }>(input: T): T {
+  const normalized = { ...input };
+  if (normalized.phone) normalized.phone = normalized.phone.replace(/^\+91/, '');
+  if (normalized.email) normalized.email = normalized.email.trim().toLowerCase();
+  return normalized;
+}
+
+async function findUserByIdentifier({ phone, email }: { phone?: string; email?: string }) {
+  return phone ? userRepository.findByPhone(phone) : userRepository.findByEmail(email!);
+}
+
+async function validateOtpRecord({
+  phone,
+  email,
+  purpose,
+  otp,
+}: {
+  phone?: string;
+  email?: string;
+  purpose: SendOtpInput['purpose'];
+  otp: string;
+}) {
   const identifier = phone ? { phone } : { email };
-  const recentOtp = await OtpModel.findOne({ ...identifier, purpose }).sort({ createdAt: -1 });
+  const otpRecord = await OtpModel.findOne({ ...identifier, purpose, verified: false }).sort({ createdAt: -1 });
+
+  if (!otpRecord) throw ApiError.badRequest('No pending OTP request found');
+  if (otpRecord.expiresAt < new Date()) throw ApiError.badRequest('OTP has expired, please request a new one');
+  if (otpRecord.attempts >= OTP_CONFIG.MAX_ATTEMPTS) {
+    throw ApiError.badRequest('Maximum OTP attempts exceeded, please request a new one');
+  }
+
+  const bypassActive = await getOtpBypassEnabled();
+  if (!bypassActive && otpRecord.otpHash !== hashOtp(otp)) {
+    otpRecord.attempts += 1;
+    await otpRecord.save();
+    throw ApiError.badRequest('Invalid OTP');
+  }
+
+  otpRecord.verified = true;
+  await otpRecord.save();
+  return otpRecord;
+}
+
+export async function requestOtp({ phone, email, purpose }: SendOtpInput): Promise<void> {
+  const normalized = normalizeIdentifier({ phone, email, purpose });
+  const identifier = normalized.phone ? { phone: normalized.phone } : { email: normalized.email };
+  const recentOtp = await OtpModel.findOne({ ...identifier, purpose: normalized.purpose }).sort({ createdAt: -1 });
   if (recentOtp && Date.now() - recentOtp.createdAt.getTime() < OTP_CONFIG.RESEND_COOLDOWN_SECONDS * 1000) {
     throw ApiError.tooManyRequests('Please wait before requesting another OTP');
   }
@@ -39,16 +85,17 @@ export async function requestOtp({ phone, email, purpose }: SendOtpInput): Promi
   const otp = generateOtp();
   await OtpModel.create({
     ...identifier,
-    purpose,
+    purpose: normalized.purpose,
     otpHash: hashOtp(otp),
     expiresAt: otpExpiryDate(),
   });
 
-  if (phone) {
-    await sendOtpSms({ phone, otp });
-  } else {
-    await sendOtpEmail(email!, otp);
+  if (normalized.phone) {
+    await sendOtpSms({ phone: normalized.phone, otp });
+    return;
   }
+
+  await sendOtpEmail(normalized.email!, otp);
 }
 
 async function issueTokenPair(user: IUser, req: Request, family?: string): Promise<TokenPair> {
@@ -81,11 +128,10 @@ function buildAuthResponse(user: IUser, tokens: TokenPair) {
 }
 
 export async function signupCustomer(input: CustomerSignupInput, req: Request): Promise<{ user: IUser; tokens: TokenPair }> {
-  const normalizedEmail = input.email?.toLowerCase();
-  const normalizedPhone = input.phone?.replace(/^\+91/, '');
+  const normalized = normalizeIdentifier(input);
 
   const existing = await UserModel.findOne({
-    $or: [{ ...(normalizedEmail ? { email: normalizedEmail } : {}) }, { ...(normalizedPhone ? { phone: normalizedPhone } : {}) }].filter(
+    $or: [{ ...(normalized.email ? { email: normalized.email } : {}) }, { ...(normalized.phone ? { phone: normalized.phone } : {}) }].filter(
       (candidate) => Object.keys(candidate).length > 0,
     ),
   });
@@ -96,12 +142,12 @@ export async function signupCustomer(input: CustomerSignupInput, req: Request): 
 
   const user = await UserModel.create({
     name: input.name.trim(),
-    phone: normalizedPhone,
-    email: normalizedEmail,
+    phone: normalized.phone,
+    email: normalized.email,
     passwordHash: await hashPassword(input.password),
     role: Role.CUSTOMER,
-    isPhoneVerified: Boolean(normalizedPhone),
-    isEmailVerified: Boolean(normalizedEmail),
+    isPhoneVerified: Boolean(normalized.phone),
+    isEmailVerified: Boolean(normalized.email),
     lastLoginAt: new Date(),
   });
 
@@ -110,9 +156,8 @@ export async function signupCustomer(input: CustomerSignupInput, req: Request): 
 }
 
 export async function loginCustomer(input: CustomerLoginInput, req: Request): Promise<{ user: IUser; tokens: TokenPair }> {
-  const user = input.phone
-    ? await userRepository.findByPhone(input.phone.replace(/^\+91/, ''))
-    : await userRepository.findByEmail(input.email!);
+  const normalized = normalizeIdentifier(input);
+  const user = normalized.phone ? await userRepository.findByPhone(normalized.phone) : await userRepository.findByEmail(normalized.email!);
 
   if (!user || !user.passwordHash || user.role !== Role.CUSTOMER) {
     throw ApiError.unauthorized('Invalid mobile number/email or password');
@@ -137,47 +182,25 @@ export async function verifyOtpAndAuthenticate(
   input: VerifyOtpInput,
   req: Request,
 ): Promise<{ user: IUser; tokens: TokenPair; isNewUser: boolean }> {
-  const identifier = input.phone ? { phone: input.phone } : { email: input.email };
-  const otpRecord = await OtpModel.findOne({ ...identifier, verified: false }).sort({ createdAt: -1 });
+  const normalized = normalizeIdentifier(input);
+  await validateOtpRecord({ ...normalized, purpose: 'login', otp: input.otp });
 
-  if (!otpRecord) {
-    throw ApiError.badRequest('No pending OTP request found');
-  }
-  if (otpRecord.expiresAt < new Date()) {
-    throw ApiError.badRequest('OTP has expired, please request a new one');
-  }
-  if (otpRecord.attempts >= OTP_CONFIG.MAX_ATTEMPTS) {
-    throw ApiError.badRequest('Maximum OTP attempts exceeded, please request a new one');
-  }
-
-  // Admin-toggleable escape hatch for when SMS/email delivery isn't configured yet —
-  // accepts any correctly-formatted code instead of checking it against the real OTP.
-  const bypassActive = await getOtpBypassEnabled();
-  if (!bypassActive && otpRecord.otpHash !== hashOtp(input.otp)) {
-    otpRecord.attempts += 1;
-    await otpRecord.save();
-    throw ApiError.badRequest('Invalid OTP');
-  }
-
-  otpRecord.verified = true;
-  await otpRecord.save();
-
-  let user = input.phone ? await userRepository.findByPhone(input.phone) : await userRepository.findByEmail(input.email!);
+  let user = normalized.phone ? await userRepository.findByPhone(normalized.phone) : await userRepository.findByEmail(normalized.email!);
   let isNewUser = false;
 
   if (!user) {
     isNewUser = true;
     user = await UserModel.create({
       name: input.name || 'Customer',
-      phone: input.phone,
-      email: input.email,
+      phone: normalized.phone,
+      email: normalized.email,
       role: Role.CUSTOMER,
-      isPhoneVerified: Boolean(input.phone),
-      isEmailVerified: Boolean(input.email),
+      isPhoneVerified: Boolean(normalized.phone),
+      isEmailVerified: Boolean(normalized.email),
     });
   } else {
-    if (input.phone && !user.isPhoneVerified) user.isPhoneVerified = true;
-    if (input.email && !user.isEmailVerified) user.isEmailVerified = true;
+    if (normalized.phone && !user.isPhoneVerified) user.isPhoneVerified = true;
+    if (normalized.email && !user.isEmailVerified) user.isEmailVerified = true;
   }
 
   user.lastLoginAt = new Date();
@@ -185,6 +208,41 @@ export async function verifyOtpAndAuthenticate(
 
   const tokens = await issueTokenPair(user, req);
   return { user, tokens, isNewUser };
+}
+
+export async function requestPasswordResetOtp(input: ForgotPasswordInput): Promise<void> {
+  const normalized = normalizeIdentifier(input);
+  const user = await findUserByIdentifier(normalized);
+
+  if (!user || !user.isActive) {
+    return;
+  }
+
+  await requestOtp({ ...normalized, purpose: 'password_reset' });
+}
+
+export async function resetPasswordWithOtp(input: ResetPasswordInput): Promise<void> {
+  const normalized = normalizeIdentifier(input);
+  await validateOtpRecord({ ...normalized, purpose: 'password_reset', otp: input.otp });
+
+  const user = await findUserByIdentifier(normalized);
+  if (!user || !user.isActive) {
+    throw ApiError.badRequest('Account not found');
+  }
+
+  if (user.passwordHash && (await comparePassword(input.newPassword, user.passwordHash))) {
+    throw ApiError.badRequest('New password must be different from your current password');
+  }
+
+  user.passwordHash = await hashPassword(input.newPassword);
+  if (normalized.phone) user.isPhoneVerified = true;
+  if (normalized.email) user.isEmailVerified = true;
+  user.tokenVersion += 1;
+
+  await Promise.all([
+    user.save(),
+    RefreshTokenModel.updateMany({ userId: user._id }, { $set: { revoked: true } }),
+  ]);
 }
 
 export async function staffLogin(input: StaffLoginInput, req: Request): Promise<{ user: IUser; tokens: TokenPair }> {
@@ -222,7 +280,6 @@ export async function refreshAccessToken(refreshToken: string, req: Request): Pr
   }
 
   if (stored.revoked) {
-    // Reuse of a revoked token indicates token theft — revoke the entire family.
     await RefreshTokenModel.updateMany({ family: stored.family }, { $set: { revoked: true } });
     throw ApiError.unauthorized('Refresh token has been revoked. Please log in again.');
   }
@@ -263,7 +320,7 @@ export async function logout(refreshToken: string): Promise<void> {
     const payload = verifyRefreshToken(refreshToken);
     await RefreshTokenModel.updateOne({ jti: payload.jti }, { $set: { revoked: true } });
   } catch {
-    // Already invalid/expired — nothing to revoke.
+    // Already invalid/expired; nothing to revoke.
   }
 }
 

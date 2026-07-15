@@ -23,6 +23,16 @@ export interface CustomerLoginInput {
   password: string;
 }
 
+export interface ForgotPasswordInput {
+  phone?: string;
+  email?: string;
+}
+
+export interface ResetPasswordInput extends ForgotPasswordInput {
+  otp: string;
+  newPassword: string;
+}
+
 function useSessionSetter() {
   return useAuthStore((s) => s.setSession);
 }
@@ -48,6 +58,26 @@ export function useCustomerLogin() {
     onSuccess: (data) => {
       setSession({ accessToken: data.tokens.accessToken, refreshToken: data.tokens.refreshToken, user: data.user });
       toast.success(`Welcome back${data.user.name ? `, ${data.user.name}` : ''}!`);
+    },
+    onError: (err: ApiClientError) => toast.error(err.message),
+  });
+}
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (input: ForgotPasswordInput) => api.post<null>('/auth/forgot-password', input, { auth: false }),
+    onSuccess: () => {
+      toast.success('If an account exists, an OTP has been sent');
+    },
+    onError: (err: ApiClientError) => toast.error(err.message),
+  });
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: (input: ResetPasswordInput) => api.post<null>('/auth/reset-password', input, { auth: false }),
+    onSuccess: () => {
+      toast.success('Password reset successful. You can log in now.');
     },
     onError: (err: ApiClientError) => toast.error(err.message),
   });

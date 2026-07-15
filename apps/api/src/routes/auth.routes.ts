@@ -3,7 +3,9 @@ import {
   createStaffUserSchema,
   customerLoginSchema,
   customerSignupSchema,
+  forgotPasswordSchema,
   refreshTokenSchema,
+  resetPasswordSchema,
   sendOtpSchema,
   staffLoginSchema,
   verifyOtpSchema,
@@ -24,6 +26,8 @@ router.post('/signup', authRateLimiter, validate({ body: customerSignupSchema })
 router.post('/login', authRateLimiter, validate({ body: customerLoginSchema }), authController.login);
 router.post('/otp/request', otpRateLimiter, validate({ body: sendOtpSchema }), authController.requestOtp);
 router.post('/otp/verify', authRateLimiter, validate({ body: verifyOtpSchema }), authController.verifyOtp);
+router.post('/forgot-password', otpRateLimiter, validate({ body: forgotPasswordSchema }), authController.forgotPassword);
+router.post('/reset-password', authRateLimiter, validate({ body: resetPasswordSchema }), authController.resetPassword);
 router.post('/staff/login', authRateLimiter, validate({ body: staffLoginSchema }), authController.staffLogin);
 router.post('/refresh', validate({ body: refreshTokenSchema }), authController.refresh);
 router.post('/logout', authController.logout);

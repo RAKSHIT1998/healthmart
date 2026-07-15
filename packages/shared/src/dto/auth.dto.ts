@@ -5,7 +5,7 @@ export const sendOtpSchema = z
   .object({
     phone: z.string().regex(REGEX.PHONE, 'Enter a valid 10-digit Indian mobile number').optional(),
     email: z.string().regex(REGEX.EMAIL, 'Enter a valid email').optional(),
-    purpose: z.enum(['login', 'signup', 'checkout']).default('login'),
+    purpose: z.enum(['login', 'signup', 'checkout', 'password_reset']).default('login'),
   })
   .refine((data) => Boolean(data.phone) !== Boolean(data.email), {
     message: 'Provide either a phone number or an email, not both',
@@ -53,6 +53,26 @@ export const customerLoginSchema = z
     message: 'Provide either a mobile number or an email address',
   });
 
+export const forgotPasswordSchema = z
+  .object({
+    phone: z.string().regex(REGEX.PHONE, 'Enter a valid 10-digit Indian mobile number').optional(),
+    email: z.string().regex(REGEX.EMAIL, 'Enter a valid email').optional(),
+  })
+  .refine((data) => Boolean(data.phone) !== Boolean(data.email), {
+    message: 'Provide either a mobile number or an email address',
+  });
+
+export const resetPasswordSchema = z
+  .object({
+    phone: z.string().regex(REGEX.PHONE, 'Enter a valid 10-digit Indian mobile number').optional(),
+    email: z.string().regex(REGEX.EMAIL, 'Enter a valid email').optional(),
+    otp: z.string().length(6, 'OTP must be 6 digits'),
+    newPassword: z.string().min(8, 'Password must be at least 8 characters'),
+  })
+  .refine((data) => Boolean(data.phone) !== Boolean(data.email), {
+    message: 'Provide either a mobile number or an email address',
+  });
+
 export const createStaffUserSchema = z.object({
   name: z.string().min(2).max(80),
   email: z.string().regex(REGEX.EMAIL),
@@ -67,4 +87,6 @@ export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>;
 export type StaffLoginInput = z.infer<typeof staffLoginSchema>;
 export type CustomerSignupInput = z.infer<typeof customerSignupSchema>;
 export type CustomerLoginInput = z.infer<typeof customerLoginSchema>;
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export type CreateStaffUserInput = z.infer<typeof createStaffUserSchema>;
