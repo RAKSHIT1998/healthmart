@@ -28,6 +28,7 @@ import serviceabilityRoutes from './serviceability.routes';
 import contactRoutes from './contact.routes';
 import systemSettingRoutes from './systemSetting.routes';
 import medicineRequestRoutes from './medicineRequest.routes';
+import hostingerEmailWebhookRoutes from './hostingerEmailWebhook.routes';
 
 const router = Router();
 
@@ -60,5 +61,6 @@ router.use('/serviceability', serviceabilityRoutes);
 router.use('/contact', contactRoutes);
 router.use('/admin/settings', systemSettingRoutes);
 router.use('/medicine-requests', medicineRequestRoutes);
+router.use('/webhooks/hostinger', hostingerEmailWebhookRoutes);
 
 export default router;

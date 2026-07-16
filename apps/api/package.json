@@ -19,6 +19,7 @@
     "test:watch": "jest --runInBand --watch"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.111.0",
     "@asteasolutions/zod-to-openapi": "^7.3.0",
     "@buymedicines/shared": "*",
     "agora-token": "^2.0.5",

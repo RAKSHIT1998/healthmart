@@ -231,6 +231,9 @@ function buildPaths() {
   path(paths, '/marg/sync', 'post', 'MARG Integration', { summary: 'Manually trigger a sync (CSV/API mode) for one or all entities', auth: true, body: true });
   path(paths, '/marg/logs', 'get', 'MARG Integration', { summary: 'View recent sync run logs', auth: true, query: ['page', 'limit'] });
 
+  // Webhooks
+  path(paths, '/webhooks/hostinger/email', 'post', 'Webhooks', { summary: 'Receive Hostinger email delivery events', body: true });
+
   // Audit logs
   path(paths, '/audit-logs', 'get', 'Audit', { summary: 'View admin audit trail', auth: true, query: ['entityType', 'actorId', 'page', 'limit'] });
 

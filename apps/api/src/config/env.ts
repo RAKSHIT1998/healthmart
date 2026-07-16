@@ -4,6 +4,8 @@ import { z } from 'zod';
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
+const optionalUrl = z.preprocess((value) => (value === '' ? undefined : value), z.string().url().optional());
+
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().default(5000),
@@ -35,11 +37,12 @@ const envSchema = z.object({
   MSG91_WHATSAPP_SALES_ALERT_TEMPLATE_ID: z.string().optional(),
   SALES_TEAM_WHATSAPP_NUMBERS: z.string().optional(),
   WHATSAPP_PROVIDER: z.enum(['msg91', 'openwa']).default('msg91'),
-  OPENWA_BASE_URL: z.string().url().optional(),
+  OPENWA_BASE_URL: optionalUrl,
   OPENWA_API_KEY: z.string().optional(),
   OPENWA_SESSION_ID: z.string().optional(),
 
   // Resend (optional)
+  MAIL_PROVIDER: z.enum(['auto', 'mcp', 'smtp', 'resend']).default('auto'),
   RESEND_API_KEY: z.string().optional(),
   RESEND_FROM_EMAIL: z.string().default('BuyMedicines.store <orders@buymedicine.store>'),
   MAIL_FROM_EMAIL: z.string().optional(),
@@ -49,6 +52,10 @@ const envSchema = z.object({
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
   HOSTINGER_MAIL_API_KEY: z.string().optional(),
+  HOSTINGER_MCP_URL: optionalUrl,
+  HOSTINGER_MCP_API_TOKEN: z.string().optional(),
+  HOSTINGER_MCP_TOOL_NAME: z.string().default('send_email'),
+  HOSTINGER_EMAIL_WEBHOOK_SECRET: z.string().optional(),
 
   // Cashfree (optional)
   CASHFREE_APP_ID: z.string().optional(),

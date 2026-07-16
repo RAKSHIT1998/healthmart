@@ -4,6 +4,7 @@ import { env } from '../config/env';
 import { logger } from '../config/logger';
 
 const resendClient = env.RESEND_API_KEY ? new Resend(env.RESEND_API_KEY) : null;
+const hostingerMcpToken = env.HOSTINGER_MCP_API_TOKEN || env.HOSTINGER_MAIL_API_KEY;
 const smtpTransporter =
   env.SMTP_HOST && env.SMTP_USER && env.SMTP_PASS
     ? nodemailer.createTransport({
@@ -39,6 +40,57 @@ function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
+function providerEnabled(provider: 'mcp' | 'smtp' | 'resend'): boolean {
+  return env.MAIL_PROVIDER === provider || env.MAIL_PROVIDER === 'auto';
+}
+
+async function sendEmailViaMcp({ to, subject, html, text, attachments }: SendEmailParams): Promise<boolean> {
+  if (!providerEnabled('mcp') || !env.HOSTINGER_MCP_URL || !hostingerMcpToken) {
+    return false;
+  }
+
+  const response = await fetch(env.HOSTINGER_MCP_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${hostingerMcpToken}`,
+    },
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: `mail-${Date.now()}`,
+      method: 'tools/call',
+      params: {
+        name: env.HOSTINGER_MCP_TOOL_NAME,
+        arguments: {
+          from: senderEmail(),
+          to,
+          subject,
+          html,
+          text: text ?? stripHtml(html),
+          attachments: attachments?.map((attachment) => ({
+            filename: attachment.filename,
+            contentType: attachment.contentType,
+            content:
+              typeof attachment.content === 'string'
+                ? Buffer.from(attachment.content).toString('base64')
+                : attachment.content.toString('base64'),
+            encoding: 'base64',
+          })),
+        },
+      },
+    }),
+  });
+
+  const payload = (await response.json().catch(() => null)) as { error?: unknown } | null;
+  if (!response.ok || payload?.error) {
+    logger.error({ status: response.status, payload }, 'Hostinger MCP email send failed');
+    throw new Error('Failed to send email via Hostinger MCP');
+  }
+
+  return true;
+}
+
 function appEmailShell(params: {
   previewText?: string;
   headline: string;
@@ -72,7 +124,11 @@ function appEmailShell(params: {
 }
 
 export async function sendEmail({ to, subject, html, text, attachments }: SendEmailParams): Promise<void> {
-  if (smtpTransporter) {
+  if (await sendEmailViaMcp({ to, subject, html, text, attachments })) {
+    return;
+  }
+
+  if (providerEnabled('smtp') && smtpTransporter) {
     await smtpTransporter.sendMail({
       from: senderEmail(),
       to,
@@ -84,7 +140,7 @@ export async function sendEmail({ to, subject, html, text, attachments }: SendEm
     return;
   }
 
-  if (!resendClient) {
+  if (!providerEnabled('resend') || !resendClient) {
     logger.warn(`[Mail provider not configured] Email to ${to} - ${subject}`);
     return;
   }
